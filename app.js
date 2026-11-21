@@ -82,7 +82,7 @@ function selectDeck(id){
  else startParty('single',id);
 }
 function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,reason,returnTo:view==='playView'?'playView':'lobbyView'};handoff();}
-function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent='Сейчас появятся только его 6 тайных заданий. Не показывайте карты другому игроку.';showView('handoffView');}
+function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 6 тайных заданий.':'Сейчас появятся только его 6 тайных заданий.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 function showSecrets(){
  const p=privateStage.player;
  $('secretTitle').textContent='Игрок '+p+' · 6 тайных заданий';
