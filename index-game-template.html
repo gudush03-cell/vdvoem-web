@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#130e13">
+<meta name="description" content="Вдвоём налегке — игра для двоих на одном телефоне. 168 карточек, 10 колод, тайные задания, Быстрый старт и право сказать «Не сегодня».">
+<title>Вдвоём налегке — игра для двоих</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./app.css?v=2">
+<script src="./app.js?v=2" defer></script>
+</head>
+<body>
+<div class="page">
+<header class="top">
+  <a class="logo" href="./index.html" aria-label="Вдвоём налегке">♡ ВДВОЁМ НАЛЕГКЕ</a>
+  <nav class="nav" aria-label="Навигация">
+    <a href="#rules" data-home-nav>Правила</a>
+    <a href="#decks" data-home-nav>Колоды</a>
+    <a class="pill-link" href="./game.html">Войти по коду</a>
+  </nav>
+</header>
+<main>
+<section class="view" id="homeView">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Карточная игра для двоих · Один телефон</div>
+      <h1>Иногда ближе —<br><span class="pink">значит честнее.</span></h1>
+      <p>Смейтесь, признавайтесь, выбирайте, узнавайте друг друга заново. 168 карточек — и ни одного скучного вечера.</p>
+      <div class="actions">
+        <button class="btn" type="button" id="startDemo">Попробовать 6 карт ♡</button>
+        <a class="btn secondary" href="./purchase.html">Полная игра · 499 ₽</a>
+      </div>
+      <div class="stats"><span><b>168</b> карточек</span><span><b>10</b> колод</span><span><b>2</b> игрока</span></div>
+      <p class="subnote">После покупки — личный код. Без регистрации, подписки и обязательного Telegram.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="halo"><span class="art-heart">♡</span></div>
+      <span class="art-star">✧</span><span class="art-star two">✦</span>
+      <span class="art-note">ВАША ИСТОРИЯ · ВАШИ ПРАВИЛА</span>
+    </div>
+  </div>
+
+  <section class="section" id="rules">
+    <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Первой ходит девушка — Игрок 1. Читайте верхнюю карту, отвечайте или выполняйте задание и передавайте ход.</p></div>
+    <div class="rule-grid">
+      <div class="rule reveal"><div class="rule-emoji">🎴</div><strong>Колоды 1–6</strong><p>В полной партии идут по порядку. В «Быстром старте» все 120 карт перемешиваются. Любую колоду можно открыть отдельно.</p></div>
+      <div class="rule reveal"><div class="rule-emoji">🤫</div><strong>Без слов</strong><p>В начале партии каждый тайно получает 6 заданий. Посмотрите их по очереди, не показывайте партнёру и выполняйте незаметно.</p></div>
+      <div class="rule reveal"><div class="rule-emoji">🎭</div><strong>Ситуация</strong><p>Возьмите одну из 10 карт в любой момент, затем вернитесь к текущей карте основной колоды.</p></div>
+      <div class="rule reveal"><div class="rule-emoji">🌙</div><strong>После полуночи</strong><p>20 карт открываются только по желанию обоих игроков. Любой может отказаться.</p></div>
+      <div class="rule reveal"><div class="rule-emoji">🌿</div><strong>Выдох</strong><p>В финале вытяните одну случайную карту из шести. На неё отвечают оба.</p></div>
+      <div class="rule reveal"><div class="rule-emoji">💗</div><strong>Не сегодня</strong><p>У каждого по одной карте на партию. Можно пропустить своё задание без объяснений и передать ход. Это 2 карты сверх 168.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="decks">
+    <div class="section-head"><div class="eyebrow">Оглавление</div><h2>Десять оттенков <span class="pink">«мы».</span></h2><p>От громкого смеха до тихого финала. Каждая колода — отдельная глава.</p></div>
+    <div id="publicDecks" class="decks-grid" aria-label="Десять колод игры"></div>
+  </section>
+
+  <section class="section"><div class="highlight reveal">
+    <div><div class="eyebrow">Полная веб-версия</div><h2>Вся игра — <span class="pink">ваша.</span></h2><p>10 колод, 168 карточек, личный код после покупки. Играете вдвоём с одного телефона.</p><p class="subnote">6 карточек можно попробовать бесплатно.</p></div>
+    <div><div class="price">499 ₽</div><a class="btn" href="./purchase.html">Купить полную игру ♡</a><p class="price-note"><a href="./game.html">Уже есть код? Войти</a></p></div>
+  </div></section>
+</section>
+
+<section class="view" id="loginView" hidden>
+  <div class="auth-panel panel">
+    <div class="eyebrow">Для тех, кто уже вместе в игре</div>
+    <div class="ornament-heart" aria-hidden="true">♡</div>
+    <h1 class="serif" style="font-size:clamp(31px,7vw,49px);margin:12px 0 18px">Все карточки.<br><span class="pink">Ваш вечер.</span></h1>
+    <p class="hint">Введите личный код, полученный после покупки. Он откроет все 10 колод.</p>
+    <form id="loginForm" autocomplete="off">
+      <label for="accessCode" class="eyebrow" style="display:block;text-align:left;margin:25px 0 9px">Личный код доступа</label>
+      <input class="field" id="accessCode" type="text" maxlength="100" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+      <button class="btn" type="submit" id="loginButton">Открыть полную игру ♡</button>
+      <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
+    </form>
+    <p class="hint">Без регистрации. Код не сохраняется на устройстве.</p>
+    <a href="./purchase.html" class="btn secondary full" style="margin-top:15px">Купить игру · 499 ₽</a>
+    <button type="button" class="text-button" id="backHome" style="margin-top:15px">← На главную</button>
+  </div>
+</section>
+
+<section class="view" id="lobbyView" hidden>
+  <div class="intro center"><div class="eyebrow">Полная игра открыта · 168 карточек</div><h1>Выберите, <span class="pink">как начать.</span></h1><p>Один телефон на двоих. Игрок 1 — девушка, ходит первой. В начале каждой партии вы получите по 6 секретных заданий.</p></div>
+  <div class="modes">
+    <button type="button" class="mode reveal" data-mode="full"><span>♡</span><strong>Полная партия</strong><small>120 основных карт по порядку: разделы 1 → 6</small></button>
+    <button type="button" class="mode reveal" data-mode="quick"><span>✦</span><strong>Быстрый старт</strong><small>Все 120 основных карт перемешаны</small></button>
+  </div>
+  <div id="resumeBox" class="utility" hidden><div><strong>Ваша партия продолжается</strong><p>Вы можете вернуться к текущей карточке</p></div><button class="btn small" type="button" id="resumeButton">Продолжить</button></div>
+  <div class="section-head" style="margin-top:35px"><div class="eyebrow">Выберите колоду отдельно</div><h2>По <span class="pink">настроению.</span></h2></div>
+  <div id="privateDecks" class="decks-grid"></div>
+  <div class="utility"><div><strong>🤫 Тайные задания</strong><p>Заглянуть в свои задания «Без слов», не показывая партнёру</p></div><button type="button" class="btn secondary small" id="viewMyTasks">Мои задания</button></div>
+  <div class="utility"><div><strong>🌿 Финальный «Выдох»</strong><p>Случайная карта для обоих, когда решите закончить игру</p></div><button type="button" class="btn secondary small" id="lobbyExhale">Вытянуть карту</button></div>
+  <button class="btn ghost small" type="button" id="logout">Закрыть игру на устройстве</button>
+</section>
+
+<section class="view" id="handoffView" hidden>
+  <div class="panel handoff">
+    <div class="eyebrow">Секретные задания · «Без слов»</div><div class="big">🤫</div>
+    <h2 id="handoffTitle">Передайте телефон Игроку 1</h2>
+    <p id="handoffText">Сейчас появятся только ваши шесть тайных заданий. Не показывайте их другому игроку.</p>
+    <button class="btn" type="button" id="revealTasks">Я один(одна) смотрю · Показать задания</button>
+  </div>
+</section>
+
+<section class="view" id="secretView" hidden>
+  <div class="intro center"><div class="eyebrow">Не показывайте партнёру</div><h1 id="secretTitle">Ваши <span class="pink">6 заданий.</span></h1><p>Запомните их и выполняйте незаметно в течение партии.</p></div>
+  <div id="secretList" class="private-list"></div>
+  <p class="private-warning center">После нажатия кнопки задания скроются с экрана.</p>
+  <button type="button" class="btn full" id="hideTasks">Скрыть задания и передать телефон</button>
+</section>
+
+<section class="view" id="consentView" hidden>
+  <div class="auth-panel panel">
+    <div class="eyebrow">Колода 9 · После полуночи</div><div class="ornament-heart">🌙</div>
+    <h1 class="serif" style="font-size:36px">Только по взаимному желанию.</h1>
+    <p class="hint">Оба игрока должны согласиться открыть эту колоду. Отказ не требует объяснений.</p>
+    <div class="consent-checks">
+      <label><input type="checkbox" id="consent1">Игрок 1 хочет открыть колоду</label>
+      <label><input type="checkbox" id="consent2">Игрок 2 хочет открыть колоду</label>
+    </div>
+    <button type="button" class="btn full" id="confirmConsent">Открыть «После полуночи»</button>
+    <button type="button" class="btn secondary full" id="cancelConsent" style="margin-top:10px">Вернуться к колодам</button>
+  </div>
+</section>
+
+<section class="view" id="playView" hidden>
+  <div class="play-shell">
+    <div class="play-top">
+      <button type="button" class="text-button" id="backLobby">← Колоды</button>
+      <span class="play-meta" id="playCount">01 / 20</span>
+    </div>
+    <div class="play-turn"><div><small>СЕЙЧАС ХОДИТ</small><strong id="turnName">Игрок 1 · Девушка</strong></div><span id="turnSymbol" aria-hidden="true" style="font-size:27px">♡</span></div>
+    <div class="bar"><span id="progress"></span></div>
+    <article class="paper" id="playingCard">
+      <div class="paper-head"><span id="cardDeck">ОРЁМ</span><span id="cardIndex">01 / 20</span></div>
+      <div class="paper-inner"><h2 id="cardTitle"></h2><div id="cardBody"></div></div>
+      <div class="paper-foot" id="cardFooter">ЧИТАЙТЕ · ОТВЕЧАЙТЕ · ПЕРЕДАВАЙТЕ ХОД</div>
+    </article>
+    <div class="skip-cards" id="skipCards">
+      <div class="skip-card" id="skip1"><strong>♡ Игрок 1</strong><div>«Не сегодня» · <span id="skipCount1">1</span></div></div>
+      <div class="skip-card" id="skip2"><strong>♡ Игрок 2</strong><div>«Не сегодня» · <span id="skipCount2">1</span></div></div>
+    </div>
+    <div class="play-bottom">
+      <button class="btn secondary" type="button" id="skipButton">Не сегодня</button>
+      <button class="btn" type="button" id="nextCard">Ответили · Передать ход ♡</button>
+    </div>
+    <div class="play-tools">
+      <button type="button" class="btn ghost small" id="sceneButton">🎭 Ситуация</button>
+      <button type="button" class="btn ghost small" id="tasksButton">🤫 Мои задания</button>
+      <button type="button" class="btn ghost small" id="exhaleButton">🌿 Выдох</button>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="finishView" hidden>
+  <div class="panel auth-panel">
+    <div class="eyebrow" id="finishEyebrow">Конец колоды</div>
+    <div class="ornament-heart">♡</div>
+    <h1 class="serif" style="font-size:clamp(35px,7vw,50px)">Пусть это останется <span class="pink">между вами.</span></h1>
+    <p id="finishText" class="hint">Вы прошли колоду. Хотите вытянуть финальную карту «Выдох»?</p>
+    <div class="finish-actions">
+      <button type="button" class="btn" id="finishExhale">🌿 Вытянуть «Выдох»</button>
+      <button type="button" class="btn secondary" id="finishLobby">К выбору колод</button>
+      <button type="button" class="btn ghost" id="finishAgain">Сыграть ещё раз</button>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <span>♡ ВДВОЁМ НАЛЕГКЕ · 2026</span>
+  <span>168 карт · 10 колод · Один телефон на двоих</span>
+  <span>Личный код · Без подписки</span>
+</footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
