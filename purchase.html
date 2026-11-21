@@ -1,0 +1,482 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#130e13">
+
+<title>Покупка — Вдвоём налегке</title>
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap"
+      rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  padding: 24px 16px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(
+      ellipse at 50% 10%,
+      #76345066,
+      transparent 65%
+    ),
+    #130e13;
+  color: #fff1e9;
+  font: 400 14px/1.75 'Manrope', sans-serif;
+}
+
+main {
+  width: 100%;
+  max-width: 470px;
+  padding: 37px 24px;
+  border: 1px solid #f1a5be66;
+  border-radius: 26px;
+  background:
+    linear-gradient(145deg,#30202c,#1c141e);
+  box-shadow: 0 25px 80px #0008;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #eea8be;
+  letter-spacing: .22em;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.heart {
+  font: 65px Georgia,serif;
+  color: #f6a4c0;
+  margin-top: 9px;
+}
+
+h1 {
+  margin: 5px 0 18px;
+  font: 400 clamp(33px,8vw,47px)/1.3
+    'Prata',Georgia,serif;
+  letter-spacing: -.05em;
+}
+
+p {
+  margin: 12px 0;
+  color: #d9c1cb;
+}
+
+.price {
+  margin: 22px 0;
+  font-size: 37px;
+  font-weight: 800;
+  color: #ffd3e0;
+}
+
+button,
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 55px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 99px;
+  background:
+    linear-gradient(120deg,#ffbfce,#f584aa);
+  color: #321923;
+  font: 800 13px 'Manrope',sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.secondary {
+  margin-top: 12px;
+  background: #ffffff0a;
+  border: 1px solid #ffffff30;
+  color: #ffd8e4;
+}
+
+#message {
+  padding: 14px;
+  margin-top: 23px;
+  border: 1px solid #ffffff22;
+  border-radius: 15px;
+  background: #ffffff09;
+  color: #edced9;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+#accessCode {
+  padding: 16px 8px;
+  margin: 19px 0;
+  border: 1px dashed #f5a9c3;
+  border-radius: 15px;
+  color: #ffd5e3;
+  font-size: clamp(15px,4vw,21px);
+  letter-spacing: .05em;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+small {
+  display: block;
+  color: #b7a1ac;
+  margin-top: 19px;
+  font-size: 11px;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 12px;
+  color: #f0b6c9;
+  text-decoration: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<main>
+  <div class="eyebrow">ИГРА МЕЖДУ НАМИ</div>
+  <div class="heart">♡</div>
+
+  <h1>Вдвоём налегке</h1>
+
+  <p>
+    168 карточек в 10 колодах.
+    Один платёж — личный код доступа.
+  </p>
+
+  <div class="price">499 ₽</div>
+
+  <button id="buy" type="button">
+    Перейти к оплате
+  </button>
+
+  <div id="message" role="status"
+       aria-live="polite">
+    Покупки пока в настройке.
+  </div>
+
+  <section id="result" hidden>
+    <p>Ваш личный код доступа:</p>
+
+    <div id="accessCode"></div>
+
+    <button id="copy" type="button"
+            class="secondary">
+      Скопировать код
+    </button>
+
+    <a href="./game.html"
+       class="action"
+       style="margin-top:13px">
+      Открыть игру ♡
+    </a>
+
+    <small>
+      Обязательно сохраните код.
+      Он понадобится при повторном входе.
+    </small>
+  </section>
+
+  <button id="retry"
+          type="button"
+          class="secondary"
+          hidden>
+    Проверить оплату ещё раз
+  </button>
+
+  <a href="./index.html" class="back">
+    Вернуться на главную
+  </a>
+
+  <small>
+    Email в Robokassa нужен для чека,
+    а не для регистрации в игре.
+  </small>
+</main>
+
+<script>
+const API =
+  'https://perceptive-patience-production-79bfb421.up.railway.app';
+
+const buy = document.getElementById('buy');
+const message = document.getElementById('message');
+const retry = document.getElementById('retry');
+const result = document.getElementById('result');
+
+const codeBox =
+  document.getElementById('accessCode');
+
+let attempts = 0;
+let currentOrder = null;
+let checking = false;
+
+function showMessage(text) {
+  message.textContent = text;
+}
+
+function storedToken(id) {
+  return localStorage.getItem(
+    'vdvoem.order.' + id
+  );
+}
+
+function findOrder() {
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
+  const returned =
+    params.get('InvId') ||
+    params.get('InvID');
+
+  if (
+    returned &&
+    /^[1-9]\d{0,17}$/.test(returned) &&
+    storedToken(returned)
+  ) {
+    return returned;
+  }
+
+  const saved = localStorage.getItem(
+    'vdvoem.lastOrder'
+  );
+
+  if (
+    saved &&
+    /^[1-9]\d{0,17}$/.test(saved) &&
+    storedToken(saved)
+  ) {
+    return saved;
+  }
+
+  return null;
+}
+
+async function startPurchase() {
+  buy.disabled = true;
+  showMessage('Создаём заказ...');
+
+  try {
+    localStorage.setItem(
+      'vdvoem.storage-check',
+      'ok'
+    );
+
+    localStorage.removeItem(
+      'vdvoem.storage-check'
+    );
+
+    const response = await fetch(
+      API + '/api/checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: '{}'
+      }
+    );
+
+    const data = await response.json();
+
+    if (
+      !response.ok ||
+      !data.orderId ||
+      !data.claimToken ||
+      !data.paymentUrl
+    ) {
+      throw new Error(
+        'Покупки пока отключены.'
+      );
+    }
+
+    // Токен сохраняется только в браузере.
+    // В адрес Robokassa он не передаётся.
+    localStorage.setItem(
+      'vdvoem.order.' + data.orderId,
+      data.claimToken
+    );
+
+    localStorage.setItem(
+      'vdvoem.lastOrder',
+      data.orderId
+    );
+
+    window.location.assign(data.paymentUrl);
+
+  } catch (error) {
+    showMessage(
+      error.message || 'Не удалось создать заказ.'
+    );
+
+    buy.disabled = false;
+  }
+}
+
+async function checkPayment() {
+  if (!currentOrder || checking) {
+    return;
+  }
+
+  const token = storedToken(currentOrder);
+
+  if (!token) {
+    showMessage(
+      'Токен заказа не найден в браузере. ' +
+      'Если деньги были списаны, ' +
+      'обратитесь в поддержку.'
+    );
+
+    return;
+  }
+
+  checking = true;
+  retry.hidden = true;
+
+  try {
+    const response = await fetch(
+      API + '/api/order-status',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          orderId: currentOrder,
+          claimToken: token
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        'Не удалось проверить заказ.'
+      );
+    }
+
+    if (
+      data.status === 'paid' &&
+      typeof data.accessCode === 'string'
+    ) {
+      codeBox.textContent = data.accessCode;
+      result.hidden = false;
+      buy.hidden = true;
+      retry.hidden = true;
+
+      showMessage(
+        'Оплата подтверждена. ' +
+        'Сохраните личный код!'
+      );
+
+      checking = false;
+      return;
+    }
+
+    if (data.status === 'pending') {
+      showMessage(
+        'Ожидаем подтверждение Robokassa. ' +
+        'Если оплата уже прошла, ' +
+        'код появится здесь.'
+      );
+
+      retry.hidden = false;
+
+      attempts++;
+      checking = false;
+
+      if (attempts < 15) {
+        setTimeout(checkPayment, 4000);
+      }
+
+      return;
+    }
+
+    showMessage(
+      'Код пока недоступен. ' +
+      'Статус заказа: ' + data.status
+    );
+
+    retry.hidden = false;
+
+  } catch (error) {
+    showMessage(error.message);
+    retry.hidden = false;
+  }
+
+  checking = false;
+}
+
+buy.addEventListener(
+  'click',
+  startPurchase
+);
+
+retry.addEventListener('click', () => {
+  attempts = 0;
+  checkPayment();
+});
+
+document.getElementById('copy')
+  .addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(
+        codeBox.textContent
+      );
+
+      showMessage('Код скопирован.');
+    } catch {
+      showMessage(
+        'Выделите код и скопируйте вручную.'
+      );
+    }
+  });
+
+try {
+  currentOrder = findOrder();
+
+  if (currentOrder) {
+    buy.hidden = true;
+    showMessage(
+      'Проверяем заказ №' + currentOrder
+    );
+
+    checkPayment();
+  }
+} catch {
+  showMessage(
+    'Не удалось восстановить заказ ' +
+    'из браузера.'
+  );
+}
+</script>
+
+</body>
+</html>
