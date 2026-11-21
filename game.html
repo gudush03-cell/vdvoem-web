@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#150e17">
+  <meta name="description" content="Вдвоём налегке — личный вход в полную игру для двоих.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Полная игра — Вдвоём налегке</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Prata&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#150e17;--cream:#fff2eb;--muted:#c9acbb;--pink:#f69bbb;--line:#ffffff25;--serif:'Prata',Georgia,serif;--sans:'Manrope',Arial,sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;color:var(--cream);background:radial-gradient(ellipse at 50% 2%,#793a5b50,transparent 60%),linear-gradient(145deg,#1c111b,#120e14 85%);font:400 15px/1.6 var(--sans)}
+    a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.65}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffb5d3;outline-offset:3px}[hidden]{display:none!important}
+    .page{max-width:1010px;margin:auto;padding:0 clamp(17px,4vw,38px) 45px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:22px 0;border-bottom:1px solid var(--line)}
+    .logo{font-weight:800;color:#ffd1e1;letter-spacing:.12em;font-size:12px}.back{font-weight:700;color:#dbc0cd;font-size:12px;padding:10px 13px;border:1px solid var(--line);border-radius:99px}.back:hover{background:#fff1}
+    .panel{max-width:550px;margin:clamp(50px,9vw,105px) auto 50px;padding:clamp(24px,5vw,48px);border-radius:26px;border:1px solid #efabc356;background:linear-gradient(155deg,#332033,#211620 80%);box-shadow:0 26px 85px #09030a77;text-align:center}
+    .eyebrow{font-size:10px;letter-spacing:.2em;font-weight:800;color:#f0aac4}.ornament{font:70px/1 Georgia,serif;color:#f5a9c3;margin:22px 0 12px}.heading{font:400 clamp(35px,7vw,59px)/1.26 var(--serif);letter-spacing:-.055em}.heading em{color:var(--pink);font-style:italic}.subtitle{max-width:460px;margin:18px auto 27px;color:#dec9d2;font-size:14px}
+    .field-label{display:block;text-align:left;font-size:11px;font-weight:800;letter-spacing:.08em;color:#edc0d1;margin-bottom:8px}.code-input{display:block;width:100%;min-height:59px;padding:12px 14px;border-radius:15px;border:1px solid #ffd0df5d;background:#130e17;color:#fff6f2;text-align:center;letter-spacing:.075em;font-size:clamp(13px,3.1vw,18px);font-weight:800;outline:none}.code-input:focus{border-color:#f8a5c3;box-shadow:0 0 0 3px #f7a0c324}.code-input::placeholder{color:#aa8e9e;letter-spacing:.03em;font-weight:500}
+    .button{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:55px;border-radius:99px;border:1px solid #ffcadba3;padding:11px 22px;background:linear-gradient(115deg,#ffc0d0,#f489ad);color:#351823;font-weight:800;font-size:13px;transition:transform .2s,filter .2s}.button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.04)}.button-outline{color:#f6c3d5;background:#ffffff09;border-color:#e9a8c068}.button-quiet{background:transparent;border-color:var(--line);color:#efc5d4}
+    .form-actions{margin-top:16px}.notice{color:#c9b0bf;font-size:12px;margin-top:22px}.status{min-height:25px;margin:12px 0 0;color:#ffb3bb;font-size:12px;font-weight:700}.status.ok{color:#d7f1da}
+    .section-header{padding:46px 0 30px;text-align:center}.section-header h1{margin:13px auto 0}.section-header p{margin:15px auto 0;color:#d7bbc8;font-size:14px;max-width:500px}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:23px}.tiny{font-size:11px;font-weight:800;color:#e4b1c5;letter-spacing:.09em}.text-button{border:0;background:transparent;color:#edc0d2;font-size:12px;padding:9px 0;font-weight:800;text-decoration:underline;text-underline-offset:4px}
+    .decks-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.deck{--tone:#e8cbbf;background:linear-gradient(155deg,#fff5,transparent 42%),var(--tone);color:#2b1e27;border:1px solid #fff8;border-radius:21px;min-height:224px;padding:17px 14px;box-shadow:0 14px 38px #0007;display:flex;flex-direction:column;align-items:flex-start;text-align:left;transition:transform .2s,box-shadow .2s}.deck:hover{transform:translateY(-5px);box-shadow:0 21px 45px #0008}.deck.dark{color:#fff1f5;border-color:#eeafc377}.deck-count{font-size:10px;font-weight:800;letter-spacing:.09em;opacity:.78}.deck-icon{font-size:42px;margin:auto;align-self:center}.deck-name{font:400 clamp(17px,2.4vw,23px)/1.3 var(--serif);letter-spacing:-.04em;margin-bottom:7px}.deck-info{font-size:10px;opacity:.7;line-height:1.5}.deck-resume{margin-top:7px;font-size:9px;font-weight:800;opacity:.75}
+    .play-shell{max-width:640px;margin:26px auto 0;display:flex;flex-direction:column;min-height:min(790px,calc(100dvh - 150px))}.play-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.play-head .text-button{text-align:left}.play-count{font-size:11px;font-weight:800;letter-spacing:.08em;color:#edb0c8}.progress{height:4px;border-radius:6px;background:#ffffff30;overflow:hidden;margin:12px 0 22px}.progress span{height:100%;width:0;display:block;background:#f6a0bd;transition:width .3s}
+    .playing-card{--tone:#ead2bd;--ink:#291f23;flex:1;display:flex;flex-direction:column;min-height:370px;border-radius:27px;padding:clamp(25px,6vw,42px);background:linear-gradient(160deg,#fff8,transparent 36%),var(--tone);color:var(--ink);box-shadow:0 8px 0 -3px #b58b9d,0 24px 65px #08040a8e;position:relative;overflow:auto}.playing-card:after{position:absolute;content:"";inset:9px;border:1px solid #27152026;border-radius:20px;pointer-events:none}
+    .card-meta{display:flex;justify-content:space-between;gap:12px;font-size:10px;font-weight:800;letter-spacing:.09em}.card-main{margin:auto 0;padding:40px 0}.card-label{font-size:9px;letter-spacing:.15em;font-weight:800;opacity:.65}.card-title{margin:19px 0 24px;font:400 clamp(29px,6.5vw,49px)/1.2 var(--serif);letter-spacing:-.06em;overflow-wrap:anywhere}.card-body p{margin:11px 0;font-size:clamp(14px,3.6vw,17px);line-height:1.7;font-weight:600;white-space:pre-wrap}.card-footer{border-top:1px solid #27152036;padding-top:15px;font-size:9px;letter-spacing:.12em;font-weight:800}
+    .play-hint{text-align:center;color:#c3a5b4;font-size:11px;margin:20px auto 15px}.play-actions{display:grid;grid-template-columns:1fr 1.6fr;gap:10px}.below-actions{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:8px}
+    .finish-emoji{font-size:69px;line-height:1;margin:19px 0}.finish-actions{display:grid;gap:11px;margin-top:28px}
+    .footer-note{border-top:1px solid var(--line);padding-top:20px;margin-top:50px;text-align:center;font-size:10px;color:#967f8c}
+    @media(max-width:790px){.decks-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.deck{min-height:202px}}
+    @media(max-width:540px){.top{padding:15px 0}.logo{font-size:10px}.back{font-size:10px}.panel{margin:38px auto 20px;padding:28px 21px}.decks-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.deck{min-height:188px;padding:15px 12px;border-radius:17px}.deck-icon{font-size:37px}.deck-name{font-size:20px}.play-shell{margin:18px auto;min-height:calc(100dvh - 125px)}.playing-card{min-height:330px;padding:25px 23px}.card-main{padding:29px 0}.card-title{font-size:clamp(28px,8vw,37px)}.card-body p{font-size:14px}.play-actions{grid-template-columns:1fr 1.5fr}.button{padding:12px 15px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="logo" href="./index.html" aria-label="Вдвоём налегке — на главную">♡ ВДВОЁМ НАЛЕГКЕ</a>
+      <a class="back" href="./index.html">Вернуться на сайт</a>
+    </header>
+
+    <main>
+      <section id="loginView" class="panel" aria-labelledby="loginTitle">
+        <div class="eyebrow">ВАШ МАЛЕНЬКИЙ МИР НА ДВОИХ</div>
+        <div class="ornament" aria-hidden="true">♡</div>
+        <h1 id="loginTitle" class="heading">Ваши разговоры.<br><em>Ваши правила.</em></h1>
+        <p class="subtitle">Полная игра: 168 карточек в 10 колодах. Введите личный код, который получили после покупки.</p>
+        <form id="loginForm" autocomplete="off">
+          <label class="field-label" for="accessCode">ЛИЧНЫЙ КОД ДОСТУПА</label>
+          <input id="accessCode" class="code-input" type="text" maxlength="100" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+          <div class="form-actions"><button id="loginButton" type="submit" class="button">Открыть все колоды ♡</button></div>
+          <p id="loginStatus" class="status" role="status" aria-live="polite"></p>
+        </form>
+        <p class="notice">Без регистрации и паролей. Код не сохраняется в браузере. Онлайн-продажи пока не запущены.</p>
+        <a href="./index.html" class="text-button">Сначала попробовать 6 бесплатных карточек</a>
+      </section>
+
+      <section id="decksView" hidden aria-labelledby="decksTitle">
+        <div class="section-header">
+          <span class="eyebrow">ИГРА НАЧИНАЕТСЯ МЕЖДУ ВАМИ</span>
+          <h1 class="heading" id="decksTitle">Выберите<br><em>настроение вечера.</em></h1>
+          <p>Десять колод, 168 поводов поговорить. Выберите одну и передавайте телефон друг другу.</p>
+        </div>
+        <div class="toolbar"><span class="tiny" id="gameTotal">10 КОЛОД · 168 КАРТОЧЕК</span><button type="button" class="text-button" id="logoutButton">Закрыть доступ на этом устройстве</button></div>
+        <div id="deckList" class="decks-grid" aria-label="Выбор колоды"></div>
+      </section>
+
+      <section id="playView" hidden aria-label="Карточки игры">
+        <div class="play-shell">
+          <div class="play-head"><button type="button" class="text-button" id="backToDecks">← Все колоды</button><span class="play-count" id="playCount" aria-live="polite"></span></div>
+          <div class="progress" aria-hidden="true"><span id="playProgress"></span></div>
+          <article class="playing-card" id="playingCard">
+            <div class="card-meta"><span id="playDeckName"></span><span id="playCardNumber"></span></div>
+            <div class="card-main"><div class="card-label">ВДВОЁМ / НАЛЕГКЕ</div><h1 class="card-title" id="playCardTitle"></h1><div id="playCardBody" class="card-body"></div></div>
+            <div class="card-footer">ГОВОРИТЕ ЧЕСТНО. СЛУШАЙТЕ БЕРЕЖНО.</div>
+          </article>
+          <p class="play-hint">Один телефон на двоих. Любой вопрос можно пропустить.</p>
+          <div class="play-actions"><button type="button" class="button button-outline" id="prevButton">Назад</button><button type="button" class="button" id="nextButton">Следующая карта ♡</button></div>
+          <div class="below-actions"><button type="button" class="text-button" id="shuffleButton">Перемешать колоду</button><button type="button" class="text-button" id="restartButton">Начать заново</button></div>
+        </div>
+      </section>
+
+      <section id="finishView" class="panel" hidden aria-labelledby="finishTitle">
+        <span class="eyebrow">ПОСЛЕДНЯЯ КАРТА В КОЛОДЕ</span>
+        <div class="finish-emoji" aria-hidden="true">♡</div>
+        <h1 id="finishTitle" class="heading">Пусть разговор<br><em>не заканчивается.</em></h1>
+        <p class="subtitle">Вы прошли колоду. Можно выбрать новое настроение или вернуться к началу.</p>
+        <div class="finish-actions"><button class="button" type="button" id="finishDecks">Выбрать другую колоду</button><button class="button button-outline" type="button" id="finishRestart">Сыграть эту колоду заново</button></div>
+      </section>
+    </main>
+
+    <footer class="footer-note">ВДВОЁМ НАЛЕГКЕ · ЛИЧНЫЙ ДОСТУП · БЕЗ ПОДПИСКИ</footer>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const API_URL = 'https://perceptive-patience-production-79bfb421.up.railway.app/api/game';
+      const info = {
+        laugh:    {name:'Орём', emoji:'😂', color:'#ead2bd', hint:'Когда хочется смеяться'},
+        know:     {name:'Я тебя знаю?', emoji:'🧩', color:'#e4a5b0', hint:'Узнать друг друга заново'},
+        unsaid:   {name:'Я это не говорил(а)', emoji:'💌', color:'#e9b4c1', hint:'То, что хочется сказать'},
+        inside:   {name:'Внутри', emoji:'💭', color:'#d1c8df', hint:'Про чувства и мысли'},
+        mend:     {name:'Починим', emoji:'🛠️', color:'#d1dcc9', hint:'Разговор без обвинений'},
+        choose:   {name:'Выбирай', emoji:'🎲', color:'#eeb2a9', hint:'Выборы на двоих'},
+        scene:    {name:'Ситуация', emoji:'🎭', color:'#b7cde2', hint:'Неожиданный поворот'},
+        silent:   {name:'Без слов', emoji:'🤫', color:'#d8d7d9', hint:'Тайные задания'},
+        midnight: {name:'После полуночи', emoji:'🌙', color:'#713647', hint:'Только по желанию обоих', dark:true},
+        exhale:   {name:'Выдох', emoji:'🌿', color:'#dce9e6', hint:'Мягкий финал для двоих'}
+      };
+
+      const $ = id => document.getElementById(id);
+      const views = ['loginView','decksView','playView','finishView'];
+      let decks = null;
+      let active = null;
+      const sessions = new Map();
+
+      function showView(id) {
+        for (const view of views) $(view).hidden = view !== id;
+        window.scrollTo({top:0,behavior:'instant'});
+      }
+
+      function number(index, total) {
+        return String(index).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+      }
+
+      function shuffle(items) {
+        const result = items.slice();
+        for (let i=result.length-1;i>0;i--) {
+          const j=Math.floor(Math.random()*(i+1));
+          [result[i],result[j]]=[result[j],result[i]];
+        }
+        return result;
+      }
+
+      function makeSession(id, shuffled=false) {
+        let order = decks[id].map((_,i) => i);
+        if (shuffled) order = shuffle(order);
+        sessions.set(id,{order,index:0});
+      }
+
+      function showDecks() {
+        const host=$('deckList');
+        host.replaceChildren();
+        for (const [id, cards] of Object.entries(decks)) {
+          const meta=info[id] || {name:id,emoji:'♡',color:'#e6c6d1',hint:'Для двоих'};
+          const tile=document.createElement('button');
+          tile.type='button';
+          tile.className='deck'+(meta.dark?' dark':'');
+          tile.style.setProperty('--tone',meta.color);
+          const count=document.createElement('span');count.className='deck-count';count.textContent=cards.length+' КАРТ';
+          const icon=document.createElement('span');icon.className='deck-icon';icon.textContent=meta.emoji;icon.setAttribute('aria-hidden','true');
+          const name=document.createElement('strong');name.className='deck-name';name.textContent=meta.name;
+          const hint=document.createElement('span');hint.className='deck-info';hint.textContent=meta.hint;
+          tile.append(count,icon,name,hint);
+          const saved=sessions.get(id);
+          if (saved && saved.index>0) {
+            const resume=document.createElement('span');
+            resume.className='deck-resume';resume.textContent='Продолжить с карты '+(saved.index+1);
+            tile.append(resume);
+          }
+          tile.addEventListener('click',()=>openDeck(id));
+          host.append(tile);
+        }
+        $('gameTotal').textContent=Object.keys(decks).length+' КОЛОД · '+Object.values(decks).reduce((n,a)=>n+a.length,0)+' КАРТОЧЕК';
+        showView('decksView');
+      }
+
+      function openDeck(id) {
+        if (!decks || !Array.isArray(decks[id])) return;
+        active=id;
+        if (!sessions.has(id)) makeSession(id);
+        renderCard();
+        showView('playView');
+      }
+
+      function renderCard() {
+        const s=sessions.get(active);
+        if (!s) return;
+        const cards=decks[active];
+        const data=cards[s.order[s.index]];
+        const meta=info[active] || {name:active,color:'#e8c6d2'};
+        $('playingCard').style.setProperty('--tone',meta.color);
+        $('playingCard').style.setProperty('--ink',meta.dark?'#fff1f5':'#291f23');
+        $('playDeckName').textContent=meta.name.toUpperCase();
+        $('playCount').textContent=number(s.index+1,cards.length);
+        $('playCardNumber').textContent=number(s.index+1,cards.length);
+        $('playCardTitle').textContent=data.title;
+        const body=$('playCardBody');body.replaceChildren();
+        for (const line of data.body) {
+          const p=document.createElement('p');p.textContent=line;body.append(p);
+        }
+        $('playProgress').style.width=(s.index+1)/cards.length*100+'%';
+        $('prevButton').disabled=s.index===0;
+        $('nextButton').textContent=s.index===cards.length-1?'Завершить колоду ♡':'Следующая карта ♡';
+        $('playingCard').scrollTop=0;
+      }
+
+      function restart(shuffled=false) {
+        if (!active) return;
+        makeSession(active,shuffled);
+        renderCard();
+        showView('playView');
+      }
+
+      $('loginForm').addEventListener('submit',async event=>{
+        event.preventDefault();
+        const code=$('accessCode').value.trim();
+        const status=$('loginStatus');
+        status.textContent='';status.classList.remove('ok');
+        if (!/^[A-HJ-NP-Z2-9]{5}(?:-[A-HJ-NP-Z2-9]{5}){3}$/i.test(code) &&
+            !/^[A-HJ-NP-Z2-9]{20}$/i.test(code)) {
+          status.textContent='Проверь код: 20 символов, четыре группы по пять.';
+          return;
+        }
+        $('loginButton').disabled=true;
+        $('loginButton').textContent='Проверяем код…';
+        const controller=new AbortController();
+        const timeout=setTimeout(()=>controller.abort(),15000);
+        try {
+          const response=await fetch(API_URL,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            cache:'no-store',
+            body:JSON.stringify({code}),
+            signal:controller.signal
+          });
+          if (response.status===401) {
+            status.textContent='Код не найден или доступ к нему закрыт.';
+            return;
+          }
+          if (!response.ok) throw new Error('service');
+          const payload=await response.json();
+          if (payload.access!=='granted'||!payload.decks||
+              typeof payload.decks!=='object'||Array.isArray(payload.decks)||
+              Object.keys(payload.decks).length!==10||
+              Object.values(payload.decks).reduce((n,a)=>n+(Array.isArray(a)?a.length:0),0)!==168) {
+            throw new Error('data');
+          }
+          decks=payload.decks;
+          $('accessCode').value='';
+          status.textContent='';
+          showDecks();
+        } catch (error) {
+          status.textContent=error.name==='AbortError'
+            ?'Сервер не ответил. Проверь подключение и попробуй снова.'
+            :'Не удалось загрузить игру. Попробуй чуть позже.';
+        } finally {
+          clearTimeout(timeout);
+          $('loginButton').disabled=false;
+          $('loginButton').textContent='Открыть все колоды ♡';
+        }
+      });
+
+      $('backToDecks').addEventListener('click',showDecks);
+      $('prevButton').addEventListener('click',()=>{
+        const s=sessions.get(active);
+        if (s && s.index>0) {s.index--;renderCard();}
+      });
+      $('nextButton').addEventListener('click',()=>{
+        const s=sessions.get(active);
+        if (!s) return;
+        if (s.index<decks[active].length-1) {s.index++;renderCard();}
+        else showView('finishView');
+      });
+      $('shuffleButton').addEventListener('click',()=>restart(true));
+      $('restartButton').addEventListener('click',()=>restart(false));
+      $('finishDecks').addEventListener('click',showDecks);
+      $('finishRestart').addEventListener('click',()=>restart(false));
+      $('logoutButton').addEventListener('click',()=>{
+        decks=null;active=null;sessions.clear();
+        $('loginStatus').textContent='';
+        showView('loginView');
+      });
+    })();
+  </script>
+</body>
+</html>
