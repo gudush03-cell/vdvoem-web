@@ -210,6 +210,13 @@ small {
     Проверить оплату ещё раз
   </button>
 
+  <button id="newOrder"
+          type="button"
+          class="secondary"
+          hidden>
+    Начать другой заказ
+  </button>
+
   <a href="./index.html" class="back">
     Вернуться на главную
   </a>
@@ -227,6 +234,7 @@ const API =
 const buy = document.getElementById('buy');
 const message = document.getElementById('message');
 const retry = document.getElementById('retry');
+const newOrder = document.getElementById('newOrder');
 const result = document.getElementById('result');
 
 const codeBox =
@@ -352,7 +360,7 @@ async function checkPayment() {
       'Если деньги были списаны, ' +
       'обратитесь в поддержку.'
     );
-
+    newOrder.hidden = false;
     return;
   }
 
@@ -390,6 +398,7 @@ async function checkPayment() {
       result.hidden = false;
       buy.hidden = true;
       retry.hidden = true;
+      newOrder.hidden = true;
 
       showMessage(
         'Оплата подтверждена. ' +
@@ -408,6 +417,7 @@ async function checkPayment() {
       );
 
       retry.hidden = false;
+      newOrder.hidden = false;
 
       attempts++;
       checking = false;
@@ -425,10 +435,12 @@ async function checkPayment() {
     );
 
     retry.hidden = false;
+    newOrder.hidden = false;
 
   } catch (error) {
     showMessage(error.message);
     retry.hidden = false;
+    newOrder.hidden = false;
   }
 
   checking = false;
@@ -442,6 +454,30 @@ buy.addEventListener(
 retry.addEventListener('click', () => {
   attempts = 0;
   checkPayment();
+});
+
+newOrder.addEventListener('click', () => {
+  // Не удаляем токен старого заказа:
+  // он пригодится для проверки и поддержки.
+  const certain = confirm(
+    'Вы уверены, что предыдущий заказ НЕ был оплачен? ' +
+    'Если оплата прошла, вернитесь к проверке заказа ' +
+    'или обратитесь в поддержку, чтобы не платить дважды.'
+  );
+  if (!certain) return;
+  currentOrder = null;
+  attempts = 0;
+  localStorage.removeItem('vdvoem.lastOrder');
+  history.replaceState(null, '', location.pathname);
+  buy.hidden = false;
+  buy.disabled = false;
+  retry.hidden = true;
+  newOrder.hidden = true;
+  result.hidden = true;
+  showMessage(
+    'Можете создать новый заказ. ' +
+    'Покупки пока доступны только в режиме, разрешённом сервером.'
+  );
 });
 
 document.getElementById('copy')
