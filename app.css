@@ -84,3 +84,31 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 #playView .play-turn{animation:arrive .55s ease both}
 #playView .play-bottom,#playView .play-tools{animation:arrive .6s .1s both}
 @media(prefers-reduced-motion:reduce){#lobbyView .intro,#lobbyView .notice,#playView .play-turn,#playView .play-bottom,#playView .play-tools{animation:none!important}}
+
+/* Обновлённая подача правил, колод и будущей физической версии */
+#rules .rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+#rules details.rule{min-width:0;padding:0;background:linear-gradient(145deg,#352131,#221923);border:1px solid #ffc2d343;border-radius:22px;overflow:hidden;transition:border-color .2s,background .2s}
+#rules details.rule[open]{border-color:#ffc4d59c;background:linear-gradient(145deg,#41283a,#211922)}
+#rules details.rule summary{list-style:none;display:flex;align-items:center;gap:15px;padding:20px 22px;cursor:pointer;min-height:78px}
+#rules details.rule summary::-webkit-details-marker{display:none}
+#rules details.rule summary strong{font-size:15px;flex:1;color:#ffeff4}
+#rules details.rule .rule-emoji{margin:0;font-size:26px;line-height:1}
+#rules details.rule .rule-chevron{font-size:24px;color:#ffc0d2;transition:transform .2s}
+#rules details.rule[open] .rule-chevron{transform:rotate(180deg)}
+#rules details.rule>p{margin:0;padding:0 22px 22px;color:#e1c6d3;font-size:14px;line-height:1.7}
+#rules details.rule summary:focus-visible{outline:3px solid #ffe0ed;outline-offset:-4px}
+.decks-grid .deck-card{transition:transform .3s ease,box-shadow .3s ease;will-change:transform}
+.decks-grid .deck-card:nth-child(3n+2){transition-delay:.035s}
+.decks-grid .deck-card:nth-child(3n+3){transition-delay:.07s}
+.decks-grid .deck-card:hover,.decks-grid .deck-card:focus-visible{transform:translateY(-8px) rotate(-1deg);box-shadow:0 24px 55px #0007}
+.decks-grid .deck-card .ordinal{display:none}
+.box-preview{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:28px;border-top:1px solid var(--line)}
+.box-preview-copy h2{font:400 clamp(34px,5vw,56px)/1.2 var(--serif);letter-spacing:-.06em;margin:12px 0 18px}
+.box-preview-copy p{max-width:520px;color:#e4c9d4;font-size:16px}
+.box-soon{display:inline-flex;border:1px solid #ffd2e072;border-radius:40px;padding:11px 17px;color:#ffd7e5;font-weight:800;font-size:12px;margin-top:10px}
+.box-preview-art{display:grid;place-items:center;min-height:300px;perspective:950px}
+.box-preview-cover{width:210px;height:255px;background:linear-gradient(145deg,#eab4cb,#9d557a 62%,#5c3053);border-radius:16px;box-shadow:18px 18px 0 #68384e,20px 36px 50px #0009;transform:rotate(-9deg) rotateY(-13deg);padding:24px 17px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;color:#fff7f0;animation:box-drift 6s ease-in-out infinite}
+.box-preview-cover>span{font:65px Georgia,serif;line-height:1}.box-preview-cover strong{font:400 26px/1.28 var(--serif)}.box-preview-cover small{font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+@keyframes box-drift{50%{transform:translateY(-12px) rotate(-6deg) rotateY(-9deg)}}
+@media(max-width:700px){#rules .rule-grid,.box-preview{grid-template-columns:1fr}.box-preview-art{min-height:250px}.box-preview-cover{width:170px;height:210px}.box-preview-cover strong{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.box-preview-cover{animation:none}.decks-grid .deck-card{will-change:auto;transition:none!important}}
