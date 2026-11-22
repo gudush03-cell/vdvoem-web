@@ -84,21 +84,3 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 #playView .play-turn{animation:arrive .55s ease both}
 #playView .play-bottom,#playView .play-tools{animation:arrive .6s .1s both}
 @media(prefers-reduced-motion:reduce){#lobbyView .intro,#lobbyView .notice,#playView .play-turn,#playView .play-bottom,#playView .play-tools{animation:none!important}}
-
-/* Единая визуальная система: без декоративной нумерации, анимированные колоды */
-.deck-card .ordinal,.rule .ordinal,.mode .ordinal{display:none!important}
-.deck-card{isolation:isolate;transform-origin:center bottom;transition:transform .42s cubic-bezier(.22,1,.36,1),box-shadow .42s ease,border-color .3s ease}
-.deck-card:hover,.deck-card:focus-visible{transform:translateY(-9px) rotate(-1.5deg)!important;box-shadow:0 24px 52px #0009,0 0 24px #f2abc64d}
-.deck-card:after{content:"";position:absolute;inset:8px;border:1px solid #ffffff50;border-radius:13px;pointer-events:none;transform:rotate(1deg);opacity:.6;transition:transform .35s,opacity .35s}
-.deck-card:hover:after{transform:translate(3px,-4px) rotate(4deg);opacity:1}
-.deck-card .count{letter-spacing:.07em}
-.logo{letter-spacing:.08em!important;font-weight:800}
-.vd-accordion{display:grid;gap:10px;margin:22px 0}
-.vd-accordion details{border:1px solid #ffffff24;border-radius:15px;background:linear-gradient(125deg,#34212e,#1c141d);overflow:hidden}
-.vd-accordion summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 21px;color:#fff0f5;font-weight:800}
-.vd-accordion summary::-webkit-details-marker{display:none}
-.vd-accordion summary:after{content:"+";color:#f8b8d0;font-size:24px}
-.vd-accordion details[open] summary:after{content:"−"}
-.vd-accordion details[open] .vd-accordion-body{animation:arrive .35s both}
-.vd-accordion-body{padding:0 21px 20px;color:#e7ccdb;font-size:14px;line-height:1.7}
-@media(prefers-reduced-motion:reduce){.vd-accordion details[open] .vd-accordion-body{animation:none}}

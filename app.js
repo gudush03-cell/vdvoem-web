@@ -40,15 +40,9 @@ const views=['homeView','loginView','lobbyView','handoffView','secretView','cons
 const gamePage=location.pathname.split('/').pop().toLowerCase()==='game.html';
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let decks=null,party=null,aside=null,privateStage=null,view='',timer=0;
-const SAVE_KEY='vdvoem-web-progress-v2';
-function saveProgress(){try{if(party)localStorage.setItem(SAVE_KEY,JSON.stringify({party,updated:Date.now()}));else localStorage.removeItem(SAVE_KEY);}catch{}}
-function restoreProgress(mode){try{const data=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!data?.party||Date.now()-data.updated>30*24*60*60*1000)return false;if(data.party.mode!=='demo'&&mode!=='full')return false;if(data.party.mode==='demo'&&mode==='full')return false;const p=data.party;if(!Array.isArray(p.queue)||!Number.isInteger(p.index)||p.index<0||p.index>=p.queue.length||![1,2].includes(p.player))return false;party=p;return true;}catch{return false;}}
-
 let selected=new URLSearchParams(location.search).get('deck');
 if(!keys.includes(selected))selected=null;
 function showView(id){
- if(party)saveProgress();
- const resume=$('resumeDemo');if(resume&&id==='homeView')resume.hidden=!(party?.mode==='demo'&&party.index<party.queue.length);
  view=id; for(const k of views)$(k).hidden=k!==id;
  const element=$(id);element.classList.remove('enter');
  if(!reduced){void element.offsetWidth;element.classList.add('enter');}
@@ -145,7 +139,6 @@ function current(){
  return {...c,deck:m[0],tone:m[2],ink:pointer.deck==='midnight'?'#fff1f5':'#291f23'};
 }
 function render(){
- saveProgress();
  const c=aside?.card||current();
  if(!c){finish(false);return;}
  $('playingCard').style.setProperty('--tone',c.tone);
@@ -222,10 +215,9 @@ function again(){
  if(party.mode==='silent')return lobby();
  startParty(party.mode,party.deck);
 }
-function logout(){decks=null;party=null;try{localStorage.removeItem(SAVE_KEY)}catch{}aside=null;privateStage=null;$('accessCode').value='';$('loginStatus').textContent='';showView(gamePage?'loginView':'homeView');toast('Игра закрыта. Для повторного входа понадобится код.');}
+function logout(){decks=null;party=null;aside=null;privateStage=null;$('accessCode').value='';$('loginStatus').textContent='';showView(gamePage?'loginView':'homeView');toast('Игра закрыта. Для повторного входа понадобится код.');}
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
- const resumeDemo=$('resumeDemo');if(resumeDemo)resumeDemo.addEventListener('click',()=>{if(!party&&!restoreProgress('demo'))return startDemo();aside=null;render();showView('playView');});
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
  $('loginForm').addEventListener('submit',async event=>{
   event.preventDefault();
@@ -241,7 +233,7 @@ function wire(){
     const data=await response.json();
     if(data.access!=='granted'||!data.decks||Object.keys(data.decks).length!==10||
        keys.some((k,i)=>!Array.isArray(data.decks[k])||data.decks[k].length!==lengths[i]))throw Error('data');
-    decks=data.decks;$('accessCode').value='';label.textContent='';restoreProgress('full');populate();lobby();
+    decks=data.decks;$('accessCode').value='';label.textContent='';populate();lobby();
     if(selected){const id=selected;selected=null;describeDeck(id);}
   }catch(err){label.textContent=err.name==='AbortError'?'Сервер долго не отвечает. Попробуйте ещё раз.':'Не удалось загрузить игру. Попробуйте позднее.';}
   finally{clearTimeout(timeout);button.disabled=false;button.textContent='Открыть полную игру ♡';}
@@ -274,5 +266,5 @@ function wire(){
  $('finishLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
  $('finishAgain').addEventListener('click',again);
 }
-populate();wire();if(!gamePage&&restoreProgress('demo')){const resume=$('resumeDemo');if(resume)resume.hidden=false;}showView(gamePage?'loginView':'homeView');
+populate();wire();showView(gamePage?'loginView':'homeView');
 })();
