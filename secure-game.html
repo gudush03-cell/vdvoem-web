@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./app.css?v=8">
 <script src="./app-secure.js?v=2" defer></script>
+<script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
 </head>
 <body>
@@ -78,7 +79,24 @@
     <div class="ornament-heart" aria-hidden="true">✧</div>
     <h1 class="serif" style="font-size:clamp(31px,7vw,49px);margin:12px 0 18px">Все карточки.<br><span class="pink">Ваш вечер.</span></h1>
     <p class="hint">Войдите через Telegram. Если игра уже куплена, все колоды откроются автоматически. Никаких кодов и паролей.</p>
-    <div id="telegramLogin" style="display:flex;justify-content:center;margin:20px auto;min-height:44px"></div>
+        <section data-email-auth hidden style="margin:20px auto;max-width:430px;text-align:left">
+      <details>
+        <summary style="cursor:pointer;font-weight:700">✉️ Войти по почте или привязать адрес</summary>
+        <p class="hint">Без пароля. Отправим на почту одноразовый код. Если вы уже вошли через Telegram, почта привяжется к этому аккаунту.</p>
+        <form data-email-form>
+          <label class="eyebrow" for="emailAddress">Ваш email</label>
+          <input class="field" id="emailAddress" data-email-address type="email" autocomplete="email" maxlength="254" required placeholder="name@example.com">
+          <button class="btn full" type="submit" style="margin-top:10px">Получить код на почту</button>
+        </form>
+        <form data-email-verify hidden style="margin-top:14px">
+          <label class="eyebrow" for="emailCode">Шестизначный код из письма</label>
+          <input class="field" id="emailCode" data-email-code type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>
+          <button class="btn full" type="submit" style="margin-top:10px">Подтвердить почту</button>
+        </form>
+        <p data-email-message class="feedback" role="status" aria-live="polite"></p>
+      </details>
+    </section>
+<div id="telegramLogin" style="display:flex;justify-content:center;margin:20px auto;min-height:44px"></div>
     <p class="hint">Если кнопка Telegram недоступна, требуется разрешить домен gudush03-cell.github.io в настройках Telegram-бота.</p>
     <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
     <a href="./secure-purchase.html" class="btn full" style="margin-top:15px">Купить игру — 499 ₽</a>
