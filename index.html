@@ -634,6 +634,64 @@ main,.site-header{position:relative;z-index:1}
 }
 @media(prefers-reduced-motion:reduce){.faq-answer,.faq-toggle{transition:none!important}}
 </style>
+
+<style id="vdvoem-ui-polish-2026">
+/* A single visual language for practical sections. */
+.faq-section{padding-block:54px 66px}
+.faq-heading{max-width:820px;margin:0 auto 23px}
+.faq-heading .display-heading{font-size:clamp(30px,3.8vw,48px);line-height:1.23;text-wrap:balance}
+.faq-accordion{width:100%;max-width:820px;margin-inline:auto;gap:8px}
+.faq-item{border-radius:16px;border-color:#f2b4c43d;background:linear-gradient(145deg,#2e202b,#221820)}
+.faq-question{min-height:62px;padding:13px 19px;gap:15px;font-size:clamp(16px,1.85vw,20px);line-height:1.32}
+.faq-toggle{flex-basis:30px;width:30px;height:30px;font-size:20px}
+.faq-answer p{padding:0 19px 17px;font-size:13px;line-height:1.65}
+.faq-item:has(.faq-question[aria-expanded=true]){border-color:#f4afd071}
+
+/* Both footer disclosures use exactly the same cards, spacing and toggles. */
+.footer details.privacy-note{flex-basis:100%;width:100%;margin:0;padding:0;border:1px solid #f2b4c43d;border-radius:16px;background:linear-gradient(145deg,#2e202b,#221820);overflow:hidden}
+.footer details.privacy-note + details.privacy-note{margin-top:9px}
+.footer details.privacy-note summary{min-height:60px;padding:14px 19px;gap:15px;font-size:14px;font-weight:800;color:#f6d2df}
+.footer details.privacy-note summary span{flex:0 0 30px;display:grid;place-items:center;width:30px;height:30px;border:1px solid #eab2c45c;border-radius:50%;font-size:21px;color:#f5b6cb}
+.footer details.privacy-note .privacy-note__body{max-width:none;padding:0 19px 19px}
+.footer details.privacy-note .seller-legal{margin:0;padding:18px 0 0;border:0;border-top:1px solid #ffffff25;border-radius:0;background:transparent;box-shadow:none}
+.footer details.privacy-note[open]{border-color:#f4afd071}
+.footer details.privacy-note summary:focus-visible{outline:2px solid #ffd6e6;outline-offset:-3px}
+
+/* Free trial is the first, most inviting step. Paid access remains available. */
+.hero-choice{width:min(100%,820px);gap:12px}
+.hero-choice-demo{border-color:#f9bed3b3;background:radial-gradient(circle at 95% 0%,#c45f8961,transparent 60%),linear-gradient(145deg,#4a2c40,#2b1c2b);box-shadow:0 18px 43px #f087a31e,inset 0 1px #ffffff1f}
+.hero-choice-demo .hero-choice-kicker{color:#ffd0df}
+.hero-choice-demo .hero-choice-try{background:linear-gradient(110deg,#ffd0dd,#f58db0);color:#2c1721;border:1px solid #ffe0e6;box-shadow:0 9px 29px #ee7ea74d;font-weight:800}
+.hero-choice-demo .hero-choice-try:hover{background:linear-gradient(110deg,#ffe0e8,#f9a0bd);box-shadow:0 13px 32px #ee7ea767}
+.hero-choice-full{border-color:#e3adc044;background:linear-gradient(145deg,#2d202b,#1e1720);box-shadow:none}
+.hero-choice-full .button-primary{color:#f5cbd9;border:1px solid #ad7890;background:#422a39;box-shadow:none}
+.hero-choice-full .button-primary:hover{background:#563246}
+.demo-callout .button-primary,.access-inner .button-primary{box-shadow:0 10px 29px #ef80a936}
+
+@media(max-width:650px){
+  .faq-section{padding-block:42px 54px}
+  .faq-heading{margin-bottom:18px}
+  .faq-heading .display-heading{font-size:clamp(29px,7.5vw,37px);line-height:1.22}
+  .faq-accordion{gap:7px}
+  .faq-item{border-radius:14px}
+  .faq-question{min-height:56px;padding:11px 14px;font-size:16px;line-height:1.35}
+  .faq-toggle{flex-basis:28px;width:28px;height:28px;font-size:19px}
+  .faq-answer p{padding:0 14px 15px;font-size:12px}
+  .footer details.privacy-note summary{padding:13px 15px;min-height:55px;font-size:13px}
+  .footer details.privacy-note .privacy-note__body{padding:0 15px 17px}
+  .hero-inner{min-height:0!important;padding-top:25px!important;padding-bottom:23px!important}
+  .hero-logo{width:min(57vw,250px)!important}
+  .hero-heading{font-size:clamp(31px,8vw,43px);margin-top:0}
+  .hero-copy{margin-top:12px;font-size:13px}
+  .hero-choice{grid-template-columns:minmax(0,1fr)!important;width:min(100%,420px);gap:10px!important;margin-top:17px!important}
+  .hero-choice-card{padding:15px 18px!important}
+  .hero-choice-demo .hero-choice-kicker{display:block!important;font-size:9px;letter-spacing:.13em}
+  .hero-choice-card .hero-choice-button{min-height:48px!important;width:100%;justify-content:center;font-size:13px}
+  .hero-choice-full .hero-choice-button{min-height:42px!important}
+  .hero-choice-card .hero-choice-short{font-size:12px!important}
+  .card-stage{margin-top:0;height:245px;transform:scale(.88);transform-origin:top center}
+}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">К содержанию</a>
@@ -650,19 +708,19 @@ main,.site-header{position:relative;z-index:1}
 <h1 class="hero-heading intro-fade" id="heroHeading">Не просто вечер.<br/><em>Немного ближе.</em></h1>
 <p class="hero-copy intro-fade">Десять колод. Один телефон. И разговоры, которые вы потом будете вспоминать.</p>
 <div class="hero-choice intro-fade" aria-label="Выберите, как начать">
-  <div class="hero-choice-card hero-choice-full">
-    <span class="hero-choice-kicker">✧ ВАШ ВЕЧЕР НАЧИНАЕТСЯ ЗДЕСЬ</span>
-    <h2><span class="desktop-copy">Вся игра <em>для вас двоих.</em></span><span class="mobile-copy">Полная игра</span></h2>
-    <p>168 карточек, 10 колод, доступ по личному коду.</p><p class="hero-choice-short">168 карт, 10 колод</p>
-    <a class="button button-primary hero-choice-button" href="./purchase.html">Купить полную игру</a>
-    <span class="hero-choice-meta">499 ₽, Один раз, без подписки</span>
-  </div>
   <div class="hero-choice-card hero-choice-demo">
     <span class="hero-choice-kicker">✦ СНАЧАЛА ПОПРОБУЙТЕ</span>
     <h2><span class="desktop-copy">Шесть карт. <em>Без обязательств.</em></span><span class="mobile-copy">6 карт бесплатно</span></h2>
     <p>Откройте демо прямо здесь - без регистрации и оплаты.</p><p class="hero-choice-short">Без регистрации и оплаты</p>
-    <button class="button hero-choice-button hero-choice-try" data-start-demo="" type="button">Попробовать бесплатно</button>
+    <button class="button hero-choice-button hero-choice-try" data-start-demo="" type="button">Попробовать бесплатно ♡</button>
     <span class="hero-choice-meta">6 карт, 2 игрока, 1 телефон</span>
+  </div>
+<div class="hero-choice-card hero-choice-full">
+    <span class="hero-choice-kicker">✧ ВАШ ВЕЧЕР НАЧИНАЕТСЯ ЗДЕСЬ</span>
+    <h2><span class="desktop-copy">Вся игра <em>для вас двоих.</em></span><span class="mobile-copy">Полная игра</span></h2>
+    <p>168 карточек, 10 колод, доступ по личному коду.</p><p class="hero-choice-short">168 карт, 10 колод</p>
+    <a class="button button-primary hero-choice-button" href="./purchase.html">Полная версия · 499 ₽</a>
+    <span class="hero-choice-meta">499 ₽, Один раз, без подписки</span>
   </div>
 </div>
 <div aria-hidden="true" class="card-stage">
