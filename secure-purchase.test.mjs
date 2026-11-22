@@ -8,6 +8,18 @@ const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
 const script = scripts.map(match => match[1]).find(code => code.includes('async function startPurchase()'));
 assert.ok(script, 'checkout inline JavaScript must exist');
 
+test('Telegram checkout never renders, copies, or requests manual access codes', () => {
+  const result = html.match(/<section id="result" hidden>([\s\S]*?)<\/section>/)?.[1] || '';
+  assert.ok(result.includes('secure-game.html'));
+  assert.ok(!result.includes('accessCode'));
+  assert.ok(!result.includes('Скопировать код'));
+  assert.ok(!result.includes('Обязательно сохраните код'));
+  assert.match(script, /\/api\/account\/status/);
+  assert.ok(!script.includes('codeBox.textContent'));
+  assert.ok(!script.includes("getElementById('copy')"));
+});
+
+
 function boot(token = null) {
   const elements = new Map();
   const requests = [];
