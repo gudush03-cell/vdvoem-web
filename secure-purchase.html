@@ -185,7 +185,7 @@ small {
 
   <ol class="payment-steps" aria-label="Три шага к игре">
     <li><span class="step-circle">1</span><strong>Оплатили</strong><small>Через Robokassa</small></li>
-    <li><span class="step-circle">2</span><strong>Получили код</strong><small>На этой странице</small></li>
+    <li><span class="step-circle">2</span><strong>Получили доступ</strong><small>В вашем аккаунте</small></li>
     <li><span class="step-circle">3</span><strong>Играете</strong><small>В браузере вдвоём</small></li>
   </ol>
   <div class="price">499 ₽</div>
@@ -207,25 +207,11 @@ small {
   </div>
 
   <section id="result" hidden>
-    <p>Ваш личный код доступа:</p>
-
-    <div id="accessCode"></div>
-
-    <button id="copy" type="button"
-            class="secondary">
-      Скопировать код
-    </button>
-
-    <a href="./secure-game.html"
-       class="action"
-       style="margin-top:13px">
+    <p>Игра привязана к вашему Telegram-аккаунту.</p>
+    <a href="./secure-game.html" class="action" style="margin-top:13px">
       Открыть игру
     </a>
-
-    <small>
-      Обязательно сохраните код.
-      Он понадобится при повторном входе.
-    </small>
+    <small>При следующем входе просто авторизуйтесь через Telegram. Код покупать и сохранять не нужно.</small>
   </section>
 
   <button id="retry"
@@ -242,7 +228,7 @@ small {
     Начать другой заказ
   </button>
 
-  <p class="payment-help">Уже есть код? <a href="./secure-game.html">Войти через Telegram</a><br>Проблема с оплатой или доступом? <a href="mailto:gudush03@gmail.com">Напишите в поддержку</a> или <a href="https://t.me/GudDan03" target="_blank" rel="noopener noreferrer">в Telegram</a>.</p>
+  <p class="payment-help">Уже купили игру? <a href="./secure-game.html">Войти через Telegram</a><br>Проблема с оплатой или доступом? <a href="mailto:gudush03@gmail.com">Напишите в поддержку</a> или <a href="https://t.me/GudDan03" target="_blank" rel="noopener noreferrer">в Telegram</a>.</p>
   <p class="payment-legal">Покупка регулируется <a href="./offer.html">публичной офертой</a>. Возврат и восстановление доступа описаны в <a href="./offer.html#refund">условиях</a>. Платежи на сайте сейчас обозначены как тестовые, реальные списания должны быть проверены отдельно.</p>
   <a href="./index.html" class="back">
     Вернуться на главную
@@ -298,9 +284,6 @@ const message = document.getElementById('message');
 const retry = document.getElementById('retry');
 const newOrder = document.getElementById('newOrder');
 const result = document.getElementById('result');
-
-const codeBox =
-  document.getElementById('accessCode');
 
 let attempts = 0;
 let currentOrder = null;
@@ -462,7 +445,28 @@ async function checkPayment() {
       data.status === 'paid' &&
       typeof data.accessCode === 'string'
     ) {
-      codeBox.textContent = data.accessCode;
+      // Never treat receipt of a legacy recovery code as account access.
+      // Real entitlement is checked separately against the authenticated account.
+      let accountHasAccess = false;
+      if (signedIn()) {
+        try {
+          const entitlementResponse = await fetch(API + '/api/account/status', {
+            method:'GET', cache:'no-store',
+            headers:{'Authorization':'Bearer '+accountToken}
+          });
+          if (entitlementResponse.ok) {
+            const entitlement = await entitlementResponse.json();
+            accountHasAccess = entitlement.paid === true;
+          }
+        } catch {}
+      }
+      if (!accountHasAccess) {
+        showMessage('Оплата подтверждена, но доступ к игре ещё не активирован для аккаунта. Проверьте, что вошли через тот же Telegram, и повторите проверку. Если проблема не исчезнет, напишите в поддержку.');
+        retry.hidden = false;
+        newOrder.hidden = true;
+        checking = false;
+        return;
+      }
       try { const key='vdvoem.analytics.confirmed.'+currentOrder; if(!sessionStorage.getItem(key)){window.vdvoemTrack?.('purchase_confirmed',{currency:'RUB',value:499,payment_mode:'unverified'});sessionStorage.setItem(key,'1');} } catch {}
       result.hidden = false;
       buy.hidden = true;
@@ -471,7 +475,7 @@ async function checkPayment() {
 
       showMessage(
         'Оплата подтверждена. ' +
-        'Доступ открыт в вашем Telegram-аккаунте. Сохраните код для восстановления!'
+        'Игра открыта в вашем Telegram-аккаунте. Можете играть!'
       );
 
       checking = false;
@@ -482,7 +486,7 @@ async function checkPayment() {
       showMessage(
         'Ожидаем подтверждение Robokassa. ' +
         'Если оплата уже прошла, ' +
-        'код появится здесь.'
+        'доступ появится в вашем аккаунте.'
       );
 
       retry.hidden = false;
@@ -499,7 +503,7 @@ async function checkPayment() {
     }
 
     showMessage(
-      'Код пока недоступен. ' +
+      'Доступ пока недоступен. ' +
       'Статус заказа: ' + data.status
     );
 
@@ -548,21 +552,6 @@ newOrder.addEventListener('click', () => {
     'Покупки пока доступны только в режиме, разрешённом сервером.'
   );
 });
-
-document.getElementById('copy')
-  .addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(
-        codeBox.textContent
-      );
-
-      showMessage('Код скопирован.');
-    } catch {
-      showMessage(
-        'Выделите код и скопируйте вручную.'
-      );
-    }
-  });
 
 try {
   currentOrder = findOrder();
