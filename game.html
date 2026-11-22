@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#130e13">
-<meta name="description" content="Вдвоём налегке , игра для двоих на одном телефоне. 168 карточек, 10 колод, тайные задания, Быстрый старт и право сказать «Не сегодня».">
+<meta name="description" content="Вдвоём налегке — игра для двоих на одном телефоне. 168 карточек, 10 колод, тайные задания, Быстрый старт и право сказать «Не сегодня».">
 <title>Вдвоём налегке , игра для двоих</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./app.css?v=4">
-<script src="./app.js?v=4" defer></script>
+<link rel="stylesheet" href="./app.css?v=5">
+<script src="./app.js?v=5" defer></script>
 </head>
 <body>
 <div class="page">
@@ -26,10 +26,11 @@
 <section class="view" id="homeView">
   <div class="hero">
     <div>
-      <div class="eyebrow">Карточная игра для двоих · Один телефон</div>
+      <div class="eyebrow">Карточная игра для двоих</div>
       <h1>Иногда ближе ,<br><span class="pink">значит честнее.</span></h1>
       <p>Смейтесь, признавайтесь, выбирайте, узнавайте друг друга заново. 168 карточек , и ни одного скучного вечера.</p>
       <div class="actions">
+        <button class="btn secondary" type="button" id="resumeDemo" hidden>Продолжить ♡</button>
         <button class="btn" type="button" id="startDemo">Попробовать 6 карт ♡</button>
         <a class="btn secondary" href="./purchase.html">Полная игра · 499 ₽</a>
       </div>
@@ -45,14 +46,12 @@
 
   <section class="section" id="rules">
     <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Первой ходит девушка , Игрок 1. Читайте верхнюю карту, отвечайте или выполняйте задание и передавайте ход.</p></div>
-    <div class="rule-grid">
-      <div class="rule reveal"><div class="rule-emoji">🎴</div><strong>Колоды 1-6</strong><p>В полной партии идут по порядку. В «Быстром старте» все 120 карт перемешиваются. Любую колоду можно открыть отдельно.</p></div>
-      <div class="rule reveal"><div class="rule-emoji">🤫</div><strong>Без слов</strong><p>В колоде 12 карт. В начале партии каждому достаются 3 случайных задания без повторений. Посмотрите их по очереди и выполняйте незаметно.</p></div>
-      <div class="rule reveal"><div class="rule-emoji">🎭</div><strong>Ситуация</strong><p>Возьмите одну из 10 карт в любой момент, затем вернитесь к текущей карте основной колоды.</p></div>
-      <div class="rule reveal"><div class="rule-emoji">🌙</div><strong>После полуночи</strong><p>20 карт открываются только по желанию обоих игроков. Любой может отказаться.</p></div>
-      <div class="rule reveal"><div class="rule-emoji">🌿</div><strong>Выдох</strong><p>В финале вытяните одну случайную карту из шести. На неё отвечают оба.</p></div>
-      <div class="rule reveal"><div class="rule-emoji">💗</div><strong>Не сегодня</strong><p>У каждого по одной карте на партию. Можно пропустить своё задание без объяснений и передать ход. Это 2 карты сверх 168.</p></div>
-    </div>
+    <div class="vd-accordion"><details open><summary><span>🎴 Колоды 1-6</span></summary><div class="vd-accordion-body">В полной партии идут по порядку. В «Быстром старте» все 120 карт перемешиваются. Любую колоду можно открыть отдельно.</div></details>
+<details><summary><span>🤫 Без слов</span></summary><div class="vd-accordion-body">В колоде 12 карт. В начале партии каждому достаются 3 случайных задания без повторений. Посмотрите их по очереди и выполняйте незаметно.</div></details>
+<details><summary><span>🎭 Ситуация</span></summary><div class="vd-accordion-body">Возьмите одну из 10 карт в любой момент, затем вернитесь к текущей карте основной колоды.</div></details>
+<details><summary><span>🌙 После полуночи</span></summary><div class="vd-accordion-body">20 карт открываются только по желанию обоих игроков. Любой может отказаться.</div></details>
+<details><summary><span>🌿 Выдох</span></summary><div class="vd-accordion-body">В финале вытяните одну случайную карту из шести. На неё отвечают оба.</div></details>
+<details><summary><span>💗 Не сегодня</span></summary><div class="vd-accordion-body">У каждого по одной карте на партию. Можно пропустить своё задание без объяснений и передать ход. Это 2 карты сверх 168.</div></details></div>
   </section>
 
   <section class="section" id="decks">
