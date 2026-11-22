@@ -67,7 +67,7 @@ async function paidCard(deck,index){
 }
 async function accountGame(){
  const status=await api('/api/account/status',null,'GET');
- if(!status.paid){$('loginStatus').textContent='Telegram подтверждён. Привяжите старый код покупки ниже.';showView('loginView');return;}
+ if(!status.paid){$('loginStatus').textContent='Вы вошли через Telegram. Если игра ещё не куплена, нажмите «Купить игру».';showView('loginView');return;}
  await enterParty();
  const manifest=await api('/api/account/manifest',null,'GET');
  if(manifest.access!=='granted'||keys.some((k,i)=>manifest.deckSizes?.[k]!==lengths[i]))
@@ -266,7 +266,7 @@ async function render(){
  $('skipCards').hidden=aside?.kind==='exhale';
  $('skipButton').hidden=aside?.kind==='exhale';
  $('skipButton').disabled=party.skips[party.player]===0;
- $('skipButton').textContent=party.skips[party.player]?'Не сегодня':'Не сегодня - использовано';
+ $('skipButton').textContent=party.skips[party.player]?'🛑 Не сегодня':'🛑 Не сегодня — использовано';
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
