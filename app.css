@@ -201,3 +201,64 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 @media(max-width:355px){.deck-tile .deck-face{padding:14px 10px}.deck-tile strong{font-size:14px}}
 @media(hover:none){.deck-tile:hover,.deck-tile:hover .deck-face{transform:none;filter:none}.deck-tile:hover .stack-leaf-back{transform:translate(4px,-5px) rotate(3deg)}.deck-tile:hover .stack-leaf-middle{transform:translate(-3px,-2px) rotate(-2deg)}}
 @media(prefers-reduced-motion:reduce){.deck-tile.dealt{animation:none}.deck-tile,.deck-tile *, .deck-tile:hover{transition:none!important;transform:none!important}}
+
+
+/* Secret-task handoff: centered emoji, compact card, safe mobile wrapping. */
+.panel.handoff{
+  width:100%;
+  max-width:510px;
+  margin:clamp(14px,4vh,36px) auto;
+  padding:clamp(24px,5vw,38px) clamp(18px,5vw,32px);
+  background:radial-gradient(ellipse at 50% 3%,#76425c36,transparent 64%),linear-gradient(145deg,#30202b,#211821);
+  border:1px solid #eea9c45c;
+  border-radius:24px;
+  overflow:hidden;
+  text-align:center;
+}
+.handoff .eyebrow{width:100%;text-align:center;font-size:10px;line-height:1.6}
+.handoff .big{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:92px;
+  margin:12px auto 17px;
+  font-family:system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif;
+  font-size:clamp(62px,17vw,84px);
+  line-height:1;
+  text-align:center;
+}
+.handoff h2{
+  max-width:440px;
+  margin:0 auto 15px;
+  font:400 clamp(27px,6.5vw,42px)/1.22 var(--serif);
+  letter-spacing:-.045em;
+  text-wrap:balance;
+  overflow-wrap:break-word;
+}
+.handoff p{
+  max-width:395px;
+  margin:0 auto;
+  color:#dbc3cf;
+  font-size:clamp(13px,3vw,15px);
+  line-height:1.65;
+}
+.handoff .btn{
+  width:100%;
+  max-width:420px;
+  margin-top:22px;
+  min-height:54px;
+  padding:12px 16px;
+  border-radius:16px;
+  font-size:13px;
+  white-space:normal;
+}
+@media(max-width:520px){
+  #handoffView{padding:15px 0 32px}
+  .panel.handoff{margin:8px auto;padding:23px 18px 25px;border-radius:20px}
+  .handoff .eyebrow{letter-spacing:.12em;font-size:9px}
+  .handoff .big{min-height:82px;margin:9px auto 14px}
+  .handoff h2{font-size:clamp(25px,7vw,34px);line-height:1.24;margin-bottom:14px}
+  .handoff p{font-size:13px}
+  .handoff .btn{margin-top:18px;min-height:52px}
+}
