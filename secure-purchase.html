@@ -168,6 +168,7 @@ small {
 @media(max-width:380px){main{padding:27px 16px}.payment-steps{gap:5px}.payment-steps li{padding:12px 5px}.payment-steps strong{font-size:10px}.payment-steps small{font-size:9px}}
 </style>
 <script src="./analytics.js" defer></script>
+<script src="./email-login.js?v=1" defer></script>
 </head>
 
 <body>
@@ -191,6 +192,23 @@ small {
   <div class="price">499 ₽</div>
   <p class="payment-description">Разовая покупка без подписки. Физические карты не входят в стоимость.</p>
 
+    <section data-email-auth hidden style="margin:20px auto;max-width:430px;text-align:left">
+      <details>
+        <summary style="cursor:pointer;font-weight:700">✉️ Войти по почте или привязать адрес</summary>
+        <p class="hint">Без пароля. Отправим на почту одноразовый код. Если вы уже вошли через Telegram, почта привяжется к этому аккаунту.</p>
+        <form data-email-form>
+          <label class="eyebrow" for="emailAddress">Ваш email</label>
+          <input class="field" id="emailAddress" data-email-address type="email" autocomplete="email" maxlength="254" required placeholder="name@example.com">
+          <button class="btn full" type="submit" style="margin-top:10px">Получить код на почту</button>
+        </form>
+        <form data-email-verify hidden style="margin-top:14px">
+          <label class="eyebrow" for="emailCode">Шестизначный код из письма</label>
+          <input class="field" id="emailCode" data-email-code type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>
+          <button class="btn full" type="submit" style="margin-top:10px">Подтвердить почту</button>
+        </form>
+        <p data-email-message class="feedback" role="status" aria-live="polite"></p>
+      </details>
+    </section>
   <section aria-label="Вход покупателя" style="text-align:center;margin:20px auto">
     <p>Войдите через Telegram, чтобы привязать покупку к вашему аккаунту.</p>
     <div id="telegramLogin" style="display:flex;justify-content:center;min-height:42px"></div>

@@ -8,6 +8,8 @@ on:
       - 'secure-game.html'
       - 'secure-purchase.html'
       - 'secure-purchase.test.mjs'
+      - 'email-login.js'
+      - 'email-login.test.mjs'
       - 'game.html'
       - '.github/workflows/secure-game-check.yml'
 permissions:
@@ -21,6 +23,8 @@ jobs:
         with:
           node-version: '24'
       - run: node --check app-secure.js
+      - run: node --check email-login.js
+      - run: node --test email-login.test.mjs
       - run: node --test secure-purchase.test.mjs
       - name: Check checkout inline JavaScript syntax
         run: |
@@ -53,6 +57,9 @@ jobs:
           grep -q 'app.js?v=8' game.html
           grep -q 'href="./secure-game.html"' game.html
           grep -q 'Authorization' secure-purchase.html
+          grep -q 'data-email-auth hidden' secure-game.html
+          grep -q 'data-email-auth hidden' secure-purchase.html
+          grep -q '/api/auth/providers' email-login.js
           grep -q 'secure-game.html' secure-purchase.html
           ! grep -q 'href="./game.html"' secure-game.html
           ! grep -q 'href="./purchase.html"' secure-game.html
