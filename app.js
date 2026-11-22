@@ -58,8 +58,8 @@ function tile(id,i,active){
  el.style.setProperty('--tone',info[2]);
  if(active){el.type='button';el.addEventListener('click',()=>describeDeck(id));}
  else el.href='./game.html?deck='+id;
- el.setAttribute('aria-label',(i+1)+'. '+info[0]+', '+lengths[i]+' карт');
- const order=document.createElement('span');order.className='ordinal';order.textContent=String(i+1).padStart(2,'0');
+ el.setAttribute('aria-label',info[0]+', '+lengths[i]+' карт');
+ const order=document.createElement('span');order.className='ordinal';order.textContent='';order.setAttribute('aria-hidden','true');
  const count=document.createElement('span');count.className='count';count.textContent=lengths[i]+' КАРТ';
  const emoji=document.createElement('span');emoji.className='emoji';emoji.textContent=info[1];
  const name=document.createElement('strong');name.className='name';name.textContent=info[0];
