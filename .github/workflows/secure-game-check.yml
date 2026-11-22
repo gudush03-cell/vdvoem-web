@@ -1,5 +1,7 @@
 name: Secure game static syntax
 on:
+  push:
+    branches: ['security/account-streaming-preview']
   pull_request:
     paths:
       - 'app-secure.js'
