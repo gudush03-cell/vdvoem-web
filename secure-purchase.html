@@ -471,7 +471,7 @@ async function checkPayment() {
 
       showMessage(
         'Оплата подтверждена. ' +
-        'Сохраните личный код!'
+        'Доступ открыт в вашем Telegram-аккаунте. Сохраните код для восстановления!'
       );
 
       checking = false;
@@ -539,7 +539,7 @@ newOrder.addEventListener('click', () => {
   localStorage.removeItem('vdvoem.lastOrder');
   history.replaceState(null, '', location.pathname);
   buy.hidden = false;
-  buy.disabled = false;
+  buy.disabled = !signedIn();
   retry.hidden = true;
   newOrder.hidden = true;
   result.hidden = true;
