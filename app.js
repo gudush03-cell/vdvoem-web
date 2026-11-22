@@ -55,16 +55,15 @@ function fmt(a,b){return String(a).padStart(2,'0')+' / '+String(b).padStart(2,'0
 function tile(id,i,active){
  const info=meta[id],el=document.createElement(active?'button':'a');
  el.className='deck-card reveal'+(id==='midnight'?' midnight':'');
- el.style.setProperty('--tone',info[2]);
+ el.style.setProperty('--tone',info[2]);el.style.setProperty('--deck-order',i);
  if(active){el.type='button';el.addEventListener('click',()=>describeDeck(id));}
  else el.href='./game.html?deck='+id;
- el.setAttribute('aria-label',(i+1)+'. '+info[0]+', '+lengths[i]+' карт');
- const order=document.createElement('span');order.className='ordinal';order.textContent=String(i+1).padStart(2,'0');
+ el.setAttribute('aria-label',info[0]+', '+lengths[i]+' карт');
  const count=document.createElement('span');count.className='count';count.textContent=lengths[i]+' КАРТ';
  const emoji=document.createElement('span');emoji.className='emoji';emoji.textContent=info[1];
  const name=document.createElement('strong');name.className='name';name.textContent=info[0];
  const hint=document.createElement('small');hint.className='hint';hint.textContent=info[3];
- el.append(order,count,emoji,name,hint);return el;
+ el.append(count,emoji,name,hint);return el;
 }
 function describeDeck(id){
  const info=meta[id];if(!info)return;
