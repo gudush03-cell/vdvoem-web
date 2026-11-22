@@ -159,3 +159,45 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 .play-turn{padding:11px 12px;min-width:0}
 .play-turn strong{font-size:14px;overflow-wrap:anywhere}
 }
+
+
+/* Exact stacked deck animation and layout from the public homepage */
+.decks-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:20px 18px}
+.deck-tile{display:flex;text-align:left;min-width:0;width:100%;font:inherit;cursor:pointer}
+.deck-tile .deck-index{font-size:9px;letter-spacing:.07em;font-weight:800}
+.deck-tile .deck-mark{margin:auto;align-self:center;font-size:43px;line-height:1;letter-spacing:-.09em}
+.deck-tile strong{font:400 clamp(14px,1.7vw,19px)/1.22 var(--serif);letter-spacing:-.04em;min-height:25px}
+.deck-tile .deck-hint{font:400 10px/1.4 var(--sans);margin-top:8px;opacity:.7}
+.deck-tile{--deal-delay:0ms;isolation:isolate;min-height:225px;margin:6px 5px 4px;padding:0;background:transparent;border:0;box-shadow:none;overflow:visible;color:#291d24;transition:transform .5s cubic-bezier(.22,1,.36,1),filter .5s}
+.deck-tile::before{display:none}.deck-tile::after{display:none}
+.deck-tile .deck-face{position:relative;z-index:3;overflow:hidden;display:flex;flex-direction:column;min-height:225px;width:100%;height:100%;padding:20px 16px 18px;background:linear-gradient(145deg,#fff4 0%,transparent 38%),var(--deck);border:1px solid #ffffffa0;border-radius:20px;box-shadow:0 16px 36px #06030755,0 1px 0 #fff8 inset;transition:transform .55s cubic-bezier(.22,1,.36,1),box-shadow .55s;transform-origin:center 90%}
+.deck-face::before{content:"";position:absolute;inset:7px;border:1px solid #2b162627;border-radius:14px;pointer-events:none}.deck-face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(112deg,transparent 5%,#fff7 35%,transparent 52%);opacity:.13}
+.deck-tile .stack-leaf{position:absolute;z-index:0;inset:0;border-radius:21px;border:1px solid #fff7;background:var(--deck);transform-origin:center 90%;box-shadow:0 15px 30px #07030845;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.deck-tile .stack-leaf-back{transform:translate(4px,-5px) rotate(3deg);filter:brightness(.92)}
+.deck-tile .stack-leaf-middle{z-index:1;transform:translate(-3px,-2px) rotate(-2deg);filter:brightness(.97)}
+.deck-tile:hover{transform:translateY(-6px);box-shadow:none;filter:drop-shadow(0 15px 12px #0002)}
+.deck-tile:hover .deck-face{transform:translateY(-8px) rotate(-1deg);box-shadow:0 25px 55px #06030770}
+.deck-tile:hover .stack-leaf-back{transform:translate(9px,-10px) rotate(8deg)}
+.deck-tile:hover .stack-leaf-middle{transform:translate(-9px,-6px) rotate(-6deg)}
+.deck-tile:nth-child(2n):hover .deck-face{transform:translateY(-8px) rotate(1deg)}
+.deck-tile:nth-child(2n):hover .stack-leaf-back{transform:translate(-8px,-8px) rotate(-6deg)}
+.deck-tile:nth-child(2n):hover .stack-leaf-middle{transform:translate(8px,-5px) rotate(5deg)}
+.deck-tile .deck-index,.deck-tile .deck-mark,.deck-tile strong,.deck-tile .deck-hint{position:relative;z-index:2}
+.deck-tile .deck-mark{font-family:var(--serif);font-weight:400;opacity:.78;transition:transform .5s cubic-bezier(.22,1,.36,1)}.deck-tile:hover .deck-mark{transform:translateY(-7px) scale(1.12)}
+.deck-tile .deck-hint{line-height:1.4}.deck-night{color:#fff0f3}.deck-night .deck-face{border-color:#e8c0cc66}.deck-night .deck-face::before{border-color:#ffffff42}
+@keyframes stack-arrive{0%{opacity:.25;transform:translateY(25px) scale(.97) rotate(-2.5deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+.deck-tile.dealt{animation:stack-arrive .76s both cubic-bezier(.2,.8,.25,1);animation-delay:var(--deal-delay)}
+@media(max-width:890px){.decks-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px 13px}}
+@media(max-width:590px){
+ .decks-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}
+ .deck-tile{min-height:183px;margin:3px 2px 4px}
+ .deck-tile .deck-face{min-height:183px;padding:16px 12px;border-radius:17px}
+ .deck-tile .stack-leaf{border-radius:17px}
+ .deck-tile .deck-mark{font-size:38px}
+ .deck-tile strong{font-size:clamp(14px,4vw,18px);line-height:1.2}
+ .deck-tile .deck-hint{font-size:9px}
+ .deck-tile .deck-index{font-size:8px}
+}
+@media(max-width:355px){.deck-tile .deck-face{padding:14px 10px}.deck-tile strong{font-size:14px}}
+@media(hover:none){.deck-tile:hover,.deck-tile:hover .deck-face{transform:none;filter:none}.deck-tile:hover .stack-leaf-back{transform:translate(4px,-5px) rotate(3deg)}.deck-tile:hover .stack-leaf-middle{transform:translate(-3px,-2px) rotate(-2deg)}}
+@media(prefers-reduced-motion:reduce){.deck-tile.dealt{animation:none}.deck-tile,.deck-tile *, .deck-tile:hover{transition:none!important;transform:none!important}}
