@@ -39,15 +39,41 @@ const $=id=>document.getElementById(id);
 const views=['homeView','loginView','lobbyView','handoffView','secretView','consentView','playView','finishView'];
 const gamePage=location.pathname.split('/').pop().toLowerCase()==='game.html';
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let decks=null,party=null,aside=null,privateStage=null,view='',timer=0;
+let decks=null,party=null,aside=null,privateStage=null,view='',timer=0,saveKey=null;
 let selected=new URLSearchParams(location.search).get('deck');
 if(!keys.includes(selected))selected=null;
 function showView(id){
  view=id; for(const k of views)$(k).hidden=k!==id;
  const element=$(id);element.classList.remove('enter');
  if(!reduced){void element.offsetWidth;element.classList.add('enter');}
+ saveProgress();
  window.scrollTo({top:0,behavior:'instant'});
  document.title=id==='homeView'?'Вдвоём налегке : игра для двоих':'Вдвоём налегке : полная игра';
+}
+/* Progress is stored without the access code or paid card text; code is always revalidated. */
+async function progressKey(code){
+ try {
+  const bytes=new TextEncoder().encode(code.replace(/-/g,'').toUpperCase());
+  const digest=await crypto.subtle.digest('SHA-256',bytes);
+  return 'vdvoem.progress.v1.'+Array.from(new Uint8Array(digest)).map(n=>n.toString(16).padStart(2,'0')).join('');
+ } catch { return null; }
+}
+function saveProgress(){
+ if(!saveKey||!party||party.mode==='demo'||!decks)return;
+ try {localStorage.setItem(saveKey,JSON.stringify({party,version:1}));}catch{}
+}
+function loadProgress(){
+ if(!saveKey)return;
+ try{
+  const saved=JSON.parse(localStorage.getItem(saveKey)||'null');
+  const p=saved?.party;
+  if(saved?.version!==1||!p||!Array.isArray(p.queue)||!Number.isInteger(p.index)||
+     p.index<0||p.index>=p.queue.length||![1,2].includes(p.player)||
+     !p.skips||![0,1].includes(p.skips[1])||![0,1].includes(p.skips[2])||
+     p.queue.some(pointer=>!keys.includes(pointer.deck)||!Number.isInteger(pointer.index)||
+       pointer.index<0||pointer.index>=decks[pointer.deck].length))return;
+  party=p;
+ }catch{}
 }
 function toast(msg){const el=$('toast');el.textContent=msg;el.hidden=false;clearTimeout(timer);timer=setTimeout(()=>{el.hidden=true;},3600);}
 function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;}
@@ -58,8 +84,8 @@ function tile(id,i,active){
  el.style.setProperty('--tone',info[2]);
  if(active){el.type='button';el.addEventListener('click',()=>describeDeck(id));}
  else el.href='./game.html?deck='+id;
- el.setAttribute('aria-label',(i+1)+'. '+info[0]+', '+lengths[i]+' карт');
- const order=document.createElement('span');order.className='ordinal';order.textContent=String(i+1).padStart(2,'0');
+ el.setAttribute('aria-label',info[0]+', '+lengths[i]+' карт');
+ const order=document.createElement('span');order.className='ordinal';order.textContent='';order.setAttribute('aria-hidden','true');
  const count=document.createElement('span');count.className='count';count.textContent=lengths[i]+' КАРТ';
  const emoji=document.createElement('span');emoji.className='emoji';emoji.textContent=info[1];
  const name=document.createElement('strong');name.className='name';name.textContent=info[0];
@@ -115,7 +141,7 @@ function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,r
 function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 function showSecrets(){
  const p=privateStage.player;
- $('secretTitle').textContent='Игрок '+p+' · 3 тайных задания';
+ $('secretTitle').textContent='Игрок '+p+' — 3 тайных задания';
  $('secretList').replaceChildren(...party.secrets[p].map((id,i)=>{
   const c=decks.silent[id],box=document.createElement('article');box.className='private-mission';
   const heading=document.createElement('strong');heading.textContent=(i+1)+'. '+c.title;box.append(heading);
@@ -148,8 +174,8 @@ function render(){
  $('cardIndex').textContent=indexText;$('playCount').textContent=indexText;
  $('cardTitle').textContent=c.title;
  $('cardBody').replaceChildren(...c.body.map(text=>{const el=document.createElement('p');el.textContent=text;return el;}));
- $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА · НЕ СПЕШИТЕ':'ЧИТАЙТЕ · ОТВЕЧАЙТЕ · ПЕРЕДАВАЙТЕ ХОД';
- $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1 · Девушка':'Игрок 2 · Партнёр';
+ $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА — НЕ СПЕШИТЕ':'ЧИТАЙТЕ — ОТВЕЧАЙТЕ — ПЕРЕДАВАЙТЕ ХОД';
+ $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1 — Девушка':'Игрок 2 — Партнёр';
  $('turnSymbol').textContent=aside?.kind==='exhale'?'♡♡':'♡';
  $('progress').style.width=aside?'100%':Math.round((party.index+1)/party.queue.length*100)+'%';
  for(let p=1;p<=2;p++){
@@ -160,12 +186,13 @@ function render(){
  $('skipCards').hidden=aside?.kind==='exhale';
  $('skipButton').hidden=aside?.kind==='exhale';
  $('skipButton').disabled=party.skips[party.player]===0;
- $('skipButton').textContent=party.skips[party.player]?'Не сегодня':'Не сегодня · использовано';
+ $('skipButton').textContent=party.skips[party.player]?'Не сегодня':'Не сегодня — использовано';
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
- $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер ♡':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду ♡':'Ответили · Передать ход ♡';
+ $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер ♡':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду ♡':'Ответили — Передать ход ♡';
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
+ saveProgress();
 }
 function advance(skipped=false){
  if(!party)return;
@@ -190,14 +217,14 @@ function exhale(){
  if(!decks){location.assign('./game.html?deck=exhale');return;}
  if(!party){party={mode:'exhale',queue:[],index:0,player:1,skips:{1:1,2:1},secrets:null,seen:[]};}
  const i=Math.floor(Math.random()*decks.exhale.length);
- aside={kind:'exhale',label:'Выдох · Отвечают оба',card:{...decks.exhale[i],deck:'Выдох',tone:meta.exhale[2],ink:'#291f23'}};
+ aside={kind:'exhale',label:'Выдох — Отвечают оба',card:{...decks.exhale[i],deck:'Выдох',tone:meta.exhale[2],ink:'#291f23'}};
  render();showView('playView');
 }
 function finish(afterExhale){
  if(!afterExhale&&party&&(party.mode==='full'||party.mode==='quick')&&!party.midnightStage){
    party.midnightStage='asked';
    $('consent1').checked=false;$('consent2').checked=false;
-   $('cancelConsent').textContent='Не играем · К финальному «Выдоху»';
+   $('cancelConsent').textContent='Не играем — К финальному «Выдоху»';
    aside=null;showView('consentView');return;
  }
  aside=null;
@@ -215,7 +242,7 @@ function again(){
  if(party.mode==='silent')return lobby();
  startParty(party.mode,party.deck);
 }
-function logout(){decks=null;party=null;aside=null;privateStage=null;$('accessCode').value='';$('loginStatus').textContent='';showView(gamePage?'loginView':'homeView');toast('Игра закрыта. Для повторного входа понадобится код.');}
+function logout(){try{if(saveKey)localStorage.removeItem(saveKey);}catch{}saveKey=null;decks=null;party=null;aside=null;privateStage=null;$('accessCode').value='';$('loginStatus').textContent='';showView(gamePage?'loginView':'homeView');toast('Игра закрыта. Для повторного входа понадобится код.');}
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
@@ -233,7 +260,7 @@ function wire(){
     const data=await response.json();
     if(data.access!=='granted'||!data.decks||Object.keys(data.decks).length!==10||
        keys.some((k,i)=>!Array.isArray(data.decks[k])||data.decks[k].length!==lengths[i]))throw Error('data');
-    decks=data.decks;$('accessCode').value='';label.textContent='';populate();lobby();
+    decks=data.decks;saveKey=await progressKey(code);loadProgress();$('accessCode').value='';label.textContent='';populate();lobby();
     if(selected){const id=selected;selected=null;describeDeck(id);}
   }catch(err){label.textContent=err.name==='AbortError'?'Сервер долго не отвечает. Попробуйте ещё раз.':'Не удалось загрузить игру. Попробуйте позднее.';}
   finally{clearTimeout(timeout);button.disabled=false;button.textContent='Открыть полную игру ♡';}
