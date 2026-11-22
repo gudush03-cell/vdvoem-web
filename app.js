@@ -108,7 +108,7 @@ function selectDeck(id){
    if(party?.secrets)startSecrets('review');
    else{const ids=shuffle(decks.silent.map((_,i)=>i));party={mode:'silent',deck:id,queue:[],index:0,player:1,skips:{1:1,2:1},secrets:{1:ids.slice(0,3),2:ids.slice(3,6)},seen:[]};startSecrets('start');}
  }else if(id==='exhale')exhale();
- else if(id==='midnight'){$('consent1').checked=false;$('consent2').checked=false;showView('consentView');}
+ else if(id==='midnight'){$('consent1').checked=false;$('consent2').checked=false;$('cancelConsent').textContent='Вернуться к колодам';showView('consentView');}
  else startParty('single',id);
 }
 function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,reason,returnTo:view==='playView'?'playView':'lobbyView'};handoff();}
@@ -194,6 +194,12 @@ function exhale(){
  render();showView('playView');
 }
 function finish(afterExhale){
+ if(!afterExhale&&party&&(party.mode==='full'||party.mode==='quick')&&!party.midnightStage){
+   party.midnightStage='asked';
+   $('consent1').checked=false;$('consent2').checked=false;
+   $('cancelConsent').textContent='Не играем · К финальному «Выдоху»';
+   aside=null;showView('consentView');return;
+ }
  aside=null;
  $('finishEyebrow').textContent=afterExhale?'Финал вечера':'Колода пройдена';
  $('finishText').textContent=afterExhale?'Спасибо за этот разговор. Можете начать новую партию.':'В финале вытяните случайную карту «Выдох». На неё отвечают оба.';
@@ -239,8 +245,17 @@ function wire(){
  $('logout').addEventListener('click',logout);
  $('revealTasks').addEventListener('click',showSecrets);
  $('hideTasks').addEventListener('click',finishSecrets);
- $('confirmConsent').addEventListener('click',()=>{if(!$('consent1').checked||!$('consent2').checked)return toast('Оба игрока должны согласиться.');startParty('single','midnight');});
- $('cancelConsent').addEventListener('click',lobby);
+ $('confirmConsent').addEventListener('click',()=>{
+  if(!$('consent1').checked||!$('consent2').checked)return toast('Оба игрока должны согласиться.');
+  if(party?.midnightStage==='asked'){
+    party.queue=decks.midnight.map((_,i)=>({deck:'midnight',index:i}));
+    party.index=0;party.midnightStage='playing';nextPlayer();aside=null;render();showView('playView');
+  }else startParty('single','midnight');
+ });
+ $('cancelConsent').addEventListener('click',()=>{
+  if(party?.midnightStage==='asked'){party.midnightStage='declined';finish(false);}
+  else lobby();
+ });
  $('backLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
  $('nextCard').addEventListener('click',()=>advance(false));
  $('skipButton').addEventListener('click',skip);
