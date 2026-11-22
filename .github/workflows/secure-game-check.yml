@@ -7,6 +7,7 @@ on:
       - 'app-secure.js'
       - 'secure-game.html'
       - 'secure-purchase.html'
+      - 'secure-purchase.test.mjs'
       - '.github/workflows/secure-game-check.yml'
 permissions:
   contents: read
@@ -19,6 +20,7 @@ jobs:
         with:
           node-version: '24'
       - run: node --check app-secure.js
+      - run: node --test secure-purchase.test.mjs
       - name: Check checkout inline JavaScript syntax
         run: |
           python3 - <<'PY'
