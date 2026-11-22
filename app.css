@@ -66,3 +66,21 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
   .reveal{opacity:1;transform:none}
   *{scroll-behavior:auto!important;transition:none!important}
 }
+
+/* Общий визуальный язык с главной страницей сайта */
+.deck-description{border:1px solid #f8b6c88a;border-radius:26px;background:linear-gradient(150deg,#392334,#1d141e);color:#fff3ed;padding:0;box-shadow:0 26px 100px #000c;max-width:min(455px,calc(100vw - 28px));width:100%}
+.deck-description::backdrop{background:#0c0710c9;backdrop-filter:blur(7px)}
+.deck-description-inner{text-align:center;padding:32px 28px}
+.deck-description-symbol{font-size:46px;filter:drop-shadow(0 8px 16px #0006);margin-bottom:12px}
+.deck-description h2{font:400 clamp(28px,6vw,39px)/1.2 var(--serif);margin:0 0 15px;color:#fff3e8}
+.deck-description p{font-size:15px;line-height:1.7;color:#e8ced9;margin:0 0 12px}
+.deck-description small{display:block;color:#f3b7ce;font-size:12px;margin:8px 0 26px}
+.deck-description-actions{display:grid;gap:10px}
+.deck-description-actions .btn{width:100%}
+#lobbyView .intro,#lobbyView .notice{animation:arrive .65s ease both}
+#lobbyView .notice{animation-delay:.15s}
+#lobbyView .deck-card{box-shadow:0 3px 0 #fff4 inset,0 16px 36px #0005}
+#lobbyView .deck-card:hover{transform:translateY(-5px) rotate(-.6deg)}
+#playView .play-turn{animation:arrive .55s ease both}
+#playView .play-bottom,#playView .play-tools{animation:arrive .6s .1s both}
+@media(prefers-reduced-motion:reduce){#lobbyView .intro,#lobbyView .notice,#playView .play-turn,#playView .play-bottom,#playView .play-tools{animation:none!important}}
