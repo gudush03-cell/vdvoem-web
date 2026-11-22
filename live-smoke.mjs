@@ -51,4 +51,8 @@ await invalidRequest('/api/auth/telegram',{
   id:123456789,auth_date:Math.floor(Date.now()/1000),hash:'a'.repeat(64)
 });
 await invalidRequest('/api/account/card',{deck:'laugh',index:0});
+const guestStatus=await fetch(backend+'/api/account/status',{
+  headers:{Origin:'https://gudush03-cell.github.io'},signal:AbortSignal.timeout(12000)
+});
+assert.equal(guestStatus.status,401,'Guest cannot read account status');
 console.log('PASS unauthorized Telegram signature and paid card requests rejected');
