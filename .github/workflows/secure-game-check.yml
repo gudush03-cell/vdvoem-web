@@ -4,6 +4,7 @@ on:
     paths:
       - 'app-secure.js'
       - 'secure-game.html'
+      - 'secure-purchase.html'
       - '.github/workflows/secure-game-check.yml'
 permissions:
   contents: read
@@ -20,5 +21,7 @@ jobs:
         run: |
           grep -q 'app-secure.js?v=1' secure-game.html
           grep -q 'app.js?v=7' game.html
+          grep -q 'Authorization' secure-purchase.html
+          grep -q 'secure-game.html' secure-purchase.html
           grep -q "/api/account/card" app-secure.js
           grep -q "/api/account/manifest" app-secure.js
