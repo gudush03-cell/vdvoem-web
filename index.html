@@ -250,7 +250,7 @@ main, header, footer{position:relative;z-index:2}
 a.deck-tile{text-decoration:none;cursor:pointer}a.deck-tile:focus-visible{outline:3px solid #ffe0ee;outline-offset:4px}.purchase-disabled{opacity:1}
 /* Accessible expandable rules and editorial refresh */
 .rules-section .rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.rules-section details.rule-item,.rules-section details.special-rule{min-width:0;overflow:hidden}
+.rules-section details.rule-item,.rules-section details.special-rule{min-width:0;min-height:0;display:block;padding:0;overflow:hidden}.rules-section details.rule-item:hover{transform:none}.rules-section details.rule-item summary{padding:19px 22px}.rules-section details.rule-item summary h3{min-height:0}.rules-section details.special-rule summary{padding:12px 7px}
 .rules-section details.rule-item summary,.rules-section details.special-rule summary{list-style:none;display:flex;align-items:center;gap:14px;cursor:pointer;min-height:85px}
 .rules-section details.rule-item summary::-webkit-details-marker,.rules-section details.special-rule summary::-webkit-details-marker{display:none}
 .rules-section details.rule-item summary h3{flex:1;margin:0}
