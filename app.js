@@ -80,18 +80,22 @@ function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math
 function fmt(a,b){return String(a).padStart(2,'0')+' / '+String(b).padStart(2,'0');}
 function tile(id,i,active){
  const info=meta[id],el=document.createElement(active?'button':'a');
- el.className='deck-card reveal'+(id==='midnight'?' midnight':'');
- el.style.setProperty('--tone',info[2]);
+ el.className='deck-tile dealt'+(id==='midnight'?' deck-night':'');
+ el.style.setProperty('--deck',info[2]);
+ el.style.setProperty('--deal-delay',i*65+'ms');
  if(active){el.type='button';el.addEventListener('click',()=>describeDeck(id));}
  else el.href='./game.html?deck='+id;
  el.setAttribute('aria-label',info[0]+', '+lengths[i]+' карт');
- const order=document.createElement('span');order.className='ordinal';order.textContent='';order.setAttribute('aria-hidden','true');
- const count=document.createElement('span');count.className='count';count.textContent=lengths[i]+' КАРТ';
- const emoji=document.createElement('span');emoji.className='emoji';emoji.textContent=info[1];
- const name=document.createElement('strong');name.className='name';name.textContent=info[0];
- const hint=document.createElement('small');hint.className='hint';hint.textContent=info[3];
- el.append(order,count,emoji,name,hint);return el;
+ const back=document.createElement('span');back.className='stack-leaf stack-leaf-back';back.setAttribute('aria-hidden','true');
+ const mid=document.createElement('span');mid.className='stack-leaf stack-leaf-middle';mid.setAttribute('aria-hidden','true');
+ const face=document.createElement('span');face.className='deck-face';
+ const count=document.createElement('span');count.className='deck-index';count.textContent=lengths[i]+' КАРТ';
+ const emoji=document.createElement('span');emoji.className='deck-mark';emoji.textContent=info[1];emoji.setAttribute('aria-hidden','true');
+ const name=document.createElement('strong');name.textContent=info[0];
+ const hint=document.createElement('span');hint.className='deck-hint';hint.textContent=info[3];
+ face.append(count,emoji,name,hint);el.append(back,mid,face);return el;
 }
+
 function describeDeck(id){
  const info=meta[id];if(!info)return;
  const dialog=document.createElement('dialog');dialog.className='deck-description';
@@ -101,7 +105,7 @@ function describeDeck(id){
  const description=document.createElement('p');description.textContent=descriptions[id];
  const count=document.createElement('small');count.textContent=lengths[keys.indexOf(id)]+' карточек';
  const row=document.createElement('div');row.className='deck-description-actions';
- const start=document.createElement('button');start.type='button';start.className='btn';start.textContent=id==='silent'?'Показать задания':id==='exhale'?'Вытянуть карту':'Начать играть ♡';
+ const start=document.createElement('button');start.type='button';start.className='btn';start.textContent=id==='silent'?'Показать задания':id==='exhale'?'Вытянуть карту':'Начать играть';
  const cancel=document.createElement('button');cancel.type='button';cancel.className='btn secondary';cancel.textContent='Назад к колодам';
  start.addEventListener('click',()=>{dialog.close();dialog.remove();selectDeck(id);});
  cancel.addEventListener('click',()=>dialog.close());
@@ -141,7 +145,7 @@ function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,r
 function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 function showSecrets(){
  const p=privateStage.player;
- $('secretTitle').textContent='Игрок '+p+' – 3 тайных задания';
+ $('secretTitle').textContent='Игрок '+p+' - 3 тайных задания';
  $('secretList').replaceChildren(...party.secrets[p].map((id,i)=>{
   const c=decks.silent[id],box=document.createElement('article');box.className='private-mission';
   const heading=document.createElement('strong');heading.textContent=(i+1)+'. '+c.title;box.append(heading);
@@ -174,9 +178,9 @@ function render(){
  $('cardIndex').textContent=indexText;$('playCount').textContent=indexText;
  $('cardTitle').textContent=c.title;
  $('cardBody').replaceChildren(...c.body.map(text=>{const el=document.createElement('p');el.textContent=text;return el;}));
- $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА – НЕ СПЕШИТЕ':'ЧИТАЙТЕ – ОТВЕЧАЙТЕ – ПЕРЕДАВАЙТЕ ХОД';
- $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1 · девушка':'Игрок 2 · партнёр';
- $('turnSymbol').textContent=aside?.kind==='exhale'?'♡♡':'♡';
+ $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА - НЕ СПЕШИТЕ':'ЧИТАЙТЕ - ОТВЕЧАЙТЕ - ПЕРЕДАВАЙТЕ ХОД';
+ $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1: девушка':'Игрок 2: партнёр';
+ $('turnSymbol').textContent=aside?.kind==='exhale'?'✦ ✦':'✦';
  $('progress').style.width=aside?'100%':Math.round((party.index+1)/party.queue.length*100)+'%';
  for(let p=1;p<=2;p++){
    $('skipCount'+p).textContent=party.skips[p]+' / 1';
@@ -186,11 +190,11 @@ function render(){
  $('skipCards').hidden=aside?.kind==='exhale';
  $('skipButton').hidden=aside?.kind==='exhale';
  $('skipButton').disabled=party.skips[party.player]===0;
- $('skipButton').textContent=party.skips[party.player]?'Не сегодня':'Не сегодня – использовано';
+ $('skipButton').textContent=party.skips[party.player]?'Не сегодня':'Не сегодня - использовано';
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
- $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер ♡':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду ♡':'Ответили – Передать ход ♡';
+ $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Ответили: передать ход';
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
  saveProgress();
 }
@@ -203,7 +207,7 @@ function advance(skipped=false){
 }
 function skip(){
  if(!party||aside?.kind==='exhale'||!party.skips[party.player])return;
- party.skips[party.player]--;toast('«Не сегодня». Без объяснений ♡');advance(true);
+ party.skips[party.player]--;toast('«Не сегодня». Без объяснений');advance(true);
 }
 function scene(){
  if(!party||!decks||aside)return;
@@ -217,7 +221,7 @@ function exhale(){
  if(!decks){location.assign('./game.html?deck=exhale');return;}
  if(!party){party={mode:'exhale',queue:[],index:0,player:1,skips:{1:1,2:1},secrets:null,seen:[]};}
  const i=Math.floor(Math.random()*decks.exhale.length);
- aside={kind:'exhale',label:'Выдох – Отвечают оба',card:{...decks.exhale[i],deck:'Выдох',tone:meta.exhale[2],ink:'#291f23'}};
+ aside={kind:'exhale',label:'Выдох - Отвечают оба',card:{...decks.exhale[i],deck:'Выдох',tone:meta.exhale[2],ink:'#291f23'}};
  render();showView('playView');
 }
 function finish(afterExhale){
@@ -225,7 +229,7 @@ function finish(afterExhale){
  if(!afterExhale&&party&&(party.mode==='full'||party.mode==='quick')&&!party.midnightStage){
    party.midnightStage='asked';
    $('consent1').checked=false;$('consent2').checked=false;
-   $('cancelConsent').textContent='Не играем – К финальному «Выдоху»';
+   $('cancelConsent').textContent='Не играем - К финальному «Выдоху»';
    aside=null;showView('consentView');return;
  }
  aside=null;
@@ -264,7 +268,7 @@ function wire(){
     decks=data.decks;saveKey=await progressKey(code);loadProgress();$('accessCode').value='';label.textContent='';populate();lobby();
     if(selected){const id=selected;selected=null;describeDeck(id);}
   }catch(err){label.textContent=err.name==='AbortError'?'Сервер долго не отвечает. Попробуйте ещё раз.':'Не удалось загрузить игру. Попробуйте позднее.';}
-  finally{clearTimeout(timeout);button.disabled=false;button.textContent='Открыть полную игру ♡';}
+  finally{clearTimeout(timeout);button.disabled=false;button.textContent='Открыть полную игру';}
  });
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
  $('resumeButton').addEventListener('click',()=>{if(!party?.queue.length)return lobby();aside=null;render();showView('playView');});
