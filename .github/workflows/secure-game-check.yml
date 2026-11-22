@@ -17,11 +17,38 @@ jobs:
         with:
           node-version: '24'
       - run: node --check app-secure.js
+      - name: Check checkout inline JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.inline = []
+                  self.active = False
+              def handle_starttag(self, tag, attrs):
+                  if tag == 'script' and not dict(attrs).get('src'):
+                      self.active = True
+              def handle_endtag(self, tag):
+                  if tag == 'script':
+                      self.active = False
+              def handle_data(self, data):
+                  if self.active:
+                      self.inline.append(data)
+          parser = Scripts()
+          parser.feed(Path('secure-purchase.html').read_text(encoding='utf8'))
+          assert parser.inline, 'No inline purchase script found'
+          Path('/tmp/vdvoem-secure-purchase.js').write_text('\\n'.join(parser.inline))
+          PY
+          node --check /tmp/vdvoem-secure-purchase.js
       - name: Verify legacy game remains independent
         run: |
           grep -q 'app-secure.js?v=1' secure-game.html
           grep -q 'app.js?v=7' game.html
           grep -q 'Authorization' secure-purchase.html
           grep -q 'secure-game.html' secure-purchase.html
+          ! grep -q 'href="./game.html"' secure-game.html
+          ! grep -q 'href="./purchase.html"' secure-game.html
           grep -q "/api/account/card" app-secure.js
           grep -q "/api/account/manifest" app-secure.js
