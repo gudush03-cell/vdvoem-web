@@ -9,6 +9,7 @@ on:
       - 'secure-purchase.html'
       - 'secure-purchase.test.mjs'
       - 'email-login.js'
+      - 'email-login.test.mjs'
       - 'game.html'
       - '.github/workflows/secure-game-check.yml'
 permissions:
@@ -23,6 +24,7 @@ jobs:
           node-version: '24'
       - run: node --check app-secure.js
       - run: node --check email-login.js
+      - run: node --test email-login.test.mjs
       - run: node --test secure-purchase.test.mjs
       - name: Check checkout inline JavaScript syntax
         run: |
