@@ -2,6 +2,18 @@
 const API='https://perceptive-patience-production-79bfb421.up.railway.app/api/game';
 const keys=['laugh','know','unsaid','inside','mend','choose','scene','silent','midnight','exhale'];
 const mainKeys=keys.slice(0,6);
+const descriptions={
+ laugh:'Абсурд и смешные истории. Выдумывайте, шутите и смейтесь вместе.',
+ know:'Проверяемые догадки о партнёре. Узнайте, насколько хорошо вы друг друга знаете.',
+ unsaid:'Личные истории и признания. То, о чём не всегда находится повод поговорить.',
+ inside:'Близость и чувства. Вопросы, которые помогают услышать друг друга.',
+ mend:'Бережные разговоры о конфликтах. Ищите общий язык без обвинений.',
+ choose:'Игровые выборы и действия. Решайте, пробуйте и удивляйте друг друга.',
+ scene:'Совместные сценарии. Представьте, как вы поступили бы вдвоём.',
+ silent:'Невербальная забота. В колоде 12 заданий: каждому выпадут 3 случайных.',
+ midnight:'Флирт и желания при взаимном согласии. Перед началом ответят оба игрока.',
+ exhale:'Разнообразные способы завершить игру. Одна случайная карта для двоих.'
+};
 const lengths=[20,20,20,20,20,20,10,12,20,6];
 const meta={
 laugh:['Орём','😂','#ead2bd','Смеяться вместе'],
@@ -11,7 +23,7 @@ inside:['Внутри','💭','#d1c8df','Без масок'],
 mend:['Починим','🛠️','#d1dcc9','Услышать друг друга'],
 choose:['Выбирай','🎲','#eeb2a9','Смелые варианты'],
 scene:['Ситуация','🎭','#b7cde2','В любой момент'],
-silent:['Без слов','🤫','#d8d7d9','6 заданий каждому'],
+silent:['Без слов','🤫','#d8d7d9','3 задания каждому'],
 midnight:['После полуночи','🌙','#713647','По желанию обоих'],
 exhale:['Выдох','🌿','#dce9e6','Финал для двоих']
 };
@@ -35,7 +47,7 @@ function showView(id){
  const element=$(id);element.classList.remove('enter');
  if(!reduced){void element.offsetWidth;element.classList.add('enter');}
  window.scrollTo({top:0,behavior:'instant'});
- document.title=id==='homeView'?'Вдвоём налегке — игра для двоих':'Вдвоём налегке — полная игра';
+ document.title=id==='homeView'?'Вдвоём налегке : игра для двоих':'Вдвоём налегке : полная игра';
 }
 function toast(msg){const el=$('toast');el.textContent=msg;el.hidden=false;clearTimeout(timer);timer=setTimeout(()=>{el.hidden=true;},3600);}
 function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;}
@@ -44,7 +56,7 @@ function tile(id,i,active){
  const info=meta[id],el=document.createElement(active?'button':'a');
  el.className='deck-card reveal'+(id==='midnight'?' midnight':'');
  el.style.setProperty('--tone',info[2]);
- if(active){el.type='button';el.addEventListener('click',()=>selectDeck(id));}
+ if(active){el.type='button';el.addEventListener('click',()=>describeDeck(id));}
  else el.href='./game.html?deck='+id;
  el.setAttribute('aria-label',(i+1)+'. '+info[0]+', '+lengths[i]+' карт');
  const order=document.createElement('span');order.className='ordinal';order.textContent=String(i+1).padStart(2,'0');
@@ -53,6 +65,24 @@ function tile(id,i,active){
  const name=document.createElement('strong');name.className='name';name.textContent=info[0];
  const hint=document.createElement('small');hint.className='hint';hint.textContent=info[3];
  el.append(order,count,emoji,name,hint);return el;
+}
+function describeDeck(id){
+ const info=meta[id];if(!info)return;
+ const dialog=document.createElement('dialog');dialog.className='deck-description';
+ const content=document.createElement('div');content.className='deck-description-inner';
+ const symbol=document.createElement('div');symbol.className='deck-description-symbol';symbol.textContent=info[1];
+ const heading=document.createElement('h2');heading.textContent=info[0];
+ const description=document.createElement('p');description.textContent=descriptions[id];
+ const count=document.createElement('small');count.textContent=lengths[keys.indexOf(id)]+' карточек';
+ const row=document.createElement('div');row.className='deck-description-actions';
+ const start=document.createElement('button');start.type='button';start.className='btn';start.textContent=id==='silent'?'Показать задания':id==='exhale'?'Вытянуть карту':'Начать играть ♡';
+ const cancel=document.createElement('button');cancel.type='button';cancel.className='btn secondary';cancel.textContent='Назад к колодам';
+ start.addEventListener('click',()=>{dialog.close();dialog.remove();selectDeck(id);});
+ cancel.addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('close',()=>dialog.remove());
+ dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+ row.append(start,cancel);content.append(symbol,heading,description,count,row);dialog.append(content);
+ document.body.append(dialog);dialog.showModal();
 }
 function reveals(){
  if(reduced||!('IntersectionObserver' in window)){document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in-view'));return;}
@@ -69,23 +99,23 @@ function startParty(mode,id){
  else if(mode==='quick')queue=shuffle(mainKeys.flatMap(key=>decks[key].map((_,i)=>({deck:key,index:i}))));
  else queue=decks[id].map((_,i)=>({deck:id,index:i}));
  const ids=shuffle(decks.silent.map((_,i)=>i));
- party={mode,deck:id||null,queue,index:0,player:1,skips:{1:1,2:1},secrets:{1:ids.slice(0,6),2:ids.slice(6,12)},seen:[]};
+ party={mode,deck:id||null,queue,index:0,player:1,skips:{1:1,2:1},secrets:{1:ids.slice(0,3),2:ids.slice(3,6)},seen:[]};
  aside=null;startSecrets('start');
 }
 function selectDeck(id){
  if(!decks){location.assign('./game.html?deck='+id);return;}
  if(id==='silent'){
    if(party?.secrets)startSecrets('review');
-   else{const ids=shuffle(decks.silent.map((_,i)=>i));party={mode:'silent',deck:id,queue:[],index:0,player:1,skips:{1:1,2:1},secrets:{1:ids.slice(0,6),2:ids.slice(6,12)},seen:[]};startSecrets('start');}
+   else{const ids=shuffle(decks.silent.map((_,i)=>i));party={mode:'silent',deck:id,queue:[],index:0,player:1,skips:{1:1,2:1},secrets:{1:ids.slice(0,3),2:ids.slice(3,6)},seen:[]};startSecrets('start');}
  }else if(id==='exhale')exhale();
  else if(id==='midnight'){$('consent1').checked=false;$('consent2').checked=false;showView('consentView');}
  else startParty('single',id);
 }
 function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,reason,returnTo:view==='playView'?'playView':'lobbyView'};handoff();}
-function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 6 тайных заданий.':'Сейчас появятся только его 6 тайных заданий.')+' Не показывайте карты другому игроку.';showView('handoffView');}
+function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 function showSecrets(){
  const p=privateStage.player;
- $('secretTitle').textContent='Игрок '+p+' · 6 тайных заданий';
+ $('secretTitle').textContent='Игрок '+p+' · 3 тайных задания';
  $('secretList').replaceChildren(...party.secrets[p].map((id,i)=>{
   const c=decks.silent[id],box=document.createElement('article');box.className='private-mission';
   const heading=document.createElement('strong');heading.textContent=(i+1)+'. '+c.title;box.append(heading);
@@ -198,7 +228,7 @@ function wire(){
     if(data.access!=='granted'||!data.decks||Object.keys(data.decks).length!==10||
        keys.some((k,i)=>!Array.isArray(data.decks[k])||data.decks[k].length!==lengths[i]))throw Error('data');
     decks=data.decks;$('accessCode').value='';label.textContent='';populate();lobby();
-    if(selected){const id=selected;selected=null;selectDeck(id);}
+    if(selected){const id=selected;selected=null;describeDeck(id);}
   }catch(err){label.textContent=err.name==='AbortError'?'Сервер долго не отвечает. Попробуйте ещё раз.':'Не удалось загрузить игру. Попробуйте позднее.';}
   finally{clearTimeout(timeout);button.disabled=false;button.textContent='Открыть полную игру ♡';}
  });
