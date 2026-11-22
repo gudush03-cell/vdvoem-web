@@ -258,6 +258,7 @@ small {
 const API =
   'https://perceptive-patience-production-79bfb421.up.railway.app';
 
+const buy = document.getElementById('buy');
 const TOKEN_KEY='vdvoem.preview.token';
 const USER_KEY='vdvoem.preview.telegram';
 let accountToken=sessionStorage.getItem(TOKEN_KEY);
@@ -293,7 +294,6 @@ telegramScript.setAttribute('data-onauth','onPurchaseTelegramAuth(user)');
 document.getElementById('telegramLogin').append(telegramScript);
 if(signedIn())telegramStatus.textContent='Сессия Telegram найдена. Покупка будет привязана к аккаунту.';
 else{accountToken=null;sessionStorage.removeItem(TOKEN_KEY);}
-const buy = document.getElementById('buy');
 const message = document.getElementById('message');
 const retry = document.getElementById('retry');
 const newOrder = document.getElementById('newOrder');
