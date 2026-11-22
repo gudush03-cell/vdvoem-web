@@ -1,13 +1,14 @@
 name: Secure game static syntax
 on:
   push:
-    branches: ['security/account-streaming-preview']
+    branches: [main, 'security/account-streaming-preview']
   pull_request:
     paths:
       - 'app-secure.js'
       - 'secure-game.html'
       - 'secure-purchase.html'
       - 'secure-purchase.test.mjs'
+      - 'game.html'
       - '.github/workflows/secure-game-check.yml'
 permissions:
   contents: read
@@ -50,6 +51,7 @@ jobs:
         run: |
           grep -q 'app-secure.js?v=1' secure-game.html
           grep -q 'app.js?v=7' game.html
+          grep -q 'href="./secure-game.html"' game.html
           grep -q 'Authorization' secure-purchase.html
           grep -q 'secure-game.html' secure-purchase.html
           ! grep -q 'href="./game.html"' secure-game.html
