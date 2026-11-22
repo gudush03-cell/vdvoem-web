@@ -1,0 +1,24 @@
+name: Public Site and Account API Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'live-smoke.mjs'
+      - '.github/workflows/live-smoke.yml'
+      - 'secure-game.html'
+      - 'secure-purchase.html'
+      - 'app-secure.js'
+      - 'game.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node live-smoke.mjs
