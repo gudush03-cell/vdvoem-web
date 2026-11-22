@@ -72,22 +72,27 @@
 </section>
 
 <section class="view" id="loginView" hidden>
-<!-- Telegram account preview: existing production game.html remains unchanged. -->
+<!-- Telegram account access; existing code claim is optional and hidden. -->
   <div class="auth-panel panel">
     <div class="eyebrow">Для тех, кто уже вместе в игре</div>
     <div class="ornament-heart" aria-hidden="true">✧</div>
     <h1 class="serif" style="font-size:clamp(31px,7vw,49px);margin:12px 0 18px">Все карточки.<br><span class="pink">Ваш вечер.</span></h1>
-    <p class="hint">Для защищённой игры сначала войдите через Telegram. После входа ваша покупка откроется автоматически, а старый код можно будет привязать один раз.</p>
+    <p class="hint">Войдите через Telegram. Если игра уже куплена, все колоды откроются автоматически. Никаких кодов и паролей.</p>
     <div id="telegramLogin" style="display:flex;justify-content:center;margin:20px auto;min-height:44px"></div>
     <p class="hint">Если кнопка Telegram недоступна, требуется разрешить домен gudush03-cell.github.io в настройках Telegram-бота.</p>
-    <form id="loginForm" autocomplete="off">
+    <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
+    <a href="./secure-purchase.html" class="btn full" style="margin-top:15px">Купить игру — 499 ₽</a>
+    <details style="margin-top:22px;text-align:left">
+      <summary class="hint" style="cursor:pointer">У меня уже есть старый код покупки</summary>
+      <form id="loginForm" autocomplete="off">
       <label for="accessCode" class="eyebrow" style="display:block;text-align:left;margin:25px 0 9px">Привязать существующий код покупки</label>
       <input class="field" id="accessCode" type="text" maxlength="100" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
       <button class="btn" type="submit" id="loginButton">Привязать покупку</button>
-      <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
+
     </form>
-    <p class="hint">Код покупки не сохраняется в браузере. Вход действует только в текущем сеансе браузера; прогресс партии сохраняется без текстов карточек.</p>
-    <a href="./secure-purchase.html" class="btn secondary full" style="margin-top:15px">Купить игру - 499 ₽</a>
+      <p class="hint">Это только для ранее выданных кодов. Новым покупателям код не нужен.</p>
+    </details>
+    
     <button type="button" class="text-button" id="backHome" style="margin-top:15px">← На главную</button>
   </div>
 </section>
@@ -193,7 +198,7 @@
 <footer class="site-footer">
   <span>✧ ВДВОЁМ НАЛЕГКЕ - 2026</span>
   <span>168 карт - 10 колод - Один телефон на двоих</span>
-  <span>Личный код - Без подписки</span>
+  <span>Ваш аккаунт — Без подписки</span>
 </footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
