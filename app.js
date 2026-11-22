@@ -48,6 +48,7 @@ let selected=new URLSearchParams(location.search).get('deck');
 if(!keys.includes(selected))selected=null;
 function showView(id){
  if(party)saveProgress();
+ const resume=$('resumeDemo');if(resume&&id==='homeView')resume.hidden=!(party?.mode==='demo'&&party.index<party.queue.length);
  view=id; for(const k of views)$(k).hidden=k!==id;
  const element=$(id);element.classList.remove('enter');
  if(!reduced){void element.offsetWidth;element.classList.add('enter');}
@@ -224,6 +225,7 @@ function again(){
 function logout(){decks=null;party=null;try{localStorage.removeItem(SAVE_KEY)}catch{}aside=null;privateStage=null;$('accessCode').value='';$('loginStatus').textContent='';showView(gamePage?'loginView':'homeView');toast('Игра закрыта. Для повторного входа понадобится код.');}
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
+ const resumeDemo=$('resumeDemo');if(resumeDemo)resumeDemo.addEventListener('click',()=>{if(!party&&!restoreProgress('demo'))return startDemo();aside=null;render();showView('playView');});
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
  $('loginForm').addEventListener('submit',async event=>{
   event.preventDefault();
@@ -272,5 +274,5 @@ function wire(){
  $('finishLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
  $('finishAgain').addEventListener('click',again);
 }
-populate();wire();if(!gamePage&&restoreProgress('demo')){render();showView('playView');}else showView(gamePage?'loginView':'homeView');
+populate();wire();if(!gamePage&&restoreProgress('demo')){const resume=$('resumeDemo');if(resume)resume.hidden=false;}showView(gamePage?'loginView':'homeView');
 })();
