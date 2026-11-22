@@ -112,3 +112,8 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 @keyframes box-drift{50%{transform:translateY(-12px) rotate(-6deg) rotateY(-9deg)}}
 @media(max-width:700px){#rules .rule-grid,.box-preview{grid-template-columns:1fr}.box-preview-art{min-height:250px}.box-preview-cover{width:170px;height:210px}.box-preview-cover strong{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.box-preview-cover{animation:none}.decks-grid .deck-card{will-change:auto;transition:none!important}}
+
+/* Use the original site's logo across the game views */
+.top .logo{display:inline-flex;align-items:center;line-height:1;letter-spacing:0;flex-shrink:0}
+.top .logo img{display:block;width:130px;height:55px;object-fit:contain;filter:drop-shadow(0 0 13px #ff9cc344)}
+@media(max-width:480px){.top .logo img{width:98px;height:44px}}
