@@ -84,3 +84,24 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 #playView .play-turn{animation:arrive .55s ease both}
 #playView .play-bottom,#playView .play-tools{animation:arrive .6s .1s both}
 @media(prefers-reduced-motion:reduce){#lobbyView .intro,#lobbyView .notice,#playView .play-turn,#playView .play-bottom,#playView .play-tools{animation:none!important}}
+
+/* Targeted UI refinements — preserve the existing game layout and interactions. */
+.logo img{display:block;width:clamp(115px,14vw,150px);height:auto;max-height:68px;object-fit:contain;object-position:left center}
+.game-rules-accordion{display:grid;gap:10px;max-width:880px;margin:26px auto 0}
+.game-rule-detail{border:1px solid #f0abc143;background:linear-gradient(125deg,#342330dd,#241921dd);border-radius:18px;margin:0;overflow:hidden;color:#fff1e9}
+.game-rule-detail>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 21px;cursor:pointer;font-size:15px;font-weight:800;list-style:none}
+.game-rule-detail>summary::-webkit-details-marker{display:none}
+.game-rule-detail>summary span{color:var(--pink);font-size:24px;line-height:1;transition:transform .25s}
+.game-rule-detail[open]>summary span{transform:rotate(180deg)}
+.game-rule-detail:focus-within{border-color:#ffa6c5a6}
+.game-rule-body{padding:0 21px 17px;color:#e4cdd8;animation:ruleReveal .28s ease both}
+.game-rule-body ul{margin:0;padding-left:23px;display:grid;gap:9px}
+.game-rule-body li{line-height:1.65}
+.game-rule-body li::marker{color:var(--pink)}
+.lobby-rules{margin:20px 0 25px}
+.deck-card{animation:deckEntrance .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--deck-order,0)*45ms)}
+.deck-card:hover,.deck-card:focus-visible{transform:translateY(-7px) rotate(-1deg);box-shadow:0 16px 42px #06020b8c}
+.deck-card .ordinal{display:none}
+@keyframes ruleReveal{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes deckEntrance{from{opacity:0;transform:translateY(15px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.game-rule-body,.deck-card{animation:none!important}.game-rule-detail>summary span{transition:none}}
