@@ -155,7 +155,19 @@ small {
   display: none !important;
 }
 .brand-image img{display:block;width:min(250px,100%);height:110px;object-fit:contain;margin:10px auto 8px;filter:drop-shadow(0 0 20px #ff9dc755)}
+
+.payment-steps{list-style:none;padding:0;margin:25px 0 23px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.payment-steps li{min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;background:#ffffff09;border:1px solid #f3b2c842;border-radius:16px}
+.step-circle{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#f9b8ce;color:#352030;font-weight:800;font-size:12px}
+.payment-steps strong{font-size:11px;line-height:1.3;color:#ffe9f0}
+.payment-steps small{font-size:9px;line-height:1.45;color:#d0b4c2}
+.payment-description{font-size:11px;color:#c9b0bd;margin:7px auto 17px!important}
+.payment-help{font-size:12px;line-height:1.85;margin:23px 0 13px;color:#ead6df}
+.payment-legal{font-size:10px;line-height:1.75;margin:10px 0 19px;color:#bea5b1}
+.payment-help a,.payment-legal a{color:#ffd7e7;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:380px){main{padding:27px 16px}.payment-steps{gap:5px}.payment-steps li{padding:12px 5px}.payment-steps strong{font-size:10px}.payment-steps small{font-size:9px}}
 </style>
+<script src="./analytics.js" defer></script>
 </head>
 
 <body>
@@ -168,10 +180,16 @@ small {
 
   <p>
     168 карточек в 10 колодах.
-    Один платёж — личный код доступа.
+    Один платёж – личный код доступа.
   </p>
 
+  <ol class="payment-steps" aria-label="Три шага к игре">
+    <li><span class="step-circle">1</span><strong>Оплатили</strong><small>Через Robokassa</small></li>
+    <li><span class="step-circle">2</span><strong>Получили код</strong><small>На этой странице</small></li>
+    <li><span class="step-circle">3</span><strong>Играете</strong><small>В браузере вдвоём</small></li>
+  </ol>
   <div class="price">499 ₽</div>
+  <p class="payment-description">Разовая покупка без подписки. Физические карты не входят в стоимость.</p>
 
   <button id="buy" type="button">
     Перейти к оплате
@@ -218,6 +236,8 @@ small {
     Начать другой заказ
   </button>
 
+  <p class="payment-help">Уже есть код? <a href="./game.html">Войти в игру</a><br>Проблема с оплатой или доступом? <a href="mailto:gudush03@gmail.com">Напишите в поддержку</a> или <a href="https://t.me/GudDan03" target="_blank" rel="noopener noreferrer">в Telegram</a>.</p>
+  <p class="payment-legal">Покупка регулируется <a href="./offer.html">публичной офертой</a>. Возврат и восстановление доступа описаны в <a href="./offer.html#refund">условиях</a>. Платежи на сайте сейчас обозначены как тестовые, реальные списания должны быть проверены отдельно.</p>
   <a href="./index.html" class="back">
     Вернуться на главную
   </a>
@@ -337,6 +357,7 @@ async function startPurchase() {
       data.orderId
     );
 
+    window.vdvoemTrack?.('payment_redirect',{source:'purchase_page'});
     window.location.assign(data.paymentUrl);
 
   } catch (error) {
@@ -396,6 +417,7 @@ async function checkPayment() {
       typeof data.accessCode === 'string'
     ) {
       codeBox.textContent = data.accessCode;
+      try { const key='vdvoem.analytics.confirmed.'+currentOrder; if(!sessionStorage.getItem(key)){window.vdvoemTrack?.('purchase_confirmed',{currency:'RUB',value:499,payment_mode:'unverified'});sessionStorage.setItem(key,'1');} } catch {}
       result.hidden = false;
       buy.hidden = true;
       retry.hidden = true;
