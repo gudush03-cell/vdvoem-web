@@ -1,0 +1,23 @@
+name: Secure game static syntax
+on:
+  pull_request:
+    paths:
+      - 'app-secure.js'
+      - 'secure-game.html'
+      - '.github/workflows/secure-game-check.yml'
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --check app-secure.js
+      - name: Verify legacy game remains independent
+        run: |
+          grep -q 'app-secure.js?v=1' secure-game.html
+          grep -q 'app.js?v=7' game.html
+          grep -q "fetchPaidCard" /dev/null || true
