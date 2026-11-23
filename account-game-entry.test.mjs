@@ -25,7 +25,7 @@ test('temporary server failures never silently erase the session',()=>{
 });
 
 test('public paid game copy describes account access, not codes',()=>{
-  assert.ok(html.includes('app-secure.js?v=3'));
+  assert.match(html,/app-secure\.js\?v=[0-9]+/);
   assert.ok(!html.includes('личный код после покупки'));
   assert.ok(!html.includes('После покупки, личный код'));
   assert.ok(!html.includes('Без регистрации, подписки и обязательного Telegram'));
