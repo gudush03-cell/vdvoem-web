@@ -1,0 +1,16 @@
+# Local secrets and private content must never enter the public website repository.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+*.db
+private/
+secrets/
+credentials/
+node_modules/
+.DS_Store
