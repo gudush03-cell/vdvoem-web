@@ -41,6 +41,7 @@ const gamePage=['game.html','secure-game.html'].includes(location.pathname.split
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let decks=null,party=null,aside=null,privateStage=null,view='',timer=0,saveKey=null;
 let authToken=null,telegramId=null,cardCache=new Map(),renderSerial=0;
+let cardLoading=false,cardLoadFailed=false;
 const TOKEN_KEY='vdvoem.preview.token', USER_KEY='vdvoem.preview.telegram';
 async function api(path,body,method='POST'){
  if(!authToken)throw Error('Войдите через Telegram.');
@@ -252,10 +253,24 @@ async function current(){
 }
 async function render(){
  const ticket=++renderSerial;
+ cardLoading=true;cardLoadFailed=false;
  $('cardTitle').textContent='Открываем карточку…';
+ $('cardBody').replaceChildren();
+ $('nextCard').disabled=true;
+ $('skipButton').disabled=true;
  let c;
- try{c=aside?.card||await current();}catch(e){if(ticket===renderSerial)toast('Карточка недоступна: '+e.message);return;}
+ try{c=aside?.card||await current();}catch(e){
+  if(ticket===renderSerial){
+   cardLoading=false;cardLoadFailed=true;
+   $('cardTitle').textContent='Не удалось загрузить карточку';
+   $('nextCard').textContent='Повторить загрузку';
+   $('nextCard').disabled=false;
+   toast('Карточка недоступна: '+(e.message||'Проверьте интернет.'));
+  }
+  return;
+ }
  if(ticket!==renderSerial)return;
+ cardLoading=false;
  if(!c){finish(false);return;}
  $('playingCard').style.setProperty('--tone',c.tone);
  $('playingCard').style.setProperty('--ink',c.ink);
@@ -281,18 +296,19 @@ async function render(){
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
  $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Ответили: передать ход';
+ $('nextCard').disabled=false;
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
  saveProgress();
 }
 function advance(skipped=false){
- if(!party)return;
+ if(!party||cardLoading||cardLoadFailed)return;
  if(aside?.kind==='exhale'){aside=null;finish(true);return;}
  if(aside?.kind==='scene'){aside=null;if(skipped)nextPlayer();render();return;}
  if(party.index===party.queue.length-1){party.index++;finish(false);return;}
  party.index++;nextPlayer();render();
 }
 function skip(){
- if(!party||aside?.kind==='exhale'||!party.skips[party.player])return;
+ if(!party||cardLoading||cardLoadFailed||aside?.kind==='exhale'||!party.skips[party.player])return;
  party.skips[party.player]--;toast('«Не сегодня». Без объяснений');advance(true);
 }
 async function scene(){
@@ -380,7 +396,7 @@ function wire(){
   else lobby();
  });
  $('backLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
- $('nextCard').addEventListener('click',()=>advance(false));
+ $('nextCard').addEventListener('click',()=>cardLoadFailed?render():advance(false));
  $('skipButton').addEventListener('click',skip);
  $('sceneButton').addEventListener('click',scene);
  $('tasksButton').addEventListener('click',()=>startSecrets('review'));
