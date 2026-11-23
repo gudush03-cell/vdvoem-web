@@ -79,7 +79,7 @@ jobs:
           node --check /tmp/vdvoem-secure-purchase.js
       - name: Verify secure game and legacy redirects
         run: |
-          grep -q 'app-secure.js?v=6' secure-game.html
+          grep -q 'app-secure.js?v=7' secure-game.html
           grep -q 'secure-game.html' game.html
           grep -q 'secure-purchase.html' purchase.html
           grep -q 'Authorization' secure-purchase.html
