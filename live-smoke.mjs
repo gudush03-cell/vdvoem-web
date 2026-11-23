@@ -15,6 +15,14 @@ async function getWithRetry(url) {
   }
   throw last;
 }
+const landingResponse=await getWithRetry(website+'/');
+const landing=await landingResponse.text();
+assert.match(landing,/secure-purchase\.html/);
+assert.match(landing,/secure-game\.html/);
+assert.doesNotMatch(landing,/href="\.\/purchase\.html"/);
+assert.doesNotMatch(landing,/href="\.\/game\.html/);
+console.log('PASS homepage account-bound purchase and deck routes');
+
 for(const path of ['/game.html','/secure-game.html','/secure-purchase.html']){
   const response=await getWithRetry(website+path);
   const html=await response.text();
