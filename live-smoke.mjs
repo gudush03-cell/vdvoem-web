@@ -63,4 +63,24 @@ const guestStatus=await fetch(backend+'/api/account/status',{
   headers:{Origin:'https://gudush03-cell.github.io'},signal:AbortSignal.timeout(12000)
 });
 assert.equal(guestStatus.status,401,'Guest cannot read account status');
+
+for(const origin of ['https://gudush03-cell.github.io','https://vdvoemnalegke.ru','https://www.vdvoemnalegke.ru']){
+  const preflight=await fetch(backend+'/api/auth/telegram',{
+    method:'OPTIONS',
+    headers:{'Origin':origin,'Access-Control-Request-Method':'POST',
+      'Access-Control-Request-Headers':'Content-Type, Authorization'},
+    signal:AbortSignal.timeout(12000)
+  });
+  assert.equal(preflight.status,204,'CORS '+origin);
+  assert.equal(preflight.headers.get('access-control-allow-origin'),origin,
+    'Explicit domain CORS '+origin);
+}
+for(const origin of ['https://fake.vdvoemnalegke.ru','http://vdvoemnalegke.ru']){
+  const blocked=await fetch(backend+'/api/auth/telegram',{
+    method:'OPTIONS',headers:{Origin:origin},signal:AbortSignal.timeout(12000)
+  });
+  assert.equal(blocked.status,403,'Disallowed CORS '+origin);
+}
+console.log('PASS new HTTPS domain allowed, old origin preserved, spoofed origins blocked');
+
 console.log('PASS unauthorized Telegram signature and paid card requests rejected');
