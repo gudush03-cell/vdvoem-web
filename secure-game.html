@@ -21,7 +21,8 @@
   <nav class="nav" aria-label="Навигация">
     <a href="./index.html#rules">Правила</a>
     <a href="./index.html#decks">Колоды</a>
-    <a class="pill-link" href="./secure-game.html">Войти через Telegram</a>
+    <a class="pill-link" id="headerLoginLink" href="./secure-game.html#loginView">Войти через Telegram</a>
+    <span class="pill-link account-badge" id="headerAccountBadge" hidden>✓ Telegram подключён</span>
   </nav>
 </header>
 <main>
@@ -184,12 +185,12 @@
       <div class="paper-foot" id="cardFooter">ЧИТАЙТЕ - ОТВЕЧАЙТЕ - ПЕРЕДАВАЙТЕ ХОД</div>
     </article>
     <div class="skip-cards" id="skipCards">
-      <div class="skip-card" id="skip1"><strong>🛑 Игрок 1</strong><div>«Не сегодня» - <span id="skipCount1">1</span></div></div>
-      <div class="skip-card" id="skip2"><strong>🛑 Игрок 2</strong><div>«Не сегодня» - <span id="skipCount2">1</span></div></div>
+      <div class="skip-card" id="skip1"><strong>Игрок 1</strong><div>«Не сегодня»: <span id="skipCount1">1</span></div></div>
+      <div class="skip-card" id="skip2"><strong>Игрок 2</strong><div>«Не сегодня»: <span id="skipCount2">1</span></div></div>
     </div>
     <div class="play-bottom">
       <button class="btn secondary" type="button" id="skipButton">🛑 Не сегодня</button>
-      <button class="btn" type="button" id="nextCard">Ответили - Передать ход</button>
+      <button class="btn" type="button" id="nextCard">Передать ход</button>
     </div>
     <div class="play-tools">
       <button type="button" class="btn ghost small" id="sceneButton">🎭 Ситуация</button>
