@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#130e13">
+  <meta name="robots" content="noindex">
+  <title>Оплата не завершена — Вдвоём налегке</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100dvh;padding:24px 16px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 10%,#76345066,transparent 65%),#130e13;color:#fff1e9;font:400 14px/1.75 'Manrope',sans-serif}
+    main{width:100%;max-width:470px;padding:37px 24px;border:1px solid #f1a5be66;border-radius:26px;background:linear-gradient(145deg,#30202c,#1c141e);box-shadow:0 25px 80px #0008;text-align:center}
+    .eyebrow{color:#eea8be;letter-spacing:.22em;font-size:10px;font-weight:800}
+    .symbol{width:62px;height:62px;margin:22px auto 16px;display:grid;place-items:center;border-radius:50%;background:#eea8be18;border:1px solid #f1a5be66;font-size:32px;line-height:1}
+    h1{font:400 clamp(25px,7vw,34px)/1.2 'Prata',serif;margin:8px 0 20px}
+    p{margin:0 auto 16px;max-width:360px;color:#e3cbd5}
+    .note{padding:14px 16px;border-radius:14px;background:#ffffff0b;border:1px solid #ffffff22;font-size:12px}
+    .actions{display:flex;flex-direction:column;gap:11px;margin:25px auto 20px}
+    a{color:#ffd7e7}
+    .button{min-height:48px;padding:11px 18px;display:flex;align-items:center;justify-content:center;border:1px solid #f3b2c888;border-radius:13px;text-decoration:none;font-weight:800}
+    .button.primary{background:#f3b2c8;color:#21141d;border-color:#f3b2c8}
+    .button:focus-visible,a:focus-visible{outline:3px solid white;outline-offset:3px}
+    footer{margin-top:20px;color:#bea5b1;font-size:11px}
+    @media(min-width:480px){.actions{flex-direction:row}.button{flex:1}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">ВДВОЁМ НАЛЕГКЕ</div>
+  <div class="symbol" aria-hidden="true">↩</div>
+  <h1>Оплата не завершена</h1>
+  <p>Вы вернулись со страницы Robokassa без подтверждения завершения покупки. Причиной могла быть отмена или ошибка.</p>
+  <p class="note">Если деньги уже списаны, сначала проверьте существующий заказ — не создавайте новую оплату, пока не уточните его статус.</p>
+  <nav class="actions" aria-label="Дальнейшие действия">
+    <a class="button primary" href="./secure-purchase.html">Проверить заказ</a>
+    <a class="button" href="./secure-game.html">Вернуться к игре</a>
+  </nav>
+  <footer>Нужна помощь? <a href="mailto:gudush03@gmail.com">Связаться с поддержкой</a>. Условия: <a href="./offer.html">публичная оферта</a>.</footer>
+</main>
+</body>
+</html>

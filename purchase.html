@@ -358,6 +358,38 @@ async function startPurchase() {
     );
 
     window.vdvoemTrack?.('payment_redirect',{source:'purchase_page'});
+    if (data.paymentForm) {
+      const payment = data.paymentForm;
+      if (payment.action !== 'https://auth.robokassa.ru/Merchant/Index.aspx' ||
+          payment.method !== 'POST' ||
+          !payment.fields ||
+          typeof payment.fields !== 'object' ||
+          Array.isArray(payment.fields) ||
+          typeof payment.fields.Receipt !== 'string' ||
+          typeof payment.fields.SignatureValue !== 'string') {
+        throw new Error('Неверные параметры перехода к оплате.');
+      }
+      // Robokassa recommends POST for fiscalized Receipt; values are
+      // generated and signed by the payment server, never in the browser.
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = payment.action;
+      form.hidden = true;
+      for (const [name, value] of Object.entries(payment.fields)) {
+        if (!/^[A-Za-z0-9]+$/.test(name) || typeof value !== 'string') {
+          throw new Error('Неверные параметры формы оплаты.');
+        }
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.append(input);
+      }
+      document.body.append(form);
+      form.submit();
+      return;
+    }
+    // Backward compatibility with older payment-server releases.
     window.location.assign(data.paymentUrl);
 
   } catch (error) {

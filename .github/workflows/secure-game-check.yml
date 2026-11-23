@@ -10,6 +10,8 @@ on:
       - 'secure-game.html'
       - 'secure-purchase.html'
       - 'secure-purchase.test.mjs'
+      - 'payment-failed.html'
+      - 'payment-failed.test.mjs'
       - 'email-login.js'
       - 'email-login.test.mjs'
       - 'game.html'
@@ -30,6 +32,7 @@ jobs:
       - run: node --check email-login.js
       - run: node --test email-login.test.mjs
       - run: node --test secure-purchase.test.mjs
+      - run: node --test payment-failed.test.mjs
       - name: Check checkout inline JavaScript syntax
         run: |
           python3 - <<'PY'
