@@ -42,17 +42,17 @@ for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html'
   const response=await getWithRetry(cloudflareWebsite+path);
   const body=await response.text();
   if(path==='/') {
-    assert.match(body,/secure-purchase\\.html/);
-    assert.match(body,/secure-game\\.html/);
+    assert.match(body,/secure-purchase\.html/);
+    assert.match(body,/secure-game\.html/);
   } else if(path==='/secure-game.html'){
-    assert.match(body,/app-secure\\.js/);
+    assert.match(body,/app-secure\.js/);
   } else if(path==='/secure-purchase.html'){
-    assert.match(body,/\\/api\\/checkout/);
-    assert.match(body,/data-telegram-login|telegram-widget\\.js/);
+    assert.match(body,/\/api\/checkout/);
+    assert.match(body,/data-telegram-login|telegram-widget\.js/);
   } else if(path==='/app-secure.js'){
-    assert.match(body,/\\/api\\/account\\/card/);
+    assert.match(body,/\/api\/account\/card/);
   } else {
-    assert.match(body,/<html\\b/i);
+    assert.match(body,/<html\b/i);
   }
   console.log('PASS Cloudflare Pages '+path);
 }
