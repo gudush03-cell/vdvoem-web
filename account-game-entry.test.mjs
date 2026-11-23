@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const js=readFileSync(new URL('./app-secure.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('./secure-game.html',import.meta.url),'utf8');
+
+test('browsing account decks never starts or occupies a paid party lease',()=>{
+  const start=js.indexOf('async function accountGame()');
+  const end=js.indexOf('window.onTelegramAuth=',start);
+  assert.ok(start>=0&&end>start);
+  const functionBody=js.slice(start,end);
+  assert.ok(!functionBody.includes('await enterParty()'));
+  assert.match(functionBody,/\/api\/account\/manifest/);
+  assert.match(js,/if\(e.status!==409\)throw e;await enterParty\(\)/,
+    'First paid card should start party lazily');
+});
+
+test('temporary server failures never silently erase the session',()=>{
+  const start=js.indexOf('async function restore()');
+  const end=js.indexOf('let selected=',start);
+  const restore=js.slice(start,end);
+  assert.match(restore,/if\(e.status===401\)/,
+    'Only expired or revoked sessions clear the session');
+  assert.match(restore,/Проверьте интернет и обновите страницу/);
+});
+
+test('public paid game copy describes account access, not codes',()=>{
+  assert.ok(html.includes('app-secure.js?v=3'));
+  assert.ok(!html.includes('личный код после покупки'));
+  assert.ok(!html.includes('После покупки, личный код'));
+  assert.ok(!html.includes('Без регистрации, подписки и обязательного Telegram'));
+});
