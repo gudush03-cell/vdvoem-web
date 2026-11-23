@@ -86,6 +86,7 @@ async function accountGame(){
  cardCache.clear();saveKey=telegramId?await progressKey('account:'+telegramId):null;loadProgress();
  $('loginStatus').textContent='';populate();lobby();
  if(selected){const id=selected;selected=null;describeDeck(id);}
+ else if(new URLSearchParams(location.search).get('resume')==='1' && !$('resumeBox').hidden)resumeParty();
 }
 window.onTelegramAuth=async user=>{
  const label=$('loginStatus');label.textContent='Проверяем Telegram…';
@@ -209,6 +210,10 @@ function reveals(){
  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 }
 function populate(){ $('publicDecks').replaceChildren(...keys.map((k,i)=>tile(k,i,false)));$('privateDecks').replaceChildren(...keys.map((k,i)=>tile(k,i,true)));reveals();}
+function resumeParty(){
+ if(!party?.queue.length || party.index>=party.queue.length)return lobby();
+ aside=null;render();showView('playView');
+}
 function lobby(){if(!decks){showView('loginView');return;}aside=null;$('resumeBox').hidden=!party||!party.queue.length||party.index>=party.queue.length;showView('lobbyView');reveals();}
 function nextPlayer(){party.player=party.player===1?2:1;}
 function startDemo(){window.vdvoemTrack?.('demo_start',{source:'game_page'});party={mode:'demo',queue:demo.map((_,i)=>({demo:i})),index:0,player:1,skips:{1:1,2:1},secrets:null,seen:[]};aside=null;render();showView('playView');}
@@ -339,6 +344,7 @@ async function exhale(){
  render();showView('playView');
 }
 function finish(afterExhale){
+ if(saveKey && party?.mode!=='demo'){try{localStorage.removeItem(saveKey);}catch{}}
  if(party?.mode==='demo'&&!afterExhale)window.vdvoemTrack?.('demo_complete',{source:'game_page'});
  if(!afterExhale&&party&&(party.mode==='full'||party.mode==='quick')&&!party.midnightStage){
    party.midnightStage='asked';
@@ -374,7 +380,7 @@ function wire(){
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
- $('resumeButton').addEventListener('click',()=>{if(!party?.queue.length)return lobby();aside=null;render();showView('playView');});
+ $('resumeButton').addEventListener('click',resumeParty);
  $('viewMyTasks').addEventListener('click',()=>selectDeck('silent'));
  $('lobbyExhale').addEventListener('click',exhale);
  $('logout').addEventListener('click',logout);
