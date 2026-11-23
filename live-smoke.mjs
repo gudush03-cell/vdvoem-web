@@ -38,7 +38,7 @@ console.log('PASS protected client script');
 
 // Cloudflare Pages is tested in parallel with the original GitHub Pages site.
 const cloudflareWebsite='https://vdvoem-web.pages.dev';
-for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html','/app-secure.js']){
+for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html','/privacy.html','/app-secure.js']){
   const response=await getWithRetry(cloudflareWebsite+path);
   const body=await response.text();
   if(path==='/') {
@@ -51,12 +51,25 @@ for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html'
     assert.match(body,/data-telegram-login|telegram-widget\.js/);
   } else if(path==='/app-secure.js'){
     assert.match(body,/\/api\/account\/card/);
+  } else if(path==='/offer.html'){
+    assert.match(body,/499 ₽/);
+    assert.match(body,/privacy\.html/);
+    assert.doesNotMatch(body,/Это проект оферты|Цена в рублях будет показана/);
+  } else if(path==='/privacy.html'){
+    assert.match(body,/Политика обработки персональных данных/);
+    assert.match(body,/Telegram/);
   } else {
     assert.match(body,/<html\b/i);
   }
   console.log('PASS Cloudflare Pages '+path);
 }
 
+
+const legal=await getWithRetry(website+'/offer.html');
+assert.match(await legal.text(),/499 ₽/);
+const privacy=await getWithRetry(website+'/privacy.html');
+assert.match(await privacy.text(),/Политика обработки персональных данных/);
+console.log('PASS original site legal pages');
 
 const health=await getWithRetry(backend+'/health');
 const status=await health.json();
