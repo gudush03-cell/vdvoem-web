@@ -41,6 +41,12 @@ const gamePage=['game.html','secure-game.html'].includes(location.pathname.split
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let decks=null,party=null,aside=null,privateStage=null,view='',timer=0,saveKey=null;
 let authToken=null,telegramId=null,cardCache=new Map(),renderSerial=0;
+let accountVerified=false;
+function updateHeaderAuth(){
+ const login=$('headerLoginLink'),badge=$('headerAccountBadge');
+ if(login)login.hidden=accountVerified;
+ if(badge)badge.hidden=!accountVerified;
+}
 let cardLoading=false,cardLoadFailed=false;
 const TOKEN_KEY='vdvoem.preview.token', USER_KEY='vdvoem.preview.telegram';
 async function api(path,body,method='POST'){
@@ -68,6 +74,8 @@ async function paidCard(deck,index){
 }
 async function accountGame(){
  const status=await api('/api/account/status',null,'GET');
+ accountVerified=status.signedIn===true;
+ updateHeaderAuth();
  if(!status.paid){$('loginStatus').textContent='Аккаунт найден. Если игра ещё не куплена, нажмите «Купить игру».';showView('loginView');return;}
  // Do not occupy the one-active-party lease while browsing decks.
  // paidCard() opens a lease lazily when the first paid card is requested.
@@ -91,7 +99,8 @@ window.onTelegramAuth=async user=>{
   authToken=data.token;telegramId=String(user.id);
   sessionStorage.setItem(TOKEN_KEY,authToken);sessionStorage.setItem(USER_KEY,telegramId);
   await accountGame();
- }catch(e){label.textContent=e.message;}
+ }catch(e){if(e.status===401){accountVerified=false;updateHeaderAuth();}
+  label.textContent=e.message;}
 };
 function telegramWidget(){
  const el=$('telegramLogin');if(!el)return;
@@ -109,6 +118,7 @@ async function restore(){
  catch(e){
   // A temporary network/server failure must not silently sign the buyer out.
   if(e.status===401){
+   accountVerified=false;updateHeaderAuth();
    authToken=null;telegramId=null;sessionStorage.removeItem(TOKEN_KEY);
    sessionStorage.removeItem(USER_KEY);
    $('loginStatus').textContent='Сессия истекла. Войдите повторно.';
@@ -295,7 +305,7 @@ async function render(){
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
- $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Ответили: передать ход';
+ $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Передать ход';
  $('nextCard').disabled=false;
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
  saveProgress();
@@ -353,9 +363,10 @@ function again(){
 }
 function logout(){
  if(authToken)api('/api/account/logout').catch(()=>{});
- try{if(saveKey)localStorage.removeItem(saveKey);}catch{}
+ // Preserve the account-scoped local progress for future visits.
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);
- authToken=null;telegramId=null;cardCache.clear();saveKey=null;decks=null;party=null;aside=null;privateStage=null;
+ authToken=null;telegramId=null;accountVerified=false;updateHeaderAuth();
+ cardCache.clear();saveKey=null;decks=null;party=null;aside=null;privateStage=null;
  $('accessCode').value='';$('loginStatus').textContent='';
  showView(gamePage?'loginView':'homeView');toast('Вы вышли из аккаунта.');
 }
@@ -405,5 +416,5 @@ function wire(){
  $('finishLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
  $('finishAgain').addEventListener('click',again);
 }
-populate();wire();showView(gamePage?'loginView':'homeView');telegramWidget();restore();
+populate();wire();updateHeaderAuth();showView(gamePage?'loginView':'homeView');telegramWidget();restore();
 })();
