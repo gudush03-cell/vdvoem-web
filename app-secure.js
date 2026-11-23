@@ -84,7 +84,7 @@ async function accountGame(){
    throw Error('Колоды не совпадают.');
  decks=Object.fromEntries(keys.map((k,i)=>[k,Array(lengths[i]).fill(null)]));
  cardCache.clear();saveKey=telegramId?await progressKey('account:'+telegramId):null;loadProgress();
- $('accessCode').value='';$('loginStatus').textContent='';populate();lobby();
+ $('loginStatus').textContent='';populate();lobby();
  if(selected){const id=selected;selected=null;describeDeck(id);}
 }
 window.onTelegramAuth=async user=>{
@@ -367,27 +367,12 @@ function logout(){
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);
  authToken=null;telegramId=null;accountVerified=false;updateHeaderAuth();
  cardCache.clear();saveKey=null;decks=null;party=null;aside=null;privateStage=null;
- $('accessCode').value='';$('loginStatus').textContent='';
+ $('loginStatus').textContent='';
  showView(gamePage?'loginView':'homeView');toast('Вы вышли из аккаунта.');
 }
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
- $('loginForm').addEventListener('submit',async event=>{
- event.preventDefault();
- const label=$('loginStatus');
- if(!authToken){label.textContent='Сначала войдите через Telegram.';return;}
- const code=$('accessCode').value.trim();
- if(!/^[A-HJ-NP-Z2-9]{20}$/i.test(code.replaceAll('-',''))){
-  label.textContent='Проверьте код: 20 символов (четыре группы по пять).';return;
- }
- const button=$('loginButton');button.disabled=true;button.textContent='Привязываем покупку…';
- try{const claim=await api('/api/account/claim',{code});
-  if(!claim.claimed)throw Error('Код не привязан.');
-  await accountGame();
- }catch(e){label.textContent=e.message||'Ошибка привязки.';}
- finally{button.disabled=false;button.textContent='Привязать покупку';}
-});
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
  $('resumeButton').addEventListener('click',()=>{if(!party?.queue.length)return lobby();aside=null;render();showView('playView');});
  $('viewMyTasks').addEventListener('click',()=>selectDeck('silent'));
