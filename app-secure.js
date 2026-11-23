@@ -67,8 +67,9 @@ async function paidCard(deck,index){
 }
 async function accountGame(){
  const status=await api('/api/account/status',null,'GET');
- if(!status.paid){$('loginStatus').textContent='Вы вошли через Telegram. Если игра ещё не куплена, нажмите «Купить игру».';showView('loginView');return;}
- await enterParty();
+ if(!status.paid){$('loginStatus').textContent='Аккаунт найден. Если игра ещё не куплена, нажмите «Купить игру».';showView('loginView');return;}
+ // Do not occupy the one-active-party lease while browsing decks.
+ // paidCard() opens a lease lazily when the first paid card is requested.
  const manifest=await api('/api/account/manifest',null,'GET');
  if(manifest.access!=='granted'||keys.some((k,i)=>manifest.deckSizes?.[k]!==lengths[i]))
    throw Error('Колоды не совпадают.');
@@ -104,8 +105,17 @@ async function restore(){
  telegramId=sessionStorage.getItem(USER_KEY);
  if(!/^[A-Za-z0-9_-]{43}$/.test(authToken||'')){authToken=null;return;}
  try{await accountGame();}
- catch{authToken=null;telegramId=null;sessionStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(USER_KEY);$('loginStatus').textContent='Войдите повторно через Telegram.';showView('loginView');}
+ catch(e){
+  // A temporary network/server failure must not silently sign the buyer out.
+  if(e.status===401){
+   authToken=null;telegramId=null;sessionStorage.removeItem(TOKEN_KEY);
+   sessionStorage.removeItem(USER_KEY);
+   $('loginStatus').textContent='Сессия истекла. Войдите повторно.';
+  } else {
+   $('loginStatus').textContent='Не удалось загрузить игру. Проверьте интернет и обновите страницу — покупка сохранена в аккаунте.';
+  }
+  showView('loginView');
+ }
 }
 
 let selected=new URLSearchParams(location.search).get('deck');
