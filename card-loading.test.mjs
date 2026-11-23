@@ -35,5 +35,5 @@ test('a failed card fetch offers a retry without advancing or consuming a skip',
 });
 
 test('secure game cache-busts the script after controls update',()=>{
-  assert.match(html,/app-secure\.js\?v=5/);
+  assert.match(html,/app-secure\.js\?v=6/);
 });
