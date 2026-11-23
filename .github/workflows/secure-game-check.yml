@@ -13,6 +13,11 @@ on:
       - 'email-login.js'
       - 'email-login.test.mjs'
       - 'game.html'
+      - 'purchase.html'
+      - 'index.html'
+      - 'offer.html'
+      - 'privacy.html'
+      - 'release-copy.test.mjs'
       - '.github/workflows/secure-game-check.yml'
 permissions:
   contents: read
@@ -46,6 +51,7 @@ jobs:
       - run: node --check email-login.js
       - run: node --test email-login.test.mjs
       - run: node --test secure-purchase.test.mjs
+      - run: node --test release-copy.test.mjs
       - name: Check checkout inline JavaScript syntax
         run: |
           python3 - <<'PY'
@@ -71,11 +77,11 @@ jobs:
           Path('/tmp/vdvoem-secure-purchase.js').write_text('\n'.join(parser.inline))
           PY
           node --check /tmp/vdvoem-secure-purchase.js
-      - name: Verify legacy game remains independent
+      - name: Verify secure game and legacy redirects
         run: |
           grep -q 'app-secure.js?v=6' secure-game.html
-          grep -q 'app.js?v=8' game.html
-          grep -q 'href="./secure-game.html"' game.html
+          grep -q 'secure-game.html' game.html
+          grep -q 'secure-purchase.html' purchase.html
           grep -q 'Authorization' secure-purchase.html
           grep -q 'data-email-auth hidden' secure-game.html
           grep -q 'data-email-auth hidden' secure-purchase.html
