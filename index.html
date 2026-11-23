@@ -869,9 +869,10 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
   <a href="#box">Коробка</a>
   <a class="offer-link" href="./offer.html">Условия покупки</a>
   <a href="./offer.html#refund">Возврат средств</a>
-  <a href="#seller-info">Контакты продавца</a><a href="./privacy.html">Политика персональных данных</a>
+  <a href="./privacy.html">Политика персональных данных</a>
   <a href="mailto:gudush03@gmail.com">Написать нам</a>
 </nav>
+<p style="grid-column:1/-1;line-height:1.65;margin:0">Самозанятый Гудушаури Даниил Николаевич<br>ИНН 231216001846 · <a href="#seller-info">Контакты продавца</a></p>
 <details class="privacy-note legal-note" id="seller-info"><summary>Документы и контакты <span aria-hidden="true">+</span></summary><div class="privacy-note__body"><section class="seller-legal" aria-labelledby="sellerLegalTitle">
   <div class="seller-legal__top"><span class="seller-legal__eyebrow">ДОКУМЕНТЫ И КОНТАКТЫ</span><h3 id="sellerLegalTitle">Всё открыто. <em>Как и наши разговоры.</em></h3></div>
   <div class="seller-legal__grid">
@@ -885,6 +886,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
       <p class="seller-legal__label">Поддержка покупателей</p>
       <a href="mailto:gudush03@gmail.com">gudush03@gmail.com</a>
       <a href="https://t.me/GudDan03" rel="noopener noreferrer" target="_blank">Telegram: @GudDan03</a>
+      <a href="tel:+79182530804">+7 918 253-08-04</a>
       <p>Вопросы об оплате, доступе и возвратах.</p>
     </div>
     <div class="seller-legal__item">
@@ -909,6 +911,13 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
   </div>
 </details>
 <p class="footer-copyright">© 2026 «Вдвоём налегке». 6 бесплатных карт, 168 карт в полной версии. Разовая покупка без подписки.</p></footer>
+<script>
+  const sellerDetails = document.getElementById('seller-info');
+  document.querySelectorAll('a[href="#seller-info"]').forEach(link => {
+    link.addEventListener('click', () => { sellerDetails.open = true; });
+  });
+  if (location.hash === '#seller-info') sellerDetails.open = true;
+</script>
 <dialog aria-labelledby="dialogTitle" class="game-dialog" id="demoDialog"><div class="game-shell">
 <div class="game-top"><div class="game-brand"><span class="game-brand-dot"></span> ВДВОЁМ НАЛЕГКЕ</div><button aria-label="Закрыть игру" class="icon-close" id="closeDemo" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"></path></svg></button></div>
 <div class="game-content" id="gameContent">
