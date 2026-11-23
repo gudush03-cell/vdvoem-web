@@ -262,28 +262,69 @@ const buy = document.getElementById('buy');
 const TOKEN_KEY='vdvoem.preview.token';
 const USER_KEY='vdvoem.preview.telegram';
 let accountToken=sessionStorage.getItem(TOKEN_KEY);
+let accountVerified=false,accountCheckSerial=0;
 const telegramStatus=document.getElementById('telegramStatus');
-function signedIn(){
- return typeof accountToken==='string' && /^[A-Za-z0-9_-]{43}$/.test(accountToken);
+const accountEntry=document.getElementById('accountEntry');
+const purchaseOffer=document.getElementById('purchaseOffer');
+const purchaseHelp=document.getElementById('purchaseHelp');
+const telegramLogin=document.getElementById('telegramLogin');
+const loginPrompt=document.getElementById('loginPrompt');
+function hasToken(){return typeof accountToken==='string' && /^[A-Za-z0-9_-]{43}$/.test(accountToken);}
+function signedIn(){return accountVerified && hasToken();}
+function showPaidAccess(){
+ accountEntry.hidden=true;purchaseOffer.hidden=true;purchaseHelp.hidden=true;
+ result.hidden=false;buy.hidden=true;buy.disabled=true;retry.hidden=true;newOrder.hidden=true;message.hidden=true;
 }
-buy.disabled=!signedIn();
+function showCheckoutAccess(){
+ accountEntry.hidden=false;purchaseOffer.hidden=false;purchaseHelp.hidden=false;result.hidden=true;
+ telegramLogin.hidden=accountVerified;loginPrompt.hidden=accountVerified;
+ telegramStatus.textContent=accountVerified?'Telegram подключён.':'';
+ buy.hidden=!accountVerified||Boolean(currentOrder);buy.disabled=!accountVerified;
+}
+function clearExpiredSession(){
+ accountToken=null;accountVerified=false;sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);
+}
+async function refreshAccount(){
+ const serial=++accountCheckSerial;
+ if(!hasToken()){accountVerified=false;showCheckoutAccess();return;}
+ buy.disabled=true;telegramStatus.textContent='Проверяем доступ…';telegramLogin.hidden=true;
+ try{
+  const response=await fetch(API+'/api/account/status',{
+   method:'GET',cache:'no-store',headers:{Authorization:'Bearer '+accountToken},
+   signal:AbortSignal.timeout(15000)
+  });
+  if(serial!==accountCheckSerial)return;
+  if(response.status===401){
+   clearExpiredSession();showCheckoutAccess();telegramStatus.textContent='Сессия истекла. Войдите снова.';return;
+  }
+  if(!response.ok)throw Error('Не удалось проверить доступ.');
+  const data=await response.json();
+  if(serial!==accountCheckSerial)return;
+  if(!data.signedIn)throw Error('Не удалось подтвердить аккаунт.');
+  accountVerified=true;
+  if(data.paid===true)showPaidAccess();else showCheckoutAccess();
+ }catch(e){
+  if(serial!==accountCheckSerial)return;
+  accountVerified=false;showCheckoutAccess();buy.hidden=true;telegramLogin.hidden=true;
+  telegramStatus.textContent='Не удалось проверить аккаунт. Обновите страницу.';
+ }
+}
 window.onPurchaseTelegramAuth=async user=>{
  telegramStatus.textContent='Проверяем Telegram…';
  try{
   const response=await fetch(API+'/api/auth/telegram',{
-   method:'POST',cache:'no-store',
-   headers:{'Content-Type':'application/json'},
+   method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},
    body:JSON.stringify(user),signal:AbortSignal.timeout(15000)
   });
   if(!response.ok)throw Error('Telegram не подтвердил вход.');
   const data=await response.json();
   if(!/^[A-Za-z0-9_-]{43}$/.test(data.token||''))throw Error('Неверная сессия.');
-  accountToken=data.token;
-  sessionStorage.setItem(TOKEN_KEY,accountToken);
-  sessionStorage.setItem(USER_KEY,String(user.id));
-  telegramStatus.textContent='Вы вошли через Telegram. Покупка будет привязана к аккаунту.';
-  buy.disabled=false;
- }catch(e){telegramStatus.textContent=e.message;buy.disabled=true;}
+  accountToken=data.token;accountVerified=false;
+  sessionStorage.setItem(TOKEN_KEY,accountToken);sessionStorage.setItem(USER_KEY,String(user.id));
+  await refreshAccount();
+ }catch(e){
+  accountVerified=false;telegramStatus.textContent=e.message;buy.hidden=true;buy.disabled=true;
+ }
 };
 const telegramScript=document.createElement('script');
 telegramScript.src='https://telegram.org/js/telegram-widget.js?22';
@@ -291,9 +332,8 @@ telegramScript.async=true;
 telegramScript.setAttribute('data-telegram-login','VdvoemNaLegkeBOT');
 telegramScript.setAttribute('data-size','large');
 telegramScript.setAttribute('data-onauth','onPurchaseTelegramAuth(user)');
-document.getElementById('telegramLogin').append(telegramScript);
-if(signedIn())telegramStatus.textContent='Сессия Telegram найдена. Покупка будет привязана к аккаунту.';
-else{accountToken=null;sessionStorage.removeItem(TOKEN_KEY);}
+telegramLogin.append(telegramScript);
+if(!hasToken())clearExpiredSession();
 const message = document.getElementById('message');
 const retry = document.getElementById('retry');
 const newOrder = document.getElementById('newOrder');
@@ -305,6 +345,7 @@ let checking = false;
 
 function showMessage(text) {
   message.textContent = text;
+  message.hidden = !text;
 }
 
 function storedToken(id) {
@@ -482,15 +523,7 @@ async function checkPayment() {
         return;
       }
       try { const key='vdvoem.analytics.confirmed.'+currentOrder; if(!sessionStorage.getItem(key)){window.vdvoemTrack?.('purchase_confirmed',{currency:'RUB',value:499,payment_mode:'unverified'});sessionStorage.setItem(key,'1');} } catch {}
-      result.hidden = false;
-      buy.hidden = true;
-      retry.hidden = true;
-      newOrder.hidden = true;
-
-      showMessage(
-        'Оплата подтверждена. ' +
-        'Игра открыта в вашем Telegram-аккаунте. Можете играть!'
-      );
+      showPaidAccess();
 
       checking = false;
       return;
@@ -556,11 +589,9 @@ newOrder.addEventListener('click', () => {
   attempts = 0;
   localStorage.removeItem('vdvoem.lastOrder');
   history.replaceState(null, '', location.pathname);
-  buy.hidden = false;
-  buy.disabled = !signedIn();
+  showCheckoutAccess();
   retry.hidden = true;
   newOrder.hidden = true;
-  result.hidden = true;
   showMessage(
     'Можете создать новый заказ. ' +
     'Покупки пока доступны только в режиме, разрешённом сервером.'
@@ -579,11 +610,10 @@ try {
     checkPayment();
   }
 } catch {
-  showMessage(
-    'Не удалось восстановить заказ ' +
-    'из браузера.'
-  );
+  showMessage('Не удалось восстановить заказ из браузера.');
 }
+showCheckoutAccess();
+if(hasToken())refreshAccount();
 </script>
 
 </body>
