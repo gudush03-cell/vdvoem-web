@@ -110,9 +110,17 @@ test('Telegram session is verified by backend before checkout', async () => {
   assert.equal(el('buy').disabled,true);
   await settle();
   assert.equal(accountCalls(requests).length,1);
+  assert.equal(el('buy').disabled,true);
+  for(const id of ['offerAccepted','privacyRead']){
+    await el('buy').listeners.get('click')();
+    assert.equal(checkoutCalls(requests).length,0);
+    el(id).checked=true;
+    el('terms').listeners.get('change')();
+  }
   assert.equal(el('buy').disabled,false);
   await el('buy').listeners.get('click')();
   assert.equal(checkoutCalls(requests).length,1);
+  assert.equal(JSON.parse(checkoutCalls(requests)[0].options.body).termsVersion,'2026-11-23.1');
   assert.equal(checkoutCalls(requests)[0].options.headers.Authorization,'Bearer '+token);
   assert.deepEqual(assigned,['https://payment.example/checkout']);
 });
