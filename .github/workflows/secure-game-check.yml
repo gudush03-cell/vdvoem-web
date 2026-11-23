@@ -24,6 +24,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Block accidental publishing of credentials or private decks
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\\0')
+          banned_dirs = ('private/', 'secrets/', 'credentials/')
+          banned_names = ('.env', '.env.production', '.env.local', 'cards.json', 'game-decks.json')
+          banned_suffixes = ('.pem', '.key', '.p12', '.pfx', '.sqlite', '.sqlite3', '.db')
+          leaked = []
+          for path in filter(None, paths):
+              base = path.rsplit('/', 1)[-1].lower()
+              if path.lower().startswith(banned_dirs) or base in banned_names or base.startswith('.env.') or base.endswith(banned_suffixes):
+                  leaked.append(path)
+          assert not leaked, 'Sensitive or private files committed to public repository: ' + ', '.join(leaked)
+          print('Public file inventory passed.')
+          PY
       - run: node --check app-secure.js
       - run: node --test account-game-entry.test.mjs
       - run: node --test card-loading.test.mjs
