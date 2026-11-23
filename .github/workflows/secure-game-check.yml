@@ -73,7 +73,7 @@ jobs:
           node --check /tmp/vdvoem-secure-purchase.js
       - name: Verify legacy game remains independent
         run: |
-          grep -q 'app-secure.js?v=4' secure-game.html
+          grep -q 'app-secure.js?v=5' secure-game.html
           grep -q 'app.js?v=8' game.html
           grep -q 'href="./secure-game.html"' game.html
           grep -q 'Authorization' secure-purchase.html
