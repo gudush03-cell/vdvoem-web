@@ -454,7 +454,7 @@ async function startPurchase() {
 }
 
 async function checkPayment() {
-  if (!currentOrder || checking) {
+  if (!currentOrder || checking || !result.hidden) {
     return;
   }
 
@@ -489,6 +489,8 @@ async function checkPayment() {
     );
 
     const data = await response.json();
+    // A verified account entitlement supersedes any older pending order.
+    if (!result.hidden) { checking = false; return; }
 
     if (!response.ok) {
       throw new Error(
