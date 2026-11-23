@@ -1,10 +1,11 @@
 name: Secure game static syntax
 on:
   push:
-    branches: [main, 'security/account-streaming-preview']
+    branches: [main, 'security/account-streaming-preview', 'fix/account-game-entry-ux']
   pull_request:
     paths:
       - 'app-secure.js'
+      - 'account-game-entry.test.mjs'
       - 'secure-game.html'
       - 'secure-purchase.html'
       - 'secure-purchase.test.mjs'
@@ -23,6 +24,7 @@ jobs:
         with:
           node-version: '24'
       - run: node --check app-secure.js
+      - run: node --test account-game-entry.test.mjs
       - run: node --check email-login.js
       - run: node --test email-login.test.mjs
       - run: node --test secure-purchase.test.mjs
@@ -53,7 +55,7 @@ jobs:
           node --check /tmp/vdvoem-secure-purchase.js
       - name: Verify legacy game remains independent
         run: |
-          grep -q 'app-secure.js?v=2' secure-game.html
+          grep -q 'app-secure.js?v=3' secure-game.html
           grep -q 'app.js?v=8' game.html
           grep -q 'href="./secure-game.html"' game.html
           grep -q 'Authorization' secure-purchase.html
