@@ -36,6 +36,28 @@ const script=await getWithRetry(website+'/app-secure.js');
 assert.match(await script.text(),/\/api\/account\/card/);
 console.log('PASS protected client script');
 
+// Cloudflare Pages is tested in parallel with the original GitHub Pages site.
+const cloudflareWebsite='https://vdvoem-web.pages.dev';
+for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html','/app-secure.js']){
+  const response=await getWithRetry(cloudflareWebsite+path);
+  const body=await response.text();
+  if(path==='/') {
+    assert.match(body,/secure-purchase\\.html/);
+    assert.match(body,/secure-game\\.html/);
+  } else if(path==='/secure-game.html'){
+    assert.match(body,/app-secure\\.js/);
+  } else if(path==='/secure-purchase.html'){
+    assert.match(body,/\\/api\\/checkout/);
+    assert.match(body,/data-telegram-login|telegram-widget\\.js/);
+  } else if(path==='/app-secure.js'){
+    assert.match(body,/\\/api\\/account\\/card/);
+  } else {
+    assert.match(body,/<html\\b/i);
+  }
+  console.log('PASS Cloudflare Pages '+path);
+}
+
+
 const health=await getWithRetry(backend+'/health');
 const status=await health.json();
 assert.equal(status.status,'ok');
@@ -64,7 +86,7 @@ const guestStatus=await fetch(backend+'/api/account/status',{
 });
 assert.equal(guestStatus.status,401,'Guest cannot read account status');
 
-for(const origin of ['https://gudush03-cell.github.io','https://vdvoemnalegke.ru','https://www.vdvoemnalegke.ru']){
+for(const origin of ['https://gudush03-cell.github.io','https://vdvoemnalegke.ru','https://www.vdvoemnalegke.ru','https://vdvoem-web.pages.dev']){
   const preflight=await fetch(backend+'/api/auth/telegram',{
     method:'OPTIONS',
     headers:{'Origin':origin,'Access-Control-Request-Method':'POST',
