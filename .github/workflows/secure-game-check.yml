@@ -28,7 +28,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import subprocess
-          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\\0')
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split(chr(0))
           banned_dirs = ('private/', 'secrets/', 'credentials/')
           banned_names = ('.env', '.env.production', '.env.local', 'cards.json', 'game-decks.json')
           banned_suffixes = ('.pem', '.key', '.p12', '.pfx', '.sqlite', '.sqlite3', '.db')
