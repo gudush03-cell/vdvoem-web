@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          for name in vdvoemnalegke.ru www.vdvoemnalegke.ru; do
+          for name in vdvoemnalegke.ru www.vdvoemnalegke.ru vdvoemnalegke.online www.vdvoemnalegke.online; do
             echo "=== $name (system DNS) ==="
             for kind in NS A AAAA CNAME CAA DS; do
               echo "--- $kind ---"
