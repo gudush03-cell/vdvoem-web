@@ -20,7 +20,7 @@ test('Telegram checkout never renders, copies, or requests manual access codes',
 });
 
 
-function boot(token = null, {paid = false, unauthorized = false} = {}) {
+function boot(token = null, {paid = false, unauthorized = false, live = true} = {}) {
   const elements = new Map();
   const requests = [];
   const assigned = [];
@@ -70,6 +70,10 @@ function boot(token = null, {paid = false, unauthorized = false} = {}) {
         ok:!unauthorized,status:unauthorized?401:200,
         json:async()=>({signedIn:!unauthorized,paid})
       };
+      if(url.endsWith('/health'))return {
+        ok:true,status:200,
+        json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})
+      };
       return {ok:true,json:async()=>({
         orderId:'987', claimToken:'example-token',
         paymentUrl:'https://payment.example/checkout'
@@ -96,7 +100,7 @@ test('secure checkout initializes without runtime ReferenceError', () => {
 test('guest cannot purchase or call checkout API', async () => {
   const {el,requests} = boot();
   await el('buy').listeners.get('click')();
-  assert.equal(requests.length,0);
+  assert.equal(checkoutCalls(requests).length,0);
   assert.match(el('message').textContent,/Telegram/);
 });
 
@@ -132,4 +136,15 @@ test('expired Telegram session is not treated as paid', async () => {
  assert.equal(el('buy').disabled,true);
  assert.equal(el('telegramLogin').hidden,false);
  assert.equal(accountCalls(requests).length,1);
+});
+
+test('non-live backend never creates a checkout order for an authenticated buyer', async () => {
+  const {el,requests,assigned}=boot('a'.repeat(43),{live:false});
+  await settle();
+  assert.equal(el('result').hidden,true);
+  assert.equal(el('paymentNotice').hidden,false);
+  assert.equal(el('buy').disabled,true);
+  await el('buy').listeners.get('click')();
+  assert.equal(checkoutCalls(requests).length,0);
+  assert.equal(assigned.length,0);
 });
