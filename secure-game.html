@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./app.css?v=9">
-<script src="./app-secure.js?v=5" defer></script>
+<script src="./app-secure.js?v=6" defer></script>
 <script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
 </head>
@@ -69,12 +69,12 @@
   </section>
   <section class="section"><div class="highlight reveal">
     <div><div class="eyebrow">Полная веб-версия</div><h2>Вся игра, <span class="pink">ваша.</span></h2><p>10 колод, 168 карточек. Войдите через Telegram — после покупки игра ваша. Играйте вдвоём с одного телефона.</p><p class="subnote">6 карточек можно попробовать бесплатно.</p></div>
-    <div><div class="price">499 ₽</div><a class="btn" href="./secure-purchase.html">Купить полную игру</a><p class="price-note"><a href="./secure-game.html">Уже есть код? Войти</a></p></div>
+    <div><div class="price">499 ₽</div><a class="btn" href="./secure-purchase.html">Купить полную игру</a><p class="price-note"><a href="./secure-game.html">Уже купили? Войти через Telegram</a></p></div>
   </div></section>
 </section>
 
 <section class="view" id="loginView" hidden>
-<!-- Telegram account access; existing code claim is optional and hidden. -->
+<!-- Telegram account access is managed by the web account API. -->
   <div class="auth-panel panel">
     <div class="eyebrow">Для тех, кто уже вместе в игре</div>
     <div class="ornament-heart" aria-hidden="true">✧</div>
@@ -101,16 +101,7 @@
     <p class="hint">Если кнопка Telegram не появилась, откройте сайт в обычном браузере. Вход станет доступен после загрузки Telegram.</p>
     <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
     <a href="./secure-purchase.html" class="btn full" style="margin-top:15px">Купить игру — 499 ₽</a>
-    <details style="margin-top:22px;text-align:left">
-      <summary class="hint" style="cursor:pointer">У меня уже есть старый код покупки</summary>
-      <form id="loginForm" autocomplete="off">
-      <label for="accessCode" class="eyebrow" style="display:block;text-align:left;margin:25px 0 9px">Привязать существующий код покупки</label>
-      <input class="field" id="accessCode" type="text" maxlength="100" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
-      <button class="btn" type="submit" id="loginButton">Привязать покупку</button>
 
-    </form>
-      <p class="hint">Это только для ранее выданных кодов. Новым покупателям код не нужен.</p>
-    </details>
     
     <button type="button" class="text-button" id="backHome" style="margin-top:15px">← На главную</button>
   </div>
