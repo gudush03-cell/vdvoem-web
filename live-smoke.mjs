@@ -15,6 +15,23 @@ async function getWithRetry(url) {
   }
   throw last;
 }
+// GitHub Pages and Cloudflare deploy asynchronously after a push.
+// Retry expected content instead of failing against a still-live previous release.
+async function getPublishedText(url,expected){
+  let last;
+  for(let attempt=0;attempt<24;attempt++){
+    try {
+      const r=await fetch(url,{signal:AbortSignal.timeout(12000),cache:'no-store'});
+      if(r.ok){
+        const body=await r.text();
+        if(expected.test(body))return body;
+        last=Error('Previous deployment still served at '+url);
+      } else last=Error(url+' returned '+r.status);
+    } catch(error){last=error;}
+    await new Promise(resolve=>setTimeout(resolve,5000));
+  }
+  throw last;
+}
 const landingResponse=await getWithRetry(website+'/');
 const landing=await landingResponse.text();
 assert.match(landing,/secure-purchase\.html/);
@@ -39,8 +56,8 @@ console.log('PASS protected client script');
 // Cloudflare Pages is tested in parallel with the original GitHub Pages site.
 const cloudflareWebsite='https://vdvoem-web.pages.dev';
 for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html','/privacy.html','/app-secure.js']){
-  const response=await getWithRetry(cloudflareWebsite+path);
-  const body=await response.text();
+  const body=await getPublishedText(cloudflareWebsite+path,
+    path==='/offer.html'?/499 ₽/:path==='/privacy.html'?/Политика обработки персональных данных/:/[\\s\\S]/);
   if(path==='/') {
     assert.match(body,/secure-purchase\.html/);
     assert.match(body,/secure-game\.html/);
@@ -65,10 +82,10 @@ for(const path of ['/','/secure-game.html','/secure-purchase.html','/offer.html'
 }
 
 
-const legal=await getWithRetry(website+'/offer.html');
-assert.match(await legal.text(),/499 ₽/);
-const privacy=await getWithRetry(website+'/privacy.html');
-assert.match(await privacy.text(),/Политика обработки персональных данных/);
+const legal=await getPublishedText(website+'/offer.html',/499 ₽/);
+assert.match(legal,/499 ₽/);
+const privacy=await getPublishedText(website+'/privacy.html',/Политика обработки персональных данных/);
+assert.match(privacy,/Политика обработки персональных данных/);
 console.log('PASS original site legal pages');
 
 const health=await getWithRetry(backend+'/health');
