@@ -1,0 +1,37 @@
+name: Diagnose Custom Domain DNS
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/domain-dns-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Resolve authoritative nameservers, GitHub Pages records and DNSSEC
+        shell: bash
+        run: |
+          set +e
+          for name in vdvoemnalegke.ru www.vdvoemnalegke.ru; do
+            echo "=== $name (system DNS) ==="
+            for kind in NS A AAAA CNAME CAA DS; do
+              echo "--- $kind ---"
+              dig +time=2 +tries=1 +noall +answer "$name" "$kind"
+            done
+            echo "=== Google DNS over HTTPS ($name) ==="
+            for kind in NS A CNAME DS; do
+              echo "--- $kind ---"
+              curl --max-time 8 -sSLG 'https://dns.google/resolve' --data-urlencode "name=$name" --data-urlencode "type=$kind" | python3 -c 'import sys,json; r=json.load(sys.stdin);print("Status:",r.get("Status"),"AD:",r.get("AD"),"Answer:",r.get("Answer"),"Authority:",r.get("Authority"))' || true
+            done
+          done
+          for ns in ns1.reg.ru ns2.reg.ru; do
+            echo "=== $ns: authoritative zone ==="
+            dig +time=2 +tries=1 +noall +answer @"$ns" vdvoemnalegke.ru A
+            dig +time=2 +tries=1 +noall +answer @"$ns" www.vdvoemnalegke.ru CNAME
+          done
+          echo "=== NS delegation trace ==="
+          dig +time=2 +tries=1 +trace vdvoemnalegke.ru NS | tail -40
