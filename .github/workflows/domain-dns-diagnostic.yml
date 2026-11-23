@@ -17,7 +17,7 @@ jobs:
         run: |
           set +e
           for name in vdvoemnalegke.ru www.vdvoemnalegke.ru vdvoemnalegke.online www.vdvoemnalegke.online; do
-            echo "=== $name (system DNS) ==="
+            echo "=== $name (system DNS, latest check) ==="
             for kind in NS A AAAA CNAME CAA DS; do
               echo "--- $kind ---"
               dig +time=2 +tries=1 +noall +answer "$name" "$kind"
