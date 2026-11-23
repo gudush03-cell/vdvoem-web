@@ -33,5 +33,13 @@ jobs:
             dig +time=2 +tries=1 +noall +answer @"$ns" vdvoemnalegke.ru A
             dig +time=2 +tries=1 +noall +answer @"$ns" www.vdvoemnalegke.ru CNAME
           done
+          echo "=== HTTPS launch baseline: vdvoemnalegke.ru ==="
+          for url in https://vdvoemnalegke.ru/ https://vdvoemnalegke.ru/secure-game.html https://vdvoemnalegke.ru/secure-purchase.html; do
+            echo "--- $url ---"
+            curl -sS -o /dev/null --max-time 20 -L -w 'HTTP: %{http_code} / TLS verified: %{ssl_verify_result} / Final URL: %{url_effective}\\n' "$url" || true
+          done
+          echo "=== HTTPS checkout/API connectivity ==="
+          curl -sS -o /dev/null --max-time 15 -w 'API health HTTP: %{http_code} / TLS: %{ssl_verify_result}\\n' 'https://perceptive-patience-production-79bfb421.up.railway.app/health' || true
+          echo "=== DNS delegation trace ==="
           echo "=== NS delegation trace ==="
           dig +time=2 +tries=1 +trace vdvoemnalegke.ru NS | tail -40
