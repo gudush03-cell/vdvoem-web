@@ -259,7 +259,7 @@ const TOKEN_KEY='vdvoem.preview.token';
 const USER_KEY='vdvoem.preview.telegram';
 let accountToken=sessionStorage.getItem(TOKEN_KEY);
 let accountVerified=false,accountCheckSerial=0;
-let checkoutLive=false,checkoutChecked=false;
+let checkoutLive=false,checkoutChecked=false,checkoutMode='disabled';
 const telegramStatus=document.getElementById('telegramStatus');
 const paymentNotice=document.getElementById('paymentNotice');
 const accountEntry=document.getElementById('accountEntry');
@@ -287,9 +287,9 @@ function showCheckoutAccess(){
  buy.hidden=!accountVerified||Boolean(currentOrder);
  terms.hidden=buy.hidden;
  updateBuy();
- paymentNotice.hidden=!accountVerified||Boolean(currentOrder)||checkoutLive;
+ paymentNotice.hidden=Boolean(currentOrder)||(!accountVerified&&checkoutMode!=='test')||(checkoutLive&&checkoutMode!=='test');
  if(!paymentNotice.hidden){
-  paymentNotice.textContent=checkoutChecked?'Приём платежей пока не открыт.':'Проверяем возможность оплаты…';
+  paymentNotice.textContent=checkoutMode==='test'?'ТЕСТОВЫЙ режим Robokassa: проверяем оплату, реальные списания не выполняются.':checkoutChecked?'Приём платежей пока не открыт.':'Проверяем возможность оплаты…';
  }
 }
 function clearExpiredSession(){
@@ -325,7 +325,8 @@ async function refreshPaymentAvailability(){
   const response=await fetch(API+'/health',{method:'GET',cache:'no-store',signal:AbortSignal.timeout(15000)});
   if(!response.ok)throw Error('Payment status unavailable');
   const status=await response.json();
-  checkoutLive=status.checkout_mode==='live'&&status.payments_enabled===true;
+  checkoutMode=status.checkout_mode||'disabled';
+  checkoutLive=checkoutMode==='test'||(checkoutMode==='live'&&status.payments_enabled===true);
  }catch{checkoutLive=false;}
  checkoutChecked=true;
  if(result.hidden)showCheckoutAccess();
