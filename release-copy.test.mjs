@@ -34,11 +34,11 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(home,/id="faq-answer-6"/);
 });
 
-test('release payment UI never offers a non-live checkout',()=>{
- assert.doesNotMatch(purchase,/тестовая оплата|тестовой покупке|тестовой версии оплаты|платежи.*как тестовые/i);
+test('checkout only enables live payments or explicitly labelled test mode',()=>{
  assert.match(purchase,/\/health/);
- assert.match(purchase,/checkout_mode==='live'/);
+ assert.match(purchase,/checkoutMode==='test'\|\|\(checkoutMode==='live'&&status\.payments_enabled===true\)/);
  assert.match(purchase,/status\.payments_enabled===true/);
+ assert.match(purchase,/ТЕСТОВЫЙ режим Robokassa: проверяем оплату, реальные списания не выполняются/);
  assert.match(purchase,/if\(!await refreshPaymentAvailability\(\)\)/);
 });
 
