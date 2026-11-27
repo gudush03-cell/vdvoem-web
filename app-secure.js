@@ -124,7 +124,7 @@ async function restore(){
    sessionStorage.removeItem(USER_KEY);
    $('loginStatus').textContent='Сессия истекла. Войдите повторно.';
   } else {
-   $('loginStatus').textContent='Не удалось загрузить игру. Проверьте интернет и обновите страницу — покупка сохранена в аккаунте.';
+   $('loginStatus').textContent='Не удалось загрузить игру. Проверьте интернет и обновите страницу - покупка сохранена в аккаунте.';
   }
   showView('loginView');
  }
@@ -306,7 +306,7 @@ async function render(){
  $('skipCards').hidden=aside?.kind==='exhale';
  $('skipButton').hidden=aside?.kind==='exhale';
  $('skipButton').disabled=party.skips[party.player]===0;
- $('skipButton').textContent=party.skips[party.player]?'🛑 Не сегодня':'🛑 Не сегодня — использовано';
+ $('skipButton').textContent=party.skips[party.player]?'🛑 Не сегодня':'🛑 Не сегодня - использовано';
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;

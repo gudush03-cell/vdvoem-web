@@ -27,7 +27,7 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(home,/Гудушаури Даниил Николаевич/);
  assert.match(home,/231216001846/);
  assert.match(home,/Telegram ID/);
- assert.match(offer,/Стоимость полного доступа — 499 ₽/);
+ assert.match(offer,/Стоимость полного доступа - 499 ₽/);
  assert.match(offer,/\.\/privacy\.html/);
  assert.match(privacy,/Политика обработки персональных данных/);
  assert.match(home,/class="faq-accordion"/);
