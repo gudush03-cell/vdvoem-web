@@ -194,7 +194,7 @@ function render(){
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
- $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Следующая карта';
+ $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Ответили: передать ход';
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
  saveProgress();
 }
