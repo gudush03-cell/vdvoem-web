@@ -709,7 +709,9 @@ html[data-account="paid"] #siteHeader [data-owner]{display:none!important}
 html[data-account="paid"] .evening-entry{display:block!important}
 html[data-account="paid"] .evening-entry [data-owner]{display:flex!important;justify-content:center}
 html[data-account="paid"] .evening-entry [data-owner] .button{min-width:min(100%,300px)}
+html[data-account="member"] .evening-entry{display:none!important}
 html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) :is([data-guest],#access,.demo-callout,[data-start-demo]){display:none!important}
+html[data-account="member"] [data-guest]{display:none!important}
 @media(max-width:480px){.evening-actions{flex-direction:column;gap:8px}.evening-actions .button{width:min(100%,290px)}}
 </style>
 <script>

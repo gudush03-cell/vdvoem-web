@@ -43,6 +43,7 @@ test('home header has the requested guest links and one signed-in action',()=>{
  assert.match(home,/\.header-nav \.nav-info[\s\S]*\.header-nav \[data-start-demo\]\{display:none!important\}/);
  assert.match(home,/html\[data-account="paid"\] #siteHeader \[data-owner\]\{display:none!important\}/);
  assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:block!important\}/);
+ assert.match(home,/html\[data-account="member"\] \.evening-entry\{display:none!important\}/);
  assert.match(home,/href="\.\/secure-game\.html\?resume=1">Продолжить/);
  assert.doesNotMatch(home,/Снова вечер вдвоём|Все 10 колод уже ваши/);
  assert.match(home,/class="account-verified">✓ Telegram подтверждён/);
@@ -59,7 +60,11 @@ test('subpages keep only a home route in their headers',()=>{
  for(const page of [purchase,offer,privacy]) assert.match(page,/href="(?:\.\/index\.html|https:\/\/vdvoemnalegke\.online\/)"[^>]*>На главную|brand-image" href="\.\/index\.html"/);
  assert.match(purchase,/max-width:\s*700px/);
  assert.match(purchase,/class="purchase-top"/);
- assert.match(privacy,/width:min\(calc\(100% - 48px\),1240px\)/);
+ assert.match(purchase,/<a class="home-link" href="\.\/index\.html">На главную<\/a>/);
+ assert.match(privacy,/width:min\(calc\(100% - 48px\),1120px\)/);
+ assert.match(privacy,/family=Prata/);
+ assert.match(privacy,/class="hero-logo" src="\.\/brand\.png"/);
+ assert.match(privacy,/ИГРА МЕЖДУ НАМИ · ПОЛИТИКА ДАННЫХ/);
  assert.match(privacy,/--rose:#f49dbb/);
 });
 
