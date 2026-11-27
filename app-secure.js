@@ -310,7 +310,7 @@ async function render(){
  $('sceneButton').hidden=!!aside||party.mode==='demo'||!decks;
  $('tasksButton').hidden=party.mode==='demo'||!party.secrets;
  $('exhaleButton').hidden=aside?.kind==='exhale'||party.mode==='demo'||!decks;
- $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Следующая карта';
+ $('nextCard').textContent=aside?.kind==='exhale'?'Завершить вечер':aside?.kind==='scene'?'Вернуться к основной карте':party.index===party.queue.length-1?'Завершить колоду':'Передать ход';
  $('nextCard').disabled=false;
  const node=$('playingCard');node.classList.remove('switching');if(!reduced){void node.offsetWidth;node.classList.add('switching');}node.scrollTop=0;
  saveProgress();
@@ -398,7 +398,6 @@ function wire(){
   else lobby();
  });
  $('backLobby').addEventListener('click',()=>party?.mode==='demo'?showView('homeView'):lobby());
- $('gameRulesButton').addEventListener('click',()=>$('gameRulesDialog').showModal());
  $('nextCard').addEventListener('click',()=>cardLoadFailed?render():advance(false));
  $('skipButton').addEventListener('click',skip);
  $('sceneButton').addEventListener('click',scene);
