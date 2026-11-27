@@ -13,8 +13,8 @@ const oldPurchase=content('./purchase.html');
 
 test('public copy uses Telegram-linked entitlement, not purchase codes',()=>{
  assert.match(home,/Как получить доступ к игре\?/);
- assert.match(home,/Код не нужен/);
- assert.match(home,/В следующий раз просто войдите через тот же аккаунт/);
+ assert.match(home,/код активации не нужен/i);
+ assert.match(home,/при следующем входе используйте тот же Telegram-аккаунт/);
  assert.doesNotMatch(home,/Где получить код\?|Введите тот же код|доступ по личному коду|тестовая оплата|тестовой покупке|Тестовый режим/);
  assert.doesNotMatch(game,/старый код покупки|Привязать существующий код покупки|loginForm|accessCode/);
 });
@@ -29,8 +29,9 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(offer,/Гудушаури Даниил Николаевич/);
  assert.match(offer,/231216001846/);
  assert.match(privacy,/Telegram ID/);
- assert.match(offer,/На сайте полный доступ стоит 499 ₽/);
- assert.match(offer,/Подтверждённая покупка на сайте или в Mini App/);
+ assert.match(offer,/499 ₽ на сайте/);
+ assert.match(offer,/Подтверждённая покупка Robokassa или Telegram Stars/);
+ assert.match(offer,/Telegram ID/);
  assert.match(offer,/\.\/privacy\.html/);
  assert.match(privacy,/Политика обработки персональных данных/);
  assert.match(home,/class="faq-accordion"/);
