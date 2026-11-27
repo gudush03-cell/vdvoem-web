@@ -1,0 +1,32 @@
+/* Shared mobile-first navigation and account sheets. */
+:root{--sheet-bg:#251720;--sheet-line:#f5b2cc45;--sheet-ink:#fff1ec}
+html{scroll-padding-top:84px}body{overflow-x:clip}
+body>.site-header,.page>.top,body>nav.top,body>nav:has(.bar){display:none!important}
+main,.card,.section,.grid{min-width:0}.card,.section,.hero h1{overflow-wrap:anywhere}
+.deck-tile{position:relative}
+.flow-sheet:focus{outline:none}
+.game-top .game-brand{display:none}.game-top{justify-content:flex-end;border:0}
+.floating-nav{position:fixed;z-index:40;right:max(16px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));display:flex;gap:8px;align-items:center;max-width:calc(100vw - 32px)}
+.floating-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;border:1px solid var(--sheet-line);border-radius:999px;background:#21151ee8;color:var(--sheet-ink);box-shadow:0 5px 20px #0003;backdrop-filter:blur(14px);font:700 12px Manrope,Arial,sans-serif;text-decoration:none}
+.floating-nav .tg-orb{width:44px;padding:0;color:#7bc8f3}.tg-orb svg{width:21px;height:21px}.tg-orb[data-verified=true]{border-color:#7bc8f3;box-shadow:0 0 16px #60b9ea25}
+.floating-nav a:focus-visible{outline:2px solid #ffbad6;outline-offset:3px}
+body:has(dialog[open])>.floating-nav{visibility:hidden}
+body:has(#playView:not([hidden]))>.floating-nav{display:none}
+.hero-inner{padding-top:90px!important;min-height:0!important}.page{padding-top:64px}.view{padding-top:22px}
+.flow-sheet{box-sizing:border-box;width:min(480px,calc(100% - 24px));max-width:none;max-height:calc(100dvh - 24px);margin:auto;padding:0;border:1px solid var(--sheet-line);border-radius:26px;background:linear-gradient(145deg,#34202e,#1c131c);color:var(--sheet-ink);overflow:auto;overscroll-behavior:contain;box-shadow:0 28px 100px #0008}
+.flow-sheet::backdrop{background:#100b12b8;backdrop-filter:blur(12px)}
+.flow-sheet .floating-nav{position:sticky;top:0;right:auto;justify-content:flex-end;padding:12px 14px;margin:0;max-width:none;background:#251720f2;z-index:3;border-bottom:1px solid #ffffff0c}
+.flow-sheet main,.flow-sheet #loginView{width:100%;max-width:none;min-height:0;margin:0;padding:22px clamp(16px,5vw,28px) 28px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.flow-sheet .auth-panel{margin:0;padding:0;border:0;background:none;box-shadow:none;max-width:none}.flow-sheet .purchase-top,.flow-sheet .ornament-heart,.flow-sheet #backHome{display:none}
+.flow-sheet h1,.flow-sheet #result h2{font:400 clamp(28px,7vw,38px)/1.22 Prata,Georgia,serif!important;letter-spacing:-.04em;margin:0 0 12px!important}
+.flow-sheet p{font-size:13px;line-height:1.55}.flow-sheet #result p{margin:8px auto 22px;max-width:26ch}.flow-sheet #telegramLogin{min-width:0;max-width:100%;overflow:hidden}.flow-sheet iframe{max-width:100%}
+.flow-sheet .price{font-size:34px;margin:16px 0 5px}.flow-sheet .payment-help{font-size:11px;line-height:1.5}.flow-sheet #terms{min-width:0;margin:16px 0;font-size:12px}.flow-sheet #terms legend{font-size:12px}.flow-sheet #terms label{padding:8px 0}.flow-sheet #accountEntry{margin:18px auto!important}.flow-sheet #message{margin-top:14px}
+.flow-sheet button,.flow-sheet .action,.flow-sheet .btn{min-height:48px;font-size:14px}.flow-sheet .brand-ticker{display:none}.flow-sheet #result{padding-block:16px 6px}
+.flow-sheet .field{box-sizing:border-box;width:100%;min-width:0;min-height:48px;border:1px solid var(--sheet-line);border-radius:12px;background:#170e17;color:#fff;padding:10px;font-size:16px}
+.flow-sheet .account-retry{display:block;margin:8px auto 0;background:transparent;border:1px solid var(--sheet-line);color:#ffd6e4;width:100%}
+body.purchase-page{display:block;padding:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 25%,#62304766,transparent 65%),#130e13}
+.game-dialog{width:min(760px,100%);max-width:100%;max-height:100dvh}.game-top{position:sticky;top:0;z-index:4;background:#21151ef5}.next-button{text-align:center!important;justify-content:center!important}
+.game-guide{margin-block:14px}.guide-disclosure{margin:12px 0}.guide-disclosure summary{cursor:pointer;width:fit-content;margin:auto;padding:12px 22px;border:1px solid var(--sheet-line);border-radius:99px;color:#ffd5e4;font-size:13px;font-weight:700;list-style:none}.guide-disclosure summary::-webkit-details-marker{display:none}
+.page .play-shell{max-width:680px}.page .play-top{margin-top:4px}.page .paper{min-height:clamp(320px,52dvh,540px)}
+@media(max-width:600px){.floating-nav{top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}.page{width:calc(100% - 24px)}.flow-sheet{border-radius:22px;max-height:calc(100dvh - 16px)}.flow-sheet main,.flow-sheet #loginView{padding:20px 18px 24px}.hero-inner{padding-top:82px!important}.paper-inner{padding:24px 0}.play-tools .btn{min-height:44px}.brand-ticker{font-size:9px}main>.hero{padding-top:70px}.bar{min-height:0}.game-content{padding-inline:14px}.game-dialog .next-button{min-height:50px;font-size:15px}.flow-sheet #terms input{width:20px;height:20px}.flow-sheet #purchaseOffer>p{font-size:12px}.flow-sheet #loginView .hint{font-size:13px}}
+@media(prefers-reduced-motion:no-preference){.flow-sheet[open]{animation:sheet-enter .32s cubic-bezier(.2,.8,.2,1)}.floating-nav{animation:dock-enter .55s ease both}.touch-reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}.touch-reveal.is-visible{opacity:1;transform:none}button:active,.button:active,.btn:active{transform:scale(.975)!important;transition:transform .12s}@keyframes sheet-enter{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:none}}@keyframes dock-enter{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}}

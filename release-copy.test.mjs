@@ -45,10 +45,11 @@ test('home header has the requested guest links and one signed-in action',()=>{
  assert.match(home,/\.header-nav \.nav-info[\s\S]*\.header-nav \[data-start-demo\]\{display:none!important\}/);
  assert.match(home,/html\[data-account="paid"\] #siteHeader \[data-owner\]\{display:none!important\}/);
  assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:block!important\}/);
- assert.match(home,/html\[data-account="member"\] \.evening-entry\{display:none!important\}/);
+ assert.match(home,/html\[data-account="member"\] \.evening-entry \[data-guest\]\{display:block!important\}/);
+ assert.match(home,/html:is\(\[data-account="paid"\],\[data-account="checking"\]\) :is\(\[data-guest\],#access/);
  assert.match(home,/href="\.\/secure-game\.html\?resume=1">Продолжить/);
  assert.doesNotMatch(home,/Снова вечер вдвоём|Все 10 колод уже ваши/);
- assert.match(home,/class="account-verified">✓ Telegram подтверждён/);
+ assert.match(home,/class="account-verified" role="img" aria-label="Telegram подключён"/);
  assert.match(home,/html:is\(\[data-account="paid"\],\[data-account="member"\]\) \.account-verified\{display:inline-flex!important\}/);
  assert.doesNotMatch(home,/<span id="homeAccountStatus"[^>]*><\/span>/);
 });
@@ -60,7 +61,7 @@ test('free demo header uses the brand logo and a home action',()=>{
 
 test('subpages keep only a home route in their headers',()=>{
  for(const page of [purchase,offer,privacy]) assert.match(page,/href="(?:\.\/index\.html|https:\/\/vdvoemnalegke\.online\/)"[^>]*>На главную|brand-image" href="\.\/index\.html"/);
- assert.match(purchase,/max-width:\s*700px/);
+ assert.match(purchase,/max-width:\s*520px/);
  assert.match(purchase,/class="purchase-top"/);
  assert.match(purchase,/<a class="home-link" href="\.\/index\.html">На главную<\/a>/);
  assert.match(privacy,/width:min\(calc\(100% - 48px\),1120px\)/);
@@ -68,6 +69,12 @@ test('subpages keep only a home route in their headers',()=>{
  assert.match(privacy,/class="hero-logo" src="\.\/brand\.png"/);
  assert.match(privacy,/ИГРА МЕЖДУ НАМИ · ПОЛИТИКА ДАННЫХ/);
  assert.match(privacy,/--rose:#f49dbb/);
+ for(const page of [home,purchase,offer,privacy]){
+  assert.match(page,/mobile-shell\.css\?v=\d+/);
+  assert.match(page,/mobile-shell\.js\?v=\d+/);
+ }
+ assert.match(purchase,/id="retryAccount"[^>]*>Повторить проверку/);
+ assert.doesNotMatch(purchase,/<footer[^>]*>[^<]*Поддержка/);
 });
 
 test('checkout only enables live payments or explicitly labelled test mode',()=>{

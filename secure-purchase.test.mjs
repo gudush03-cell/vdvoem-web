@@ -41,6 +41,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
   };
   const context = {
     document:{
+      documentElement:{dataset:{}},
       getElementById:el,
       createElement:tag=>({
         tag, attrs:{},

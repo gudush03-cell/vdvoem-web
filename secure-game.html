@@ -13,7 +13,7 @@
 <script src="./app-secure.js?v=9" defer></script>
 <script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
-<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"></head>
+<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><link rel="stylesheet" href="./mobile-shell.css?v=2"><script src="./mobile-shell.js?v=2" defer></script></head>
 <body>
 <div class="page">
 <header class="top">
@@ -71,10 +71,10 @@
 <section class="view" id="loginView" hidden>
 <!-- Telegram account access is managed by the web account API. -->
   <div class="auth-panel panel">
-    <div class="eyebrow">Для тех, кто уже вместе в игре</div>
+    <div class="eyebrow">ВДВОЁМ НАЛЕГКЕ</div>
     <div class="ornament-heart" aria-hidden="true">✧</div>
-    <h1 class="serif" style="font-size:clamp(31px,7vw,49px);margin:12px 0 18px">Все карточки.<br><span class="pink">Ваш вечер.</span></h1>
-    <p class="hint">Войдите через Telegram. Если игра уже куплена, все колоды откроются автоматически. Никаких кодов и паролей.</p>
+    <h1 class="serif" style="font-size:clamp(31px,7vw,49px);margin:12px 0 18px">Вернёмся<br><span class="pink">к игре?</span></h1>
+    <p class="hint">Войдите в тот Telegram, с которым купили игру.</p>
         <section data-email-auth hidden style="margin:20px auto;max-width:430px;text-align:left">
       <details>
         <summary style="cursor:pointer;font-weight:700">✉️ Войти по почте или привязать адрес</summary>
@@ -93,11 +93,11 @@
       </details>
     </section>
 <div id="telegramLogin" style="display:flex;justify-content:center;margin:20px auto;min-height:44px"></div>
-    <p class="hint">Если кнопка Telegram не появилась, откройте сайт в обычном браузере. Вход станет доступен после загрузки Telegram.</p>
-    <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
+    <p class="hint"></p>
+    <button class="btn secondary" id="retryAccount" type="button">Проверить доступ</button><button class="btn ghost" id="loginDemo" type="button">Попробовать 6 карт</button><button class="btn secondary" id="retryAccount" type="button">Проверить доступ</button><button class="btn ghost" id="loginDemo" type="button">Попробовать 6 карт</button><p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
     <a href="./secure-purchase.html" class="btn full" style="margin-top:15px">Купить игру - 499 ₽</a>
 
-    
+
     <button type="button" class="text-button" id="backHome" style="margin-top:15px">← На главную</button>
   </div>
 </section>

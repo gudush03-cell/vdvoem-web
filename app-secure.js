@@ -75,7 +75,7 @@ async function accountGame(){
  const status=await api('/api/account/status',null,'GET');
  accountVerified=status.signedIn===true;
  updateHeaderAuth();
- if(!status.paid){$('loginStatus').textContent='Аккаунт найден. Если игра ещё не куплена, нажмите «Купить игру».';showView('loginView');return;}
+ if(!status.paid){$('loginStatus').textContent='Вход выполнен. Покупка для этого аккаунта пока не найдена.';showView('loginView');return;}
  // Do not occupy the one-active-party lease while browsing decks.
  // paidCard() opens a lease lazily when the first paid card is requested.
  const manifest=await api('/api/account/manifest',null,'GET');
@@ -378,6 +378,10 @@ function logout(){
  showView(gamePage?'loginView':'homeView');toast('Вы вышли из аккаунта.');
 }
 function wire(){
+ $('retryAccount').addEventListener('click',()=>restore());
+ $('loginDemo').addEventListener('click',startDemo);
+ $('retryAccount').addEventListener('click',()=>restore());
+ $('loginDemo').addEventListener('click',startDemo);
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
