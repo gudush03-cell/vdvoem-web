@@ -44,6 +44,6 @@ test('only skip action has a stop icon, turn action is concise',()=>{
  assert.equal((play.match(/🛑/g)||[]).length,1);
  assert.match(play,/<strong>Игрок 1<\/strong>/);
  assert.match(play,/<strong>Игрок 2<\/strong>/);
- assert.match(js,/'Передать ход'/);
+ assert.match(js,/'Следующая карта'/);
  assert.doesNotMatch(js,/Ответили: передать ход/);
 });

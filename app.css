@@ -59,6 +59,7 @@ main{min-height:70vh}.eyebrow{letter-spacing:.22em;color:#f5adc7;font-size:10px;
 .skip-card.current{box-shadow:0 0 0 2px #f7afce3b}
 .ornament-heart{font:normal 75px/1 Georgia,serif;color:#fcb1c9;text-align:center;padding-top:15px;animation:heartFloat 7s ease-in-out infinite}
 .text-button{background:transparent;border:0;color:#eac3d3;padding:10px 0;font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.rules-dialog{width:min(520px,calc(100% - 28px));max-height:85dvh;overflow:auto;padding:28px;border:1px solid #9a6b7c;border-radius:22px;color:#fff0f5;background:linear-gradient(145deg,#382431,#1d151c);box-shadow:0 24px 90px #0009}.rules-dialog::backdrop{background:#080609c9}.rules-dialog h2{font:normal clamp(34px,7vw,48px)/1.1 Georgia,serif;margin:10px 0 16px}.rules-dialog ol{padding-left:23px;color:#ead6de;line-height:1.65}.rules-dialog li{padding:5px 0}.rules-dialog form{float:right}.rules-dialog a{margin-top:10px}
 .private-mission{animation:arrive .5s both}
 .private-mission:nth-child(2){animation-delay:.07s}.private-mission:nth-child(3){animation-delay:.14s}.private-mission:nth-child(4){animation-delay:.21s}.private-mission:nth-child(5){animation-delay:.28s}.private-mission:nth-child(6){animation-delay:.35s}
 @media(prefers-reduced-motion:reduce){
