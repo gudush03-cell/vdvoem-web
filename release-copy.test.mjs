@@ -41,12 +41,24 @@ test('home header has the requested guest links and one signed-in action',()=>{
  assert.match(nav,/href="#decks">Колоды<\/a>[\s\S]*href="#rules">Правила<\/a>[\s\S]*href="#box">Коробка<\/a>[\s\S]*data-start-demo[^>]*>Попробовать 6 карт/);
  assert.match(nav,/data-owner class="header-cta" href="\.\/secure-game\.html\?resume=1">Продолжить/);
  assert.match(home,/\.header-nav \.nav-info[\s\S]*\.header-nav \[data-start-demo\]\{display:none!important\}/);
- assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:none!important\}/);
+ assert.match(home,/html\[data-account="paid"\] #siteHeader \[data-owner\]\{display:none!important\}/);
+ assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:block!important\}/);
+ assert.match(home,/href="\.\/secure-game\.html\?resume=1">Продолжить/);
+ assert.doesNotMatch(home,/Снова вечер вдвоём|Все 10 колод уже ваши/);
  assert.doesNotMatch(home,/<span id="homeAccountStatus"[^>]*><\/span>/);
+});
+
+test('free demo header uses the brand logo and a home action',()=>{
+ assert.match(home,/<div class="game-top"><a class="game-brand" href="#top"[^>]*><img src="\.\/brand\.png"/);
+ assert.match(home,/<button aria-label="На главную" class="demo-home" id="closeDemo"[^>]*>На главную<\/button>/);
 });
 
 test('subpages keep only a home route in their headers',()=>{
  for(const page of [purchase,offer,privacy]) assert.match(page,/href="(?:\.\/index\.html|https:\/\/vdvoemnalegke\.online\/)"[^>]*>На главную|brand-image" href="\.\/index\.html"/);
+ assert.match(purchase,/max-width:\s*700px/);
+ assert.match(purchase,/class="purchase-top"/);
+ assert.match(privacy,/width:min\(calc\(100% - 48px\),1240px\)/);
+ assert.match(privacy,/--rose:#f49dbb/);
 });
 
 test('checkout only enables live payments or explicitly labelled test mode',()=>{

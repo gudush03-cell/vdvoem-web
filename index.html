@@ -703,7 +703,10 @@ main,.site-header{position:relative;z-index:1}
 [data-owner],[data-checking],[data-connected]{display:none!important}
 html[data-account="paid"] [data-owner],html:is([data-account="checking"],[data-account="retry"]) [data-checking]{display:revert!important}
 html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav .nav-info,html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav [data-start-demo]{display:none!important}
-html[data-account="paid"] .evening-entry{display:none!important}
+html[data-account="paid"] #siteHeader [data-owner]{display:none!important}
+html[data-account="paid"] .evening-entry{display:block!important}
+html[data-account="paid"] .evening-entry [data-owner]{display:flex!important;justify-content:center}
+html[data-account="paid"] .evening-entry [data-owner] .button{min-width:min(100%,300px)}
 html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) :is([data-guest],#access,.demo-callout,[data-start-demo]){display:none!important}
 @media(max-width:480px){.evening-actions{flex-direction:column;gap:8px}.evening-actions .button{width:min(100%,290px)}}
 </style>
@@ -711,7 +714,7 @@ html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) 
 try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.dataset.account='checking';}catch{}
 </script>
 <script src="./home-account.js" defer></script>
-<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><meta property="og:image" content="https://vdvoemnalegke.ru/brand.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://vdvoemnalegke.ru/brand.png"><style>.brand-ticker{width:100%;overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:44px;min-width:max-content;padding:15px 20px}.brand-ticker i{font-style:normal;color:#ff8fb8}@media(prefers-reduced-motion:no-preference){.brand-ticker-track{animation:brandTicker 32s linear infinite}@keyframes brandTicker{to{transform:translateX(-25%)}}}</style></head>
+<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><meta property="og:image" content="https://vdvoemnalegke.ru/brand.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://vdvoemnalegke.ru/brand.png"><style>.brand-ticker{width:100%;overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:44px;min-width:max-content;padding:15px 20px}.brand-ticker i{font-style:normal;color:#ff8fb8}@media(prefers-reduced-motion:no-preference){.brand-ticker-track{animation:brandTicker 32s linear infinite}@keyframes brandTicker{to{transform:translateX(-25%)}}}</style><style>.game-brand img{display:block;width:150px;height:46px;object-fit:contain}.demo-home{min-height:42px;padding:8px 17px;border:1px solid #ffffff35;border-radius:999px;background:#ffffff08;color:#ffe2eb;font:700 12px Manrope,Arial,sans-serif;white-space:nowrap;cursor:pointer}.demo-home:hover{background:#f49dbb20}@media(max-width:420px){.game-brand img{width:126px;height:42px}.demo-home{font-size:11px;padding-inline:13px}}</style></head>
 <body>
 <a class="skip-link" href="#main">К содержанию</a>
 <header class="site-header" id="siteHeader">
@@ -736,8 +739,6 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
     </div>
   </div>
   <div data-owner>
-    <h2>Снова вечер вдвоём</h2>
-    <p>Все 10 колод уже ваши. Вернитесь к своей партии или выберите колоду под настроение.</p>
     <a class="button button-primary" href="./secure-game.html?resume=1">Продолжить</a>
   </div>
   <div data-checking role="status">
@@ -870,7 +871,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
   <div class="brand-ticker" aria-label="Играй. Чувствуй. Говори. Ближе, чем кажется"><div class="brand-ticker-track"><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i></div></div>
 </footer>
 <dialog aria-labelledby="dialogTitle" class="game-dialog" id="demoDialog"><div class="game-shell">
-<div class="game-top"><div class="game-brand"><span class="game-brand-dot"></span> ВДВОЁМ НАЛЕГКЕ</div><button aria-label="Закрыть игру" class="icon-close" id="closeDemo" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"></path></svg></button></div>
+<div class="game-top"><a class="game-brand" href="#top" aria-label="Вдвоём налегке, на главную"><img src="./brand.png" alt="Вдвоём налегке"></a><button aria-label="На главную" class="demo-home" id="closeDemo" type="button">На главную</button></div>
 <div class="game-content" id="gameContent">
 <div class="game-counter"><span id="dialogTitle">ШЕСТЬ КАРТ ДЛЯ ЗНАКОМСТВА</span><span aria-live="polite" id="cardCounter">01 / 06</span></div>
 <div aria-hidden="true" class="progress-line"><span id="progressFill"></span></div>
