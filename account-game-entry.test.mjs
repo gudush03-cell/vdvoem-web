@@ -33,7 +33,7 @@ test('public paid game copy describes account access, not codes',()=>{
 
 test('account header switches only after authenticated server status',()=>{
  assert.match(html,/id="headerLoginLink"/);
- assert.match(html,/id="headerAccountBadge" hidden/);
+ assert.match(html,/id="headerAccountBadge"[^>]*hidden>Продолжить/);
  assert.match(js,/accountVerified=status\.signedIn===true/);
  assert.match(js,/function updateHeaderAuth\(\)/);
  assert.match(js,/accountVerified=false;updateHeaderAuth\(\)/);
@@ -44,6 +44,6 @@ test('only skip action has a stop icon, turn action is concise',()=>{
  assert.equal((play.match(/🛑/g)||[]).length,1);
  assert.match(play,/<strong>Игрок 1<\/strong>/);
  assert.match(play,/<strong>Игрок 2<\/strong>/);
- assert.match(js,/'Передать ход'/);
- assert.doesNotMatch(js,/Ответили: передать ход/);
+ assert.match(js,/'Следующая карта'/);
+ assert.doesNotMatch(js,/Ответили: передать ход|Передать ход/);
 });

@@ -709,12 +709,13 @@ html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) 
 try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.dataset.account='checking';}catch{}
 </script>
 <script src="./home-account.js" defer></script>
-<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><meta property="og:image" content="https://vdvoemnalegke.ru/brand.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://vdvoemnalegke.ru/brand.png"></head>
+<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><meta property="og:image" content="https://vdvoemnalegke.ru/brand.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://vdvoemnalegke.ru/brand.png"><style>.brand-ticker{width:100%;overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:44px;min-width:max-content;padding:15px 20px}.brand-ticker i{font-style:normal;color:#ff8fb8}@media(prefers-reduced-motion:no-preference){.brand-ticker-track{animation:brandTicker 32s linear infinite}@keyframes brandTicker{to{transform:translateX(-25%)}}}</style></head>
 <body>
 <a class="skip-link" href="#main">К содержанию</a>
 <header class="site-header" id="siteHeader">
 <a aria-label="Вдвоём налегке - наверх" class="brand" href="#top"><img alt="Вдвоём налегке" src="./brand.png"/></a>
-<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#how">Об игре</a><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Сыграть 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a></nav>
+<span id="homeAccountStatus" hidden aria-live="polite"></span>
+<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Сыграть 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a></nav>
 </header>
 <main id="main">
 <section aria-labelledby="heroHeading" class="hero" id="top">
@@ -725,7 +726,6 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <h1 class="hero-heading intro-fade" id="heroHeading">Не просто вечер.<br/><em>Немного ближе.</em></h1>
 <p class="hero-copy intro-fade">Десять колод. Один телефон. И разговоры, которые вы потом будете вспоминать.</p>
 <section class="evening-entry intro-fade" aria-label="Начать или продолжить игру">
-  <span class="account-note" data-connected>Telegram подключён</span>
   <div data-guest>
     <h2>Начните с одной карты</h2>
     <p>Читайте по очереди и отвечайте друг другу. Первые шесть карт можно попробовать без регистрации.</p>
@@ -768,7 +768,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <p>Никакого соревнования и правильных ответов. Один телефон на двоих - и повод узнать друг друга чуть лучше.</p>
 </div>
 <div class="rule-grid">
-<article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">📱</span><h3>Передавайте телефон</h3></div><p>В основной партии первой ходит девушка - Игрок 1. Читайте верхнюю карту, отвечайте или выполняйте задание, затем передавайте ход.</p></article>
+<article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">📱</span><h3>Передавайте телефон</h3></div><p>Начните с первой карточки. Игрок 1, девушка, ходит первой. Прочитайте карту, ответьте или выполните задание, затем передайте телефон партнёру.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">🎴</span><h3>Играйте по настроению</h3></div><p>В полной партии колоды 1-6 идут по порядку. «Быстрый старт» перемешивает карты этих колод. Любую колоду можно открыть отдельно.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">✦</span><h3>Можно сказать «Не сегодня»</h3></div><p>У каждого по одной такой карте за партию. Пропускайте задание без объяснений и передавайте ход. Эти две карты - отдельно от 168 карточек.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">✨</span><h3>Завершайте вдвоём</h3></div><p>Здесь не нужно побеждать. Подарите друг другу разговор, который захочется продолжить после игры.</p></article>
@@ -863,61 +863,11 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <div class="faq-item"><button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-5"><span>Нужен ли Telegram?</span><span class="faq-toggle" aria-hidden="true">+</span></button><div class="faq-answer" id="faq-answer-5" aria-hidden="true" inert><div class="faq-answer-inner"><p>Для покупки и восстановления полного доступа на сайте нужен Telegram-вход. Играть по-прежнему можно вдвоём с одного устройства. Игра внутри Telegram-бота и покупка за Stars - отдельный продукт, доступы не объединяются.</p></div></div></div>
 <div class="faq-item"><button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-6"><span>Как вернуть деньги?</span><span class="faq-toggle" aria-hidden="true">+</span></button><div class="faq-answer" id="faq-answer-6" aria-hidden="true" inert><div class="faq-answer-inner"><p>Напишите на <a href="mailto:gudush03@gmail.com">gudush03@gmail.com</a> или <a href="https://t.me/GudDan03" target="_blank" rel="noopener noreferrer">@GudDan03</a>. Укажите дату, сумму и номер платежа, а также причину обращения. Мы проверим ситуацию по <a href="./offer.html#refund">условиям оферты</a> и требованиям закона. Данные банковской карты присылать не нужно.</p></div></div></div></div></section>
 </main>
-<footer class="footer section-shell"><a class="footer-brand" href="#top"><img alt="Вдвоём налегке" src="./brand.png"/></a><nav aria-label="Информация для покупателей" class="footer-links">
-  <a href="#decks">Колоды</a>
-  <a href="#rules">Правила</a><a href="#faq">FAQ</a>
-  <a href="#box">Коробка</a>
-  <a class="offer-link" href="./offer.html">Условия покупки</a>
-  <a href="./offer.html#refund">Возврат средств</a>
-  <a href="./privacy.html">Политика персональных данных</a>
-  <a href="mailto:gudush03@gmail.com">Написать нам</a>
-</nav>
-<p style="grid-column:1/-1;line-height:1.65;margin:0">Самозанятый Гудушаури Даниил Николаевич<br>ИНН 231216001846 · <a href="#seller-info">Контакты продавца</a></p>
-<details class="privacy-note legal-note" id="seller-info"><summary>Документы и контакты <span aria-hidden="true">+</span></summary><div class="privacy-note__body"><section class="seller-legal" aria-labelledby="sellerLegalTitle">
-  <div class="seller-legal__top"><span class="seller-legal__eyebrow">ДОКУМЕНТЫ И КОНТАКТЫ</span><h3 id="sellerLegalTitle">Всё открыто. <em>Как и наши разговоры.</em></h3></div>
-  <div class="seller-legal__grid">
-    <div class="seller-legal__item">
-      <p class="seller-legal__label">Продавец и правообладатель</p>
-      <strong>Гудушаури Даниил Николаевич</strong>
-      <p>Самозанятый, плательщик налога на профессиональный доход</p>
-      <p>ИНН: <span class="seller-legal__numbers">231216001846</span></p>
-    </div>
-    <div class="seller-legal__item">
-      <p class="seller-legal__label">Поддержка покупателей</p>
-      <a href="mailto:gudush03@gmail.com">gudush03@gmail.com</a>
-      <a href="https://t.me/GudDan03" rel="noopener noreferrer" target="_blank">Telegram: @GudDan03</a>
-      <a href="tel:+79182530804">+7 918 253-08-04</a>
-      <p>Вопросы об оплате, доступе и возвратах.</p>
-    </div>
-    <div class="seller-legal__item">
-      <p class="seller-legal__label">Что продаётся</p>
-      <p>Цифровая версия игры «Вдвоём налегке»: <strong>168 карточек в 10 колодах</strong> для игры в браузере. Разовая покупка, без подписки.</p>
-      <p>Физическая коробка - концепт, не продаётся.</p>
-    </div>
-    <div class="seller-legal__item">
-      <p class="seller-legal__label">Оплата и получение доступа</p>
-      <p>Полная веб-версия стоит <strong>499 ₽</strong>: разовая покупка без подписки. Оплата проводится через Robokassa после подключения приёма платежей. После подтверждения оплаты доступ появляется в Telegram-аккаунте, использованном при покупке. На <a href="./secure-purchase.html">странице покупки</a> можно проверить доступ или открыть уже купленную игру.</p>
-      <p><a href="./offer.html">Порядок покупки</a>, <a href="./offer.html#refund">Условия возврата</a></p>
-    </div>
-  </div>
-</section></div></details>
-<details class="privacy-note" id="privacy-info">
-  <summary>Об обработке персональных данных <span aria-hidden="true">+</span></summary>
-  <div class="privacy-note__body">
-    <p><strong>Оператор:</strong> Гудушаури Даниил Николаевич, ИНН 231216001846. Для вопросов о данных: <a href="mailto:gudush03@gmail.com">gudush03@gmail.com</a>.</p>
-    <p><strong>Какие данные и зачем:</strong> при входе через Telegram используются необходимые сведения об аккаунте, включая Telegram ID; при покупке - номер заказа, сумму, статус платежа и привязку доступа к аккаунту. Для поддержки могут потребоваться контакты и текст обращения. Сайт не получает полный номер банковской карты. Прогресс игры сохраняется в браузере устройства.</p>
-    <p><strong>Сервисы:</strong> Telegram используется для входа, Robokassa - для платежей, Railway - для серверной части, GitHub Pages и Cloudflare Pages - для публикации страниц. Сторонним сервисам могут передаваться технические сведения, необходимые для предоставления услуги.</p>
-    <p><strong>Ваши права:</strong> сведения о целях, правовых основаниях, сроках обработки, уточнении и удалении данных изложены в <a href="./privacy.html">Политике обработки персональных данных</a>. По вопросам обработки напишите на <a href="mailto:gudush03@gmail.com">gudush03@gmail.com</a>.</p>
-  </div>
-</details>
-<p class="footer-copyright">© 2026 «Вдвоём налегке». 6 бесплатных карт, 168 карт в полной версии. Разовая покупка без подписки.</p></footer>
-<script>
-  const sellerDetails = document.getElementById('seller-info');
-  document.querySelectorAll('a[href="#seller-info"]').forEach(link => {
-    link.addEventListener('click', () => { sellerDetails.open = true; });
-  });
-  if (location.hash === '#seller-info') sellerDetails.open = true;
-</script>
+<footer class="footer section-shell">
+  <a class="footer-brand" href="#top"><img alt="Вдвоём налегке" src="./brand.png"/></a>
+  <nav aria-label="Информация" class="footer-links"><a href="#decks">Колоды</a><a href="#rules">Правила</a><a href="#faq">FAQ</a><a href="./offer.html">Условия покупки</a><a href="./privacy.html">Политика</a><a href="mailto:gudush03@gmail.com">Контакты</a></nav>
+  <div class="brand-ticker" aria-label="Играй. Чувствуй. Говори. Ближе, чем кажется"><div class="brand-ticker-track"><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i></div></div>
+</footer>
 <dialog aria-labelledby="dialogTitle" class="game-dialog" id="demoDialog"><div class="game-shell">
 <div class="game-top"><div class="game-brand"><span class="game-brand-dot"></span> ВДВОЁМ НАЛЕГКЕ</div><button aria-label="Закрыть игру" class="icon-close" id="closeDemo" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"></path></svg></button></div>
 <div class="game-content" id="gameContent">

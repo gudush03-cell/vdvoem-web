@@ -24,9 +24,11 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(home,/Robokassa/);
  assert.match(home,/href="\.\/offer\.html#refund"/);
  assert.match(home,/href="\.\/privacy\.html"/);
- assert.match(home,/Гудушаури Даниил Николаевич/);
- assert.match(home,/231216001846/);
- assert.match(home,/Telegram ID/);
+ assert.doesNotMatch(home,/Гудушаури Даниил Николаевич/);
+ assert.doesNotMatch(home,/231216001846/);
+ assert.match(offer,/Гудушаури Даниил Николаевич/);
+ assert.match(offer,/231216001846/);
+ assert.match(privacy,/Telegram ID/);
  assert.match(offer,/Стоимость полного доступа - 499 ₽/);
  assert.match(offer,/\.\/privacy\.html/);
  assert.match(privacy,/Политика обработки персональных данных/);

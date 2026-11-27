@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./app.css?v=9">
-<script src="./app-secure.js?v=7" defer></script>
+<script src="./app-secure.js?v=8" defer></script>
 <script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
 <link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"></head>
@@ -19,10 +19,11 @@
 <header class="top">
   <a class="logo" href="./index.html" aria-label="Вдвоём налегке"><img src="./brand.png" alt="Вдвоём налегке" width="130" height="55"></a>
   <nav class="nav" aria-label="Навигация">
-    <a href="./index.html#rules">Правила</a>
     <a href="./index.html#decks">Колоды</a>
+    <a href="./index.html#rules">Правила</a>
+    <a href="./index.html#box">Коробка</a>
     <a class="pill-link" id="headerLoginLink" href="./secure-game.html#loginView">Войти через Telegram</a>
-    <span class="pill-link account-badge" id="headerAccountBadge" hidden>✓ Telegram подключён</span>
+    <a class="pill-link account-badge" id="headerAccountBadge" href="./secure-game.html?resume=1" hidden>Продолжить</a>
   </nav>
 </header>
 <main>
@@ -47,7 +48,7 @@
   </div>
 
   <section class="section" id="rules">
-    <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Первой ходит девушка, Игрок 1. Читайте верхнюю карту, отвечайте или выполняйте задание и передавайте ход.</p></div>
+    <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Первой ходит девушка, Игрок 1. Читайте первую карту, отвечайте или выполняйте задание и передавайте ход.</p></div>
     <div class="rule-grid">
       <article class="rule static-rule reveal"><div class="static-rule-top"><span class="rule-emoji" aria-hidden="true">🎴</span><strong>Основные колоды</strong></div><p>В полной партии идут по порядку. В «Быстром старте» все 120 карт перемешиваются. Любую колоду можно открыть отдельно.</p></article>
       <article class="rule static-rule reveal"><div class="static-rule-top"><span class="rule-emoji" aria-hidden="true">🤫</span><strong>Без слов</strong></div><p>В колоде 12 карт. В начале партии каждому достаются 3 случайных задания без повторений. Посмотрите их по очереди и выполняйте незаметно.</p></article>
@@ -113,7 +114,7 @@
     <div class="guide-heading"><span class="eyebrow">ПАМЯТКА ДЛЯ ДВОИХ</span><h2 class="serif" id="lobbyGuideTitle">Как играть</h2><p>Никакой подготовки: выберите режим, читайте карточки и говорите друг с другом.</p></div>
     <ol class="guide-steps">
       <li><span class="step-num">01</span><div><strong>Выберите формат</strong><p>Полная партия: 6 колод по порядку (120 карт). «Быстрый старт»: те же 120 карт вперемешку. Можно открыть любую колоду отдельно.</p></div></li>
-      <li><span class="step-num">02</span><div><strong>Передавайте телефон</strong><p>Первой ходит девушка (Игрок 1). Читайте верхнюю карту, отвечайте или выполняйте задание и передавайте ход.</p></div></li>
+      <li><span class="step-num">02</span><div><strong>Передавайте телефон</strong><p>Первой ходит девушка (Игрок 1). Читайте первую карту, отвечайте или выполняйте задание и передавайте ход.</p></div></li>
       <li><span class="step-num">03</span><div><strong>Получите тайные задания</strong><p>В начале партии каждый по очереди увидит по три случайных задания из колоды «Без слов». Не показывайте их партнёру.</p></div></li>
       <li><span class="step-num">04</span><div><strong>Играйте бережно</strong><p>У каждого есть один пропуск «Не сегодня» без объяснений. В «После полуночи» играют только при согласии обоих.</p></div></li>
     </ol>
@@ -165,7 +166,7 @@
 <section class="view" id="playView" hidden>
   <div class="play-shell">
     <div class="play-top">
-      <button type="button" class="text-button" id="backLobby">← Колоды</button>
+      <button type="button" class="btn small" id="backLobby">← Все колоды</button>
       <span class="play-meta" id="playCount">01 / 20</span>
     </div>
     <div class="play-turn"><div><small>СЕЙЧАС ХОДИТ</small><strong id="turnName">Игрок 1: девушка</strong></div><span id="turnSymbol" aria-hidden="true" style="font-size:27px">✧</span></div>
@@ -181,15 +182,22 @@
     </div>
     <div class="play-bottom">
       <button class="btn secondary" type="button" id="skipButton">🛑 Не сегодня</button>
-      <button class="btn" type="button" id="nextCard">Передать ход</button>
+      <button class="btn" type="button" id="nextCard">Следующая карта</button>
     </div>
     <div class="play-tools">
+      <button type="button" class="btn ghost small" id="gameRulesButton">Правила</button>
       <button type="button" class="btn ghost small" id="sceneButton">🎭 Ситуация</button>
       <button type="button" class="btn ghost small" id="tasksButton">🤫 Мои задания</button>
       <button type="button" class="btn ghost small" id="exhaleButton">🌿 Выдох</button>
     </div>
   </div>
 </section>
+
+<dialog class="rules-dialog" id="gameRulesDialog" aria-labelledby="gameRulesTitle">
+  <form method="dialog"><button class="btn ghost small" aria-label="Закрыть памятку">Закрыть</button></form>
+  <span class="eyebrow">ПАМЯТКА ДЛЯ ДВОИХ</span><h2 id="gameRulesTitle">Как играть</h2>
+  <ol><li>Начните с первой карточки.</li><li>Прочитайте её и ответьте или выполните задание.</li><li>Передайте телефон партнёру. Первой ходит девушка, Игрок 1.</li><li>У каждого есть один пропуск «Не сегодня» без объяснений.</li></ol>
+</dialog>
 
 <section class="view" id="finishView" hidden>
   <div class="panel auth-panel">
@@ -206,9 +214,7 @@
 </section>
 </main>
 <footer class="site-footer">
-  <span>✧ ВДВОЁМ НАЛЕГКЕ - 2026</span>
-  <span>168 карт - 10 колод - Один телефон на двоих</span>
-  <span>Ваш аккаунт - Без подписки</span>
+  <div class="brand-ticker" aria-label="Играй. Чувствуй. Говори. Ближе, чем кажется"><div class="brand-ticker-track"><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span></div></div>
 </footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
