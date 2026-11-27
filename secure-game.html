@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./app.css?v=9">
-<script src="./app-secure.js?v=8" defer></script>
+<link rel="stylesheet" href="./app.css?v=10">
+<script src="./app-secure.js?v=9" defer></script>
 <script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
 <link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"></head>
@@ -166,7 +166,8 @@
 <section class="view" id="playView" hidden>
   <div class="play-shell">
     <div class="play-top">
-      <button type="button" class="btn small" id="backLobby">← Все колоды</button>
+      <button type="button" class="btn small" id="backLobby">‹ Назад</button>
+      <div class="play-nav-actions"><a class="btn small" href="./index.html">На главную</a><button type="button" class="btn small" id="gameRulesButton">Правила</button></div>
       <span class="play-meta" id="playCount">01 / 20</span>
     </div>
     <div class="play-turn"><div><small>СЕЙЧАС ХОДИТ</small><strong id="turnName">Игрок 1: девушка</strong></div><span id="turnSymbol" aria-hidden="true" style="font-size:27px">✧</span></div>
@@ -180,12 +181,11 @@
       <div class="skip-card" id="skip1"><strong>Игрок 1</strong><div>«Не сегодня»: <span id="skipCount1">1</span></div></div>
       <div class="skip-card" id="skip2"><strong>Игрок 2</strong><div>«Не сегодня»: <span id="skipCount2">1</span></div></div>
     </div>
-    <div class="play-bottom">
+    <div class="play-bottom" id="playActions">
       <button class="btn secondary" type="button" id="skipButton">🛑 Не сегодня</button>
       <button class="btn" type="button" id="nextCard">Следующая карта</button>
     </div>
     <div class="play-tools">
-      <button type="button" class="btn ghost small" id="gameRulesButton">Правила</button>
       <button type="button" class="btn ghost small" id="sceneButton">🎭 Ситуация</button>
       <button type="button" class="btn ghost small" id="tasksButton">🤫 Мои задания</button>
       <button type="button" class="btn ghost small" id="exhaleButton">🌿 Выдох</button>

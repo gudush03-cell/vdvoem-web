@@ -4,15 +4,15 @@ import { readFileSync } from 'node:fs';
 const js=readFileSync(new URL('./app-secure.js',import.meta.url),'utf8');
 const html=readFileSync(new URL('./secure-game.html',import.meta.url),'utf8');
 
-test('browsing account decks never starts or occupies a paid party lease',()=>{
+test('browsing account decks never starts a game session',()=>{
   const start=js.indexOf('async function accountGame()');
   const end=js.indexOf('window.onTelegramAuth=',start);
   assert.ok(start>=0&&end>start);
   const functionBody=js.slice(start,end);
   assert.ok(!functionBody.includes('await enterParty()'));
   assert.match(functionBody,/\/api\/account\/manifest/);
-  assert.match(js,/if\(e.status!==409\)throw e;await enterParty\(\)/,
-    'First paid card should start party lazily');
+  assert.doesNotMatch(js,/enterParty|\/api\/party\/start/,
+    'Card access must not depend on acquiring an exclusive party lease');
 });
 
 test('temporary server failures never silently erase the session',()=>{
@@ -46,4 +46,13 @@ test('only skip action has a stop icon, turn action is concise',()=>{
  assert.match(play,/<strong>Игрок 2<\/strong>/);
  assert.match(js,/'Следующая карта'/);
  assert.doesNotMatch(js,/Ответили: передать ход|Передать ход/);
+ assert.match(play,/id="backLobby">‹ Назад</);
+ assert.match(play,/href="\.\/index\.html">На главную/);
+ assert.match(play,/id="gameRulesButton">Правила/);
+ assert.match(js,/header\.hidden=id==='playView'/);
+});
+
+test('paid cards are available from multiple signed-in devices',()=>{
+ assert.doesNotMatch(js,/enterParty|e\.status!==409/);
+ assert.match(js,/api\('\/api\/account\/card',\{deck,index\}\)/);
 });

@@ -58,15 +58,12 @@ async function api(path,body,method='POST'){
  if(!response.ok){const e=Error(data.error||'Ошибка сервера.');e.status=response.status;throw e;}
  return data;
 }
-async function enterParty(){await api('/api/party/start');}
 async function paidCard(deck,index){
  const n=keys.indexOf(deck);
  if(n<0||!Number.isInteger(index)||index<0||index>=lengths[n])throw Error('Неверная карточка.');
  const k=deck+':'+index;
  if(cardCache.has(k))return cardCache.get(k);
- let data;
- try{data=await api('/api/account/card',{deck,index});}
- catch(e){if(e.status!==409)throw e;await enterParty();data=await api('/api/account/card',{deck,index});}
+ const data=await api('/api/account/card',{deck,index});
  if(data.access!=='granted'||data.deck!==deck||data.index!==index||
     typeof data.card?.title!=='string'||!Array.isArray(data.card.body))
    throw Error('Неправильный ответ сервера.');
@@ -134,6 +131,8 @@ let selected=new URLSearchParams(location.search).get('deck');
 if(!keys.includes(selected))selected=null;
 function showView(id){
  view=id; for(const k of views)$(k).hidden=k!==id;
+ const header=document.querySelector('.top');if(header)header.hidden=id==='playView';
+ $('playActions').classList.toggle('centered',aside?.kind==='exhale');
  const element=$(id);element.classList.remove('enter');
  if(!reduced){void element.offsetWidth;element.classList.add('enter');}
  saveProgress();
