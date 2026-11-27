@@ -18,13 +18,7 @@
 <div class="page">
 <header class="top">
   <a class="logo" href="./index.html" aria-label="Вдвоём налегке"><img src="./brand.png" alt="Вдвоём налегке" width="130" height="55"></a>
-  <nav class="nav" aria-label="Навигация">
-    <a href="./index.html#decks">Колоды</a>
-    <a href="./index.html#rules">Правила</a>
-    <a href="./index.html#box">Коробка</a>
-    <a class="pill-link" id="headerLoginLink" href="./secure-game.html#loginView">Войти через Telegram</a>
-    <a class="pill-link account-badge" id="headerAccountBadge" href="./secure-game.html?resume=1" hidden>Продолжить</a>
-  </nav>
+  <nav class="nav" aria-label="Навигация"><a class="pill-link" href="./index.html">На главную</a></nav>
 </header>
 <main>
 <section class="view" id="homeView">
@@ -196,7 +190,9 @@
 <dialog class="rules-dialog" id="gameRulesDialog" aria-labelledby="gameRulesTitle">
   <form method="dialog"><button class="btn ghost small" aria-label="Закрыть памятку">Закрыть</button></form>
   <span class="eyebrow">ПАМЯТКА ДЛЯ ДВОИХ</span><h2 id="gameRulesTitle">Как играть</h2>
-  <ol><li>Начните с первой карточки.</li><li>Прочитайте её и ответьте или выполните задание.</li><li>Передайте телефон партнёру. Первой ходит девушка, Игрок 1.</li><li>У каждого есть один пропуск «Не сегодня» без объяснений.</li></ol>
+  <p class="rules-lead">📱 Один телефон на двоих: читайте карточки, отвечайте и передавайте ход.</p>
+  <ol><li><b>01</b> 🎴 Начните игру с первой карточки.</li><li><b>02</b> Прочитайте её и ответьте или выполните задание.</li><li><b>03</b> Передайте телефон партнёру: первой ходит девушка, Игрок 1.</li><li><b>04</b> У каждого есть один пропуск «Не сегодня» без объяснений.</li></ol>
+  <div class="rules-notes"><p>🎭 Ситуация: дополнительная карта в любой момент.</p><p>🌙 После полуночи: только по желанию обоих участников.</p><p>🌿 Выдох: в конце одна случайная карта, на которую отвечают оба.</p></div>
 </dialog>
 
 <section class="view" id="finishView" hidden>

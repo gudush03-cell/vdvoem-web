@@ -701,7 +701,9 @@ main,.site-header{position:relative;z-index:1}
 .evening-demo{background:transparent;border:1px solid #aa738b;color:#ffe8f0}
 .account-note{display:inline-block;margin-bottom:12px;color:#ffc5dc;font-size:13px;font-weight:700}
 [data-owner],[data-checking],[data-connected]{display:none!important}
-html[data-account="paid"] [data-owner],html[data-account="checking"] [data-checking],html[data-account="retry"] [data-checking],html:is([data-account="paid"],[data-account="member"]) [data-connected]{display:revert!important}
+html[data-account="paid"] [data-owner],html:is([data-account="checking"],[data-account="retry"]) [data-checking]{display:revert!important}
+html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav .nav-info,html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav [data-start-demo]{display:none!important}
+html[data-account="paid"] .evening-entry{display:none!important}
 html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) :is([data-guest],#access,.demo-callout,[data-start-demo]){display:none!important}
 @media(max-width:480px){.evening-actions{flex-direction:column;gap:8px}.evening-actions .button{width:min(100%,290px)}}
 </style>
@@ -714,8 +716,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <a class="skip-link" href="#main">К содержанию</a>
 <header class="site-header" id="siteHeader">
 <a aria-label="Вдвоём налегке - наверх" class="brand" href="#top"><img alt="Вдвоём налегке" src="./brand.png"/></a>
-<span id="homeAccountStatus" hidden aria-live="polite"></span>
-<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Сыграть 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a></nav>
+<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Попробовать 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a></nav>
 </header>
 <main id="main">
 <section aria-labelledby="heroHeading" class="hero" id="top">

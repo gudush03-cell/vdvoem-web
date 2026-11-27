@@ -36,6 +36,19 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(home,/id="faq-answer-6"/);
 });
 
+test('home header has the requested guest links and one signed-in action',()=>{
+ const nav=home.match(/<nav aria-label="Навигация" class="header-nav">([\s\S]*?)<\/nav>/)?.[1]||'';
+ assert.match(nav,/href="#decks">Колоды<\/a>[\s\S]*href="#rules">Правила<\/a>[\s\S]*href="#box">Коробка<\/a>[\s\S]*data-start-demo[^>]*>Попробовать 6 карт/);
+ assert.match(nav,/data-owner class="header-cta" href="\.\/secure-game\.html\?resume=1">Продолжить/);
+ assert.match(home,/\.header-nav \.nav-info[\s\S]*\.header-nav \[data-start-demo\]\{display:none!important\}/);
+ assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:none!important\}/);
+ assert.doesNotMatch(home,/<span id="homeAccountStatus"[^>]*><\/span>/);
+});
+
+test('subpages keep only a home route in their headers',()=>{
+ for(const page of [purchase,offer,privacy]) assert.match(page,/href="(?:\.\/index\.html|https:\/\/vdvoemnalegke\.online\/)"[^>]*>На главную|brand-image" href="\.\/index\.html"/);
+});
+
 test('checkout only enables live payments or explicitly labelled test mode',()=>{
  assert.match(purchase,/\/health/);
  assert.match(purchase,/checkoutMode==='test'\|\|\(checkoutMode==='live'&&status\.payments_enabled===true\)/);

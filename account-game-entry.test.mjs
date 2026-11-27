@@ -31,12 +31,12 @@ test('public paid game copy describes account access, not codes',()=>{
   assert.ok(!html.includes('Без регистрации, подписки и обязательного Telegram'));
 });
 
-test('account header switches only after authenticated server status',()=>{
- assert.match(html,/id="headerLoginLink"/);
- assert.match(html,/id="headerAccountBadge"[^>]*hidden>Продолжить/);
+test('the secure-game header has only a home route while account login stays in the page',()=>{
+ const header=html.split('<header class="top">')[1]?.split('</header>')[0]||'';
+ assert.match(header,/href="\.\/index\.html">На главную/);
+ assert.doesNotMatch(header,/Колоды|Правила|Коробка|headerLoginLink|headerAccountBadge/);
+ assert.match(html,/id="loginView"/);
  assert.match(js,/accountVerified=status\.signedIn===true/);
- assert.match(js,/function updateHeaderAuth\(\)/);
- assert.match(js,/accountVerified=false;updateHeaderAuth\(\)/);
 });
 
 test('only skip action has a stop icon, turn action is concise',()=>{
