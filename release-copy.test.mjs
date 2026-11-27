@@ -77,6 +77,12 @@ test('checkout only enables live payments or explicitly labelled test mode',()=>
  assert.match(purchase,/if\(!await refreshPaymentAvailability\(\)\)/);
 });
 
+test('FAQ payment steps do not claim that live checkout is closed',()=>{
+ assert.match(home,/Войдите через Telegram, примите оферту/);
+ assert.match(home,/завершите платёж на странице Robokassa/);
+ assert.doesNotMatch(home,/Пока приём реальных платежей не включён/);
+});
+
 test('old public routes redirect to the current Telegram account flow',()=>{
  assert.match(oldGame,/location\.replace\(next\.href\)/);
  assert.match(oldGame,/secure-game\.html/);

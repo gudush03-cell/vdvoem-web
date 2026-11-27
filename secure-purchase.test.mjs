@@ -20,7 +20,7 @@ test('Telegram checkout never renders, copies, or requests manual access codes',
 });
 
 
-function boot(token = null, {paid = false, unauthorized = false, live = true} = {}) {
+function boot(token = null, {paid = false, unauthorized = false, live = true, healthFailed = false} = {}) {
   const elements = new Map();
   const requests = [];
   const assigned = [];
@@ -70,10 +70,9 @@ function boot(token = null, {paid = false, unauthorized = false, live = true} = 
         ok:!unauthorized,status:unauthorized?401:200,
         json:async()=>({signedIn:!unauthorized,paid})
       };
-      if(url.endsWith('/health'))return {
-        ok:true,status:200,
-        json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})
-      };
+      if(url.endsWith('/health'))return healthFailed
+        ? {ok:false,status:503,json:async()=>({})}
+        : {ok:true,status:200,json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})};
       return {ok:true,json:async()=>({
         orderId:'987', claimToken:'example-token',
         paymentUrl:'https://payment.example/checkout'
@@ -155,4 +154,12 @@ test('non-live backend never creates a checkout order for an authenticated buyer
   await el('buy').listeners.get('click')();
   assert.equal(checkoutCalls(requests).length,0);
   assert.equal(assigned.length,0);
+});
+
+test('status request failures are not misreported as live payments being disabled', async () => {
+  const {el} = boot('a'.repeat(43),{healthFailed:true});
+  await settle();
+  assert.equal(el('paymentNotice').hidden,false);
+  assert.match(el('paymentNotice').textContent,/Не удалось проверить возможность оплаты/);
+  assert.doesNotMatch(el('paymentNotice').textContent,/Приём платежей пока не открыт/);
 });
