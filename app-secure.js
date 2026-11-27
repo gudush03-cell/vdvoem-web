@@ -44,8 +44,10 @@ let authToken=null,telegramId=null,cardCache=new Map(),renderSerial=0;
 let accountVerified=false;
 function updateHeaderAuth(){
  const login=$('headerLoginLink'),badge=$('headerAccountBadge');
+ const verified=$('headerTelegramVerified');
  if(login)login.hidden=accountVerified;
  if(badge)badge.hidden=!accountVerified;
+ if(verified)verified.hidden=!accountVerified;
 }
 let cardLoading=false,cardLoadFailed=false;
 const TOKEN_KEY='vdvoem.preview.token', USER_KEY='vdvoem.preview.telegram';

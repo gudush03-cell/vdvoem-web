@@ -35,6 +35,8 @@ test('the secure-game header has only a home route while account login stays in 
  const header=html.split('<header class="top">')[1]?.split('</header>')[0]||'';
  assert.match(header,/href="\.\/index\.html">На главную/);
  assert.doesNotMatch(header,/Колоды|Правила|Коробка|headerLoginLink|headerAccountBadge/);
+ assert.match(header,/id="headerTelegramVerified" hidden>✓ Telegram подтверждён/);
+ assert.match(js,/if\(verified\)verified\.hidden=!accountVerified/);
  assert.match(html,/id="loginView"/);
  assert.match(js,/accountVerified=status\.signedIn===true/);
 });

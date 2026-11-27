@@ -701,6 +701,8 @@ main,.site-header{position:relative;z-index:1}
 .evening-demo{background:transparent;border:1px solid #aa738b;color:#ffe8f0}
 .account-note{display:inline-block;margin-bottom:12px;color:#ffc5dc;font-size:13px;font-weight:700}
 [data-owner],[data-checking],[data-connected]{display:none!important}
+.account-verified{display:none!important;align-items:center;gap:6px;color:#f6c4d4;font-size:11px;font-weight:800;white-space:nowrap}
+html:is([data-account="paid"],[data-account="member"]) .account-verified{display:inline-flex!important}
 html[data-account="paid"] [data-owner],html:is([data-account="checking"],[data-account="retry"]) [data-checking]{display:revert!important}
 html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav .nav-info,html:is([data-account="paid"],[data-account="checking"],[data-account="retry"]) .header-nav [data-start-demo]{display:none!important}
 html[data-account="paid"] #siteHeader [data-owner]{display:none!important}
@@ -719,7 +721,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <a class="skip-link" href="#main">К содержанию</a>
 <header class="site-header" id="siteHeader">
 <a aria-label="Вдвоём налегке - наверх" class="brand" href="#top"><img alt="Вдвоём налегке" src="./brand.png"/></a>
-<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Попробовать 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a></nav>
+<nav aria-label="Навигация" class="header-nav"><a class="nav-info" href="#decks">Колоды</a><a class="nav-info" href="#rules">Правила</a><a class="nav-info" href="#box">Коробка</a><button class="header-cta" data-start-demo="" type="button">Попробовать 6 карт</button><a data-owner class="header-cta" href="./secure-game.html?resume=1">Продолжить</a><span class="account-verified">✓ Telegram подтверждён</span></nav>
 </header>
 <main id="main">
 <section aria-labelledby="heroHeading" class="hero" id="top">

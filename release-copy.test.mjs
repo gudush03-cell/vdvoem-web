@@ -45,6 +45,8 @@ test('home header has the requested guest links and one signed-in action',()=>{
  assert.match(home,/html\[data-account="paid"\] \.evening-entry\{display:block!important\}/);
  assert.match(home,/href="\.\/secure-game\.html\?resume=1">Продолжить/);
  assert.doesNotMatch(home,/Снова вечер вдвоём|Все 10 колод уже ваши/);
+ assert.match(home,/class="account-verified">✓ Telegram подтверждён/);
+ assert.match(home,/html:is\(\[data-account="paid"\],\[data-account="member"\]\) \.account-verified\{display:inline-flex!important\}/);
  assert.doesNotMatch(home,/<span id="homeAccountStatus"[^>]*><\/span>/);
 });
 
