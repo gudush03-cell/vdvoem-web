@@ -74,7 +74,7 @@ test('subpages keep only a home route in their headers',()=>{
  assert.match(privacy,/width:min\(calc\(100% - 48px\),1120px\)/);
  assert.match(privacy,/family=Prata/);
  assert.match(privacy,/class="hero-logo" src="\.\/brand\.png"/);
- assert.match(privacy,/ИГРА МЕЖДУ НАМИ · ПОЛИТИКА ДАННЫХ/);
+ assert.match(privacy,/КАРТОЧНАЯ ИГРА ДЛЯ ДВОИХ/);
  assert.match(privacy,/--rose:#f49dbb/);
  for(const page of [home,purchase,offer,privacy]){
   assert.match(page,/mobile-shell\.css\?v=\d+/);
