@@ -90,7 +90,8 @@ async function accountGame(){
  else if(new URLSearchParams(location.search).get('resume')==='1' && !$('resumeBox').hidden)resumeParty();
 }
 function displayTelegramUser(user){
- const name=user?.username?'@'+String(user.username).replace(/^@/,''):[user?.first_name,user?.last_name].filter(Boolean).join(' ')||'Telegram';
+ const username=user?.username||user?.preferred_username;
+ const name=username?'@'+String(username).replace(/^@/,''):[user?.first_name||user?.given_name,user?.last_name||user?.family_name].filter(Boolean).join(' ')||user?.name||'Telegram';
  return `${name} · ID …${String(user?.id||'').slice(-4)}`;
 }
 function secureLoginError(error){
@@ -100,35 +101,39 @@ function secureLoginError(error){
  }
  return message||'Не удалось подтвердить вход через Telegram. Попробуйте ещё раз.';
 }
-window.onTelegramAuth=async user=>{
+window.onTelegramAuth=async authResult=>{
+ const user=authResult?.user||authResult;
  const label=$('loginStatus');label.textContent='Проверяем Telegram…';
  const sameAccountAfterSwitch=switchingFromTelegramId!==null&&switchingFromTelegramId===String(user?.id||'');
  switchingFromTelegramId=null;
  try{
-  const response=await fetch(HOST+'/api/auth/telegram',{
+  if(authResult?.error)throw Error('Вход через Telegram отменён или не завершён.');
+  const isOidc=typeof authResult?.id_token==='string';
+  const authResponse=await fetch(HOST+(isOidc?'/api/auth/telegram/oidc':'/api/auth/telegram'),{
    method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},
-   body:JSON.stringify(user),signal:AbortSignal.timeout(15000)});
-  if(!response.ok)throw Error('Не удалось подтвердить Telegram.');
-  const data=await response.json();
+   body:JSON.stringify(isOidc?{id_token:authResult.id_token}:user),signal:AbortSignal.timeout(15000)});
+  if(!authResponse.ok)throw Error('Не удалось подтвердить Telegram.');
+  const data=await authResponse.json();
   if(!/^[A-Za-z0-9_-]{43}$/.test(data.token||''))throw Error('Неправильная сессия.');
   authToken=data.token;telegramId=String(user.id);telegramLabel=displayTelegramUser(user);
   sessionStorage.setItem(TOKEN_KEY,authToken);sessionStorage.setItem(USER_KEY,telegramId);sessionStorage.setItem(USER_LABEL_KEY,telegramLabel);
   await accountGame();
   if(sameAccountAfterSwitch&&accountVerified&&!$('buyGameFromLogin').hidden){
-   label.textContent=`Telegram снова подтвердил тот же профиль: ${telegramLabel}. Если это не ваш аккаунт, переключите профиль в Telegram. Если виджет опять возвращает его, откройте сайт в приватной вкладке или другом браузере.`;
+   label.textContent=`Telegram снова подтвердил тот же профиль: ${telegramLabel}. Переключите профиль в самом Telegram, завершите вход vdvoemnalegke.online в разделе «Активные веб-сайты», затем войдите снова.`;
   }
  }catch(e){if(e.status===401){accountVerified=false;updateHeaderAuth();}
   label.textContent=secureLoginError(e);}
 };
 function telegramWidget(){
  const el=$('telegramLogin');if(!el)return;
- // Rebuild the iframe after an account switch so the next sign-in works on mobile.
- el.replaceChildren();
- const script=document.createElement('script');
- script.src='https://telegram.org/js/telegram-widget.js?22';script.async=true;
- script.setAttribute('data-telegram-login','VdvoemNaLegkeBOT');
- script.setAttribute('data-size','large');script.setAttribute('data-onauth','onTelegramAuth(user)');
- el.append(script);
+ if(!window.VdvoemTelegramLogin){$('loginStatus').textContent='Загружаем вход через Telegram…';return;}
+ window.VdvoemTelegramLogin.mount(el,{
+  apiBase:HOST,
+  buttonLabel:'Войти через Telegram',
+  legacyCallbackName:'onTelegramAuth',
+  onAuth:window.onTelegramAuth,
+  onError:error=>{$('loginStatus').textContent=secureLoginError(error);}
+ });
 }
 async function restore(){
  authToken=sessionStorage.getItem(TOKEN_KEY);

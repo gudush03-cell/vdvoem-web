@@ -62,7 +62,15 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
         setAttribute(name,value){this.attrs[name]=value;}
       })
     },
-    window:{ location:{ assign(url){ assigned.push(url); } } },
+    window:{
+      location:{ assign(url){ assigned.push(url); } },
+      VdvoemTelegramLogin:{mount(container,{legacyCallbackName}){
+        const script={setAttribute(name,value){this[name]=value;}};
+        script.src='https://telegram.org/js/telegram-widget.js?22';
+        script.setAttribute('data-onauth',`${legacyCallbackName}(user)`);
+        container.append(script);
+      }}
+    },
     location:{ search:'', pathname:'/secure-purchase.html', origin:'https://vdvoemnalegke.online' },
     history:{ replaceState(){} },
     URLSearchParams, setTimeout:()=>0,
@@ -86,6 +94,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
         json:async()=>({signedIn:!unauthorized,paid})
       };
       if(url.endsWith('/api/auth/telegram'))return {ok:true,json:async()=>({token:'c'.repeat(43)})};
+      if(url.endsWith('/api/auth/telegram/oidc'))return {ok:true,json:async()=>({token:'d'.repeat(43)})};
       if(url.endsWith('/health'))return healthFailed
         ? {ok:false,status:503,json:async()=>({})}
         : {ok:true,status:200,json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})};

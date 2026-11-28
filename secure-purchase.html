@@ -179,6 +179,7 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
 </style>
 <script src="./analytics.js" defer></script>
 <script src="./email-login.js?v=1" defer></script>
+<script src="./telegram-login.js?v=1" defer></script>
 <link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><style>.brand-ticker{overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap;margin-top:20px}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:32px;min-width:max-content;padding:13px 12px}.brand-ticker i{font-style:normal;color:#ff8fb8}</style><link rel="stylesheet" href="./mobile-shell.css?v=3"><script src="./mobile-shell.js?v=4" defer></script></head>
 
 <body>
@@ -363,20 +364,24 @@ function purchaseLoginError(error){
  }
  return message||'Не удалось подтвердить вход через Telegram. Попробуйте ещё раз.';
 }
-window.onPurchaseTelegramAuth=async user=>{
+window.onPurchaseTelegramAuth=async authResult=>{
+ const user=authResult?.user||authResult;
  telegramStatus.textContent='Проверяем Telegram…';
  const sameAccountAfterSwitch=changingAccount&&switchingFromTelegramId!==null&&switchingFromTelegramId===String(user?.id||'');
  switchingFromTelegramId=null;
  try{
-  const response=await fetch(API+'/api/auth/telegram',{
+  if(authResult?.error)throw Error('Вход через Telegram отменён или не завершён.');
+  const isOidc=typeof authResult?.id_token==='string';
+  const response=await fetch(API+(isOidc?'/api/auth/telegram/oidc':'/api/auth/telegram'),{
    method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},
-   body:JSON.stringify(user),signal:AbortSignal.timeout(15000)
+   body:JSON.stringify(isOidc?{id_token:authResult.id_token}:user),signal:AbortSignal.timeout(15000)
   });
   if(!response.ok)throw Error('Telegram не подтвердил вход.');
   const data=await response.json();
   if(!/^[A-Za-z0-9_-]{43}$/.test(data.token||''))throw Error('Неверная сессия.');
   accountToken=data.token;accountVerified=false;changingAccount=false;
-  const displayName=user?.username?'@'+String(user.username).replace(/^@/,''):[user?.first_name,user?.last_name].filter(Boolean).join(' ')||'Telegram';
+  const username=user?.username||user?.preferred_username;
+  const displayName=username?'@'+String(username).replace(/^@/,''):[user?.first_name||user?.given_name,user?.last_name||user?.family_name].filter(Boolean).join(' ')||user?.name||'Telegram';
   accountLabel=`${displayName} · ID …${String(user.id).slice(-4)}`;
   sessionStorage.setItem(TOKEN_KEY,accountToken);sessionStorage.setItem(USER_KEY,String(user.id));sessionStorage.setItem(USER_LABEL_KEY,accountLabel);
   await refreshAccount();
@@ -401,16 +406,17 @@ switchPurchaseAccount.addEventListener('click',()=>{
 });
 document.getElementById('retryAccount').addEventListener('click',()=>{refreshAccount();refreshPaymentAvailability();});
 function mountPurchaseTelegramWidget(){
- telegramLogin.replaceChildren();
- const telegramScript=document.createElement('script');
- telegramScript.src='https://telegram.org/js/telegram-widget.js?22';
- telegramScript.async=true;
- telegramScript.setAttribute('data-telegram-login','VdvoemNaLegkeBOT');
- telegramScript.setAttribute('data-size','large');
- telegramScript.setAttribute('data-onauth','onPurchaseTelegramAuth(user)');
- telegramLogin.append(telegramScript);
+ if(!window.VdvoemTelegramLogin){telegramStatus.textContent='Загружаем вход через Telegram…';return;}
+ window.VdvoemTelegramLogin.mount(telegramLogin,{
+  apiBase:API,
+  buttonLabel:'Войти через Telegram',
+  legacyCallbackName:'onPurchaseTelegramAuth',
+  onAuth:window.onPurchaseTelegramAuth,
+  onError:error=>{telegramStatus.textContent=error?.message||'Не удалось загрузить вход через Telegram. Обновите страницу и попробуйте ещё раз.';}
+ });
 }
-mountPurchaseTelegramWidget();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountPurchaseTelegramWidget,{once:true});
+else mountPurchaseTelegramWidget();
 if(!hasToken())clearExpiredSession();
 const message = document.getElementById('message');
 const result = document.getElementById('result');
