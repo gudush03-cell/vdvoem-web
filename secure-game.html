@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./app.css?v=11">
-<script src="./app-secure.js?v=10" defer></script>
+<script src="./app-secure.js?v=11" defer></script>
 <script src="./email-login.js?v=1" defer></script>
 <script src="./analytics.js" defer></script>
 <link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><link rel="stylesheet" href="./mobile-shell.css?v=3"><script src="./mobile-shell.js?v=3" defer></script></head>
@@ -42,7 +42,7 @@
   </div>
 
   <section class="section" id="rules">
-    <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Первой ходит девушка, Игрок 1. Читайте первую карту, отвечайте или выполняйте задание и передавайте ход.</p></div>
+    <div class="section-head"><div class="eyebrow">Как играть</div><h2>Один телефон.<br><span class="pink">Двое внутри.</span></h2><p>Девушка читает первую карту и отвечает. После каждой карты передавайте телефон друг другу: девушка и парень ходят по очереди. Индикатор на экране подскажет, чей ход.</p></div>
     <div class="rule-grid">
       <article class="rule static-rule reveal"><div class="static-rule-top"><span class="rule-emoji" aria-hidden="true">🎴</span><strong>Основные колоды</strong></div><p>В полной партии идут по порядку. В «Быстром старте» все 120 карт перемешиваются. Любую колоду можно открыть отдельно.</p></article>
       <article class="rule static-rule reveal"><div class="static-rule-top"><span class="rule-emoji" aria-hidden="true">🤫</span><strong>Без слов</strong></div><p>В колоде 12 карт. В начале партии каждому достаются 3 случайных задания без повторений. Посмотрите их по очереди и выполняйте незаметно.</p></article>
@@ -95,6 +95,7 @@
 <div id="telegramLogin" style="display:flex;justify-content:center;margin:20px auto;min-height:44px"></div>
     <p class="hint"></p>
     <p class="feedback" id="loginStatus" role="status" aria-live="polite"></p>
+    <button type="button" class="text-button" id="switchAccount" hidden>Сменить аккаунт Telegram</button>
 
 
     <button type="button" class="text-button" id="backHome" style="margin-top:15px">← На главную</button>
@@ -107,8 +108,8 @@
     <div class="guide-heading"><span class="eyebrow">ПАМЯТКА ДЛЯ ДВОИХ</span><h2 class="serif" id="lobbyGuideTitle">Как играть</h2><p>Никакой подготовки: выберите режим, читайте карточки и говорите друг с другом.</p></div>
     <ol class="guide-steps">
       <li><span class="step-num">01</span><div><strong>Выберите формат</strong><p>Полная партия: 6 колод по порядку (120 карт). «Быстрый старт»: те же 120 карт вперемешку. Можно открыть любую колоду отдельно.</p></div></li>
-      <li><span class="step-num">02</span><div><strong>Передавайте телефон</strong><p>Первой ходит девушка (Игрок 1). Читайте первую карту, отвечайте или выполняйте задание и передавайте ход.</p></div></li>
-      <li><span class="step-num">03</span><div><strong>Получите тайные задания</strong><p>В начале партии каждый по очереди увидит по три случайных задания из колоды «Без слов». Не показывайте их партнёру.</p></div></li>
+      <li><span class="step-num">02</span><div><strong>Передавайте телефон</strong><p>Девушка читает первую карту и отвечает, затем передаёт телефон парню. Дальше чередуйтесь. Индикатор показывает, чей ход.</p></div></li>
+      <li><span class="step-num">03</span><div><strong>Получите тайные задания</strong><p>В начале партии девушка и парень по очереди увидят по три случайных задания из колоды «Без слов». Не показывайте их другому.</p></div></li>
       <li><span class="step-num">04</span><div><strong>Играйте бережно</strong><p>У каждого есть один пропуск «Не сегодня» без объяснений. В «После полуночи» играют только при согласии обоих.</p></div></li>
     </ol>
     <div class="guide-extras" aria-label="Особые колоды"><div><span>🎭</span><strong>Ситуация</strong><p>Дополнительная карта в любой момент, потом вернитесь к основной.</p></div><div><span>🌙</span><strong>После полуночи</strong><p>Только по желанию обоих участников.</p></div><div><span>🌿</span><strong>Выдох</strong><p>В конце одна случайная карта, на которую отвечают оба.</p></div></div>
@@ -121,7 +122,7 @@
   <div id="resumeBox" class="utility" hidden><div><strong>Вы можете продолжить игру</strong><p>Вы можете вернуться к текущей карточке</p></div><button class="btn small" type="button" id="resumeButton">Продолжить</button></div>
   <div class="section-head" style="margin-top:35px"><div class="eyebrow">Выберите колоду отдельно</div><h2>По <span class="pink">настроению.</span></h2></div>
   <div id="privateDecks" class="decks-grid"></div>
-  <div class="utility"><div><strong>🤫 Тайные задания</strong><p>Заглянуть в свои задания «Без слов», не показывая партнёру</p></div><button type="button" class="btn secondary small" id="viewMyTasks">Мои задания</button></div>
+  <div class="utility"><div><strong>🤫 Тайные задания</strong><p>Заглянуть в свои задания «Без слов», не показывая другому</p></div><button type="button" class="btn secondary small" id="viewMyTasks">Мои задания</button></div>
   <div class="utility"><div><strong>🌿 Финальный «Выдох»</strong><p>Случайная карта для обоих, когда решите закончить игру</p></div><button type="button" class="btn secondary small" id="lobbyExhale">Вытянуть карту</button></div>
   <button class="btn ghost small" type="button" id="logout">Закрыть игру на устройстве</button>
 </section>
@@ -136,7 +137,7 @@
 </section>
 
 <section class="view" id="secretView" hidden>
-  <div class="intro center"><div class="eyebrow">Не показывайте партнёру</div><h1 id="secretTitle">Ваши <span class="pink">3 задания.</span></h1><p>Запомните их и выполняйте незаметно в течение партии.</p></div>
+  <div class="intro center"><div class="eyebrow">Секретные задания</div><h1 id="secretTitle">Ваши <span class="pink">3 задания.</span></h1><p>Запомните их и выполняйте незаметно в течение партии.</p></div>
   <div id="secretList" class="private-list"></div>
   <p class="private-warning center">После нажатия кнопки задания скроются с экрана.</p>
   <button type="button" class="btn full" id="hideTasks">Скрыть задания и передать телефон</button>
@@ -148,8 +149,8 @@
     <h1 class="serif" style="font-size:36px">Хотите сыграть в «После полуночи»?</h1>
     <p class="hint">Эта колода открывается только тогда, когда оба игрока отвечают «да».</p>
     <div class="consent-checks">
-      <label><input type="checkbox" id="consent1">Игрок 1 хочет открыть колоду</label>
-      <label><input type="checkbox" id="consent2">Игрок 2 хочет открыть колоду</label>
+      <label><input type="checkbox" id="consent1">Девушка хочет открыть колоду</label>
+      <label><input type="checkbox" id="consent2">Парень хочет открыть колоду</label>
     </div>
     <button type="button" class="btn full" id="confirmConsent">Открыть «После полуночи»</button>
     <button type="button" class="btn secondary full" id="cancelConsent" style="margin-top:10px">Вернуться к колодам</button>
@@ -163,7 +164,7 @@
       <div class="play-nav-actions"><a class="btn small" href="./index.html">На главную</a><button type="button" class="btn small" id="gameRulesButton">Правила</button></div>
       <span class="play-meta" id="playCount">01 / 20</span>
     </div>
-    <div class="play-turn"><div><small>СЕЙЧАС ХОДИТ</small><strong id="turnName">Игрок 1: девушка</strong></div><span id="turnSymbol" aria-hidden="true" style="font-size:27px">✧</span></div>
+    <div class="play-turn" aria-live="polite"><div><small>СЕЙЧАС ХОДИТ</small><strong id="turnName">Девушка</strong></div><span id="turnSymbol" aria-hidden="true" style="font-size:27px">✧</span></div>
     <div class="bar"><span id="progress"></span></div>
     <article class="paper" id="playingCard">
       <div class="paper-head"><span id="cardDeck">ОРЁМ</span><span id="cardIndex">01 / 20</span></div>
@@ -171,8 +172,8 @@
       <div class="paper-foot" id="cardFooter">ЧИТАЙТЕ - ОТВЕЧАЙТЕ - ПЕРЕДАВАЙТЕ ХОД</div>
     </article>
     <div class="skip-cards" id="skipCards">
-      <div class="skip-card" id="skip1"><strong>Игрок 1</strong><div>«Не сегодня»: <span id="skipCount1">1</span></div></div>
-      <div class="skip-card" id="skip2"><strong>Игрок 2</strong><div>«Не сегодня»: <span id="skipCount2">1</span></div></div>
+      <div class="skip-card" id="skip1"><strong>Девушка</strong><div>«Не сегодня»: <span id="skipCount1">1</span></div></div>
+      <div class="skip-card" id="skip2"><strong>Парень</strong><div>«Не сегодня»: <span id="skipCount2">1</span></div></div>
     </div>
     <div class="play-bottom" id="playActions">
       <button class="btn secondary" type="button" id="skipButton">🛑 Не сегодня</button>
@@ -190,7 +191,7 @@
   <form method="dialog"><button class="btn ghost small" aria-label="Закрыть памятку">Закрыть</button></form>
   <span class="eyebrow">ПАМЯТКА ДЛЯ ДВОИХ</span><h2 id="gameRulesTitle">Как играть</h2>
   <p class="rules-lead">📱 Один телефон на двоих: читайте карточки, отвечайте и передавайте ход.</p>
-  <ol><li><b>01</b> 🎴 Начните игру с первой карточки.</li><li><b>02</b> Прочитайте её и ответьте или выполните задание.</li><li><b>03</b> Передайте телефон партнёру: первой ходит девушка, Игрок 1.</li><li><b>04</b> У каждого есть один пропуск «Не сегодня» без объяснений.</li></ol>
+  <ol><li><b>01</b> 🎴 Начните игру с первой карточки.</li><li><b>02</b> Девушка читает её и отвечает или выполняет задание.</li><li><b>03</b> Передайте телефон парню, затем чередуйтесь после каждой карты. На экране всегда видно, чей ход.</li><li><b>04</b> У девушки и парня есть по одному пропуску «Не сегодня» без объяснений.</li></ol>
   <div class="rules-notes"><p>🎭 Ситуация: дополнительная карта в любой момент.</p><p>🌙 После полуночи: только по желанию обоих участников.</p><p>🌿 Выдох: в конце одна случайная карта, на которую отвечают оба.</p></div>
 </dialog>
 

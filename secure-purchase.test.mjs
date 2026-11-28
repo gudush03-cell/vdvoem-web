@@ -91,7 +91,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
     }
   };
   vm.runInNewContext(script, context, {filename:'secure-purchase.html',timeout:2000});
-  return {el, requests, assigned, sessions};
+  return {el, requests, assigned, sessions, dataset:context.document.documentElement.dataset};
 }
 
 async function settle(){for(let i=0;i<8;i++)await Promise.resolve();}
@@ -162,6 +162,19 @@ test('expired Telegram session is not treated as paid', async () => {
  assert.equal(el('buy').disabled,true);
  assert.equal(el('telegramLogin').hidden,false);
  assert.equal(accountCalls(requests).length,1);
+});
+
+test('a signed-in unpaid buyer sees the purchase account and can switch it', async () => {
+  const {el,sessions,dataset} = boot('a'.repeat(43));
+  await settle();
+  assert.match(el('telegramStatus').textContent,/покупка для этого аккаунта не найдена/i);
+  assert.equal(el('switchPurchaseAccount').hidden,false);
+  assert.equal(el('telegramLogin').hidden,true);
+  assert.equal(dataset.purchaseVerified,'false');
+  await el('switchPurchaseAccount').listeners.get('click')();
+  assert.equal(sessions.has('vdvoem.preview.token'),false);
+  assert.equal(el('telegramLogin').hidden,false);
+  assert.equal(el('terms').hidden,true);
 });
 
 test('non-live backend never creates a checkout order for an authenticated buyer', async () => {

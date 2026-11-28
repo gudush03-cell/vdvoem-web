@@ -40,7 +40,7 @@ const views=['homeView','loginView','lobbyView','handoffView','secretView','cons
 const gamePage=['game.html','secure-game.html'].includes(location.pathname.split('/').pop().toLowerCase());
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let decks=null,party=null,aside=null,privateStage=null,view='',timer=0,saveKey=null;
-let authToken=null,telegramId=null,cardCache=new Map(),renderSerial=0;
+let authToken=null,telegramId=null,telegramLabel='',cardCache=new Map(),renderSerial=0;
 let accountVerified=false;
 function updateHeaderAuth(){
  const login=$('headerLoginLink'),badge=$('headerAccountBadge');
@@ -50,7 +50,7 @@ function updateHeaderAuth(){
  if(verified)verified.hidden=!accountVerified;
 }
 let cardLoading=false,cardLoadFailed=false;
-const TOKEN_KEY='vdvoem.preview.token', USER_KEY='vdvoem.preview.telegram';
+const TOKEN_KEY='vdvoem.preview.token', USER_KEY='vdvoem.preview.telegram', USER_LABEL_KEY='vdvoem.preview.telegramLabel';
 async function api(path,body,method='POST'){
  if(!authToken)throw Error('Войдите через Telegram.');
  const response=await fetch(HOST+path,{method,cache:'no-store',
@@ -72,10 +72,12 @@ async function paidCard(deck,index){
  cardCache.set(k,data.card);return data.card;
 }
 async function accountGame(){
+ const checkedToken=authToken;
  const status=await api('/api/account/status',null,'GET');
+ if(authToken!==checkedToken)return;
  accountVerified=status.signedIn===true;
  updateHeaderAuth();
- if(!status.paid){$('loginStatus').textContent='Для этого Telegram-аккаунта покупка не найдена. Войдите через аккаунт, с которого оформляли игру.';showView('loginView');return;}
+ if(!status.paid){$('loginStatus').textContent=`Вход выполнен: ${telegramLabel||'аккаунт Telegram'}. Покупка для этого аккаунта не найдена. Если покупали с другого Telegram, смените аккаунт ниже.`; $('switchAccount').hidden=false;showView('loginView');return;}
  // Do not occupy the one-active-party lease while browsing decks.
  // paidCard() opens a lease lazily when the first paid card is requested.
  const manifest=await api('/api/account/manifest',null,'GET');
@@ -83,9 +85,13 @@ async function accountGame(){
    throw Error('Колоды не совпадают.');
  decks=Object.fromEntries(keys.map((k,i)=>[k,Array(lengths[i]).fill(null)]));
  cardCache.clear();saveKey=telegramId?await progressKey('account:'+telegramId):null;loadProgress();
- $('loginStatus').textContent='';populate();lobby();
+ $('loginStatus').textContent='';$('switchAccount').hidden=true;populate();lobby();
  if(selected){const id=selected;selected=null;describeDeck(id);}
  else if(new URLSearchParams(location.search).get('resume')==='1' && !$('resumeBox').hidden)resumeParty();
+}
+function displayTelegramUser(user){
+ const name=user?.username?'@'+String(user.username).replace(/^@/,''):[user?.first_name,user?.last_name].filter(Boolean).join(' ')||'Telegram';
+ return `${name} · ID …${String(user?.id||'').slice(-4)}`;
 }
 window.onTelegramAuth=async user=>{
  const label=$('loginStatus');label.textContent='Проверяем Telegram…';
@@ -96,8 +102,8 @@ window.onTelegramAuth=async user=>{
   if(!response.ok)throw Error('Не удалось подтвердить Telegram.');
   const data=await response.json();
   if(!/^[A-Za-z0-9_-]{43}$/.test(data.token||''))throw Error('Неправильная сессия.');
-  authToken=data.token;telegramId=String(user.id);
-  sessionStorage.setItem(TOKEN_KEY,authToken);sessionStorage.setItem(USER_KEY,telegramId);
+  authToken=data.token;telegramId=String(user.id);telegramLabel=displayTelegramUser(user);
+  sessionStorage.setItem(TOKEN_KEY,authToken);sessionStorage.setItem(USER_KEY,telegramId);sessionStorage.setItem(USER_LABEL_KEY,telegramLabel);
   await accountGame();
  }catch(e){if(e.status===401){accountVerified=false;updateHeaderAuth();}
   label.textContent=e.message;}
@@ -113,14 +119,14 @@ function telegramWidget(){
 async function restore(){
  authToken=sessionStorage.getItem(TOKEN_KEY);
  telegramId=sessionStorage.getItem(USER_KEY);
+ telegramLabel=sessionStorage.getItem(USER_LABEL_KEY)||'';
  if(!/^[A-Za-z0-9_-]{43}$/.test(authToken||'')){authToken=null;return;}
  try{await accountGame();}
  catch(e){
   // A temporary network/server failure must not silently sign the buyer out.
   if(e.status===401){
    accountVerified=false;updateHeaderAuth();
-   authToken=null;telegramId=null;sessionStorage.removeItem(TOKEN_KEY);
-   sessionStorage.removeItem(USER_KEY);
+   authToken=null;telegramId=null;telegramLabel='';for(const key of [TOKEN_KEY,USER_KEY,USER_LABEL_KEY])sessionStorage.removeItem(key);
    $('loginStatus').textContent='Сессия истекла. Войдите повторно.';
   } else {
    $('loginStatus').textContent='Не удалось загрузить игру. Проверьте интернет и обновите страницу - покупка сохранена в аккаунте.';
@@ -217,6 +223,7 @@ function resumeParty(){
 }
 function lobby(){if(!decks){showView('loginView');return;}aside=null;$('resumeBox').hidden=!party||!party.queue.length||party.index>=party.queue.length;showView('lobbyView');reveals();}
 function nextPlayer(){party.player=party.player===1?2:1;}
+function playerName(player){return player===1?'Девушка':'Парень';}
 function startDemo(){window.vdvoemTrack?.('demo_start',{source:'game_page'});party={mode:'demo',queue:demo.map((_,i)=>({demo:i})),index:0,player:1,skips:{1:1,2:1},secrets:null,seen:[]};aside=null;render();showView('playView');}
 function startParty(mode,id){
  let queue;
@@ -237,14 +244,14 @@ function selectDeck(id){
  else startParty('single',id);
 }
 function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,reason,returnTo:view==='playView'?'playView':'lobbyView'};handoff();}
-function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
+function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон: '+playerName(p);$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 async function showSecrets(){
  const p=privateStage.player;
  let cards;
  try{cards=await Promise.all(party.secrets[p].map(id=>paidCard('silent',id)));}
  catch(e){toast('Карточки недоступны: '+e.message);return;}
  if(!privateStage||privateStage.player!==p)return;
- $('secretTitle').textContent='Игрок '+p+' - 3 тайных задания';
+ $('secretTitle').textContent=playerName(p)+' - 3 тайных задания';
  $('secretList').replaceChildren(...party.secrets[p].map((id,i)=>{
   const c=cards[i],box=document.createElement('article');box.className='private-mission';
   const heading=document.createElement('strong');heading.textContent=(i+1)+'. '+c.title;box.append(heading);
@@ -296,7 +303,7 @@ async function render(){
  $('cardTitle').textContent=c.title;
  $('cardBody').replaceChildren(...c.body.map(text=>{const el=document.createElement('p');el.textContent=text;return el;}));
  $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА - НЕ СПЕШИТЕ':'ЧИТАЙТЕ - ОТВЕЧАЙТЕ - ПЕРЕДАВАЙТЕ ХОД';
- $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1: девушка':'Игрок 2: партнёр';
+ $('turnName').textContent=aside?.kind==='exhale'?'Девушка и парень':playerName(party.player);
  $('turnSymbol').textContent=aside?.kind==='exhale'?'✦ ✦':'✦';
  $('progress').style.width=aside?'100%':Math.round((party.index+1)/party.queue.length*100)+'%';
  for(let p=1;p<=2;p++){
@@ -371,8 +378,9 @@ function again(){
 function logout(){
  if(authToken)api('/api/account/logout').catch(()=>{});
  // Preserve the account-scoped local progress for future visits.
- sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);
- authToken=null;telegramId=null;accountVerified=false;updateHeaderAuth();
+ sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(USER_LABEL_KEY);
+ authToken=null;telegramId=null;telegramLabel='';accountVerified=false;updateHeaderAuth();
+ $('switchAccount').hidden=true;
  cardCache.clear();saveKey=null;decks=null;party=null;aside=null;privateStage=null;
  $('loginStatus').textContent='';
  showView(gamePage?'loginView':'homeView');toast('Вы вышли из аккаунта.');
@@ -380,6 +388,7 @@ function logout(){
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
+ $('switchAccount').addEventListener('click',()=>logout());
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
  $('resumeButton').addEventListener('click',resumeParty);
  $('viewMyTasks').addEventListener('click',()=>selectDeck('silent'));

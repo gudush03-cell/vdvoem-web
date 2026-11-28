@@ -122,6 +122,7 @@ function reveals(){
 function populate(){ $('publicDecks').replaceChildren(...keys.map((k,i)=>tile(k,i,false)));$('privateDecks').replaceChildren(...keys.map((k,i)=>tile(k,i,true)));reveals();}
 function lobby(){if(!decks){showView('loginView');return;}aside=null;$('resumeBox').hidden=!party||!party.queue.length||party.index>=party.queue.length;showView('lobbyView');reveals();}
 function nextPlayer(){party.player=party.player===1?2:1;}
+function playerName(player){return player===1?'Девушка':'Парень';}
 function startDemo(){window.vdvoemTrack?.('demo_start',{source:'game_page'});party={mode:'demo',queue:demo.map((_,i)=>({demo:i})),index:0,player:1,skips:{1:1,2:1},secrets:null,seen:[]};aside=null;render();showView('playView');}
 function startParty(mode,id){
  let queue;
@@ -142,10 +143,10 @@ function selectDeck(id){
  else startParty('single',id);
 }
 function startSecrets(reason){if(!party?.secrets)return;privateStage={player:1,reason,returnTo:view==='playView'?'playView':'lobbyView'};handoff();}
-function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон Игроку '+p;$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
+function handoff(){const p=privateStage.player;$('handoffTitle').textContent='Передайте телефон: '+playerName(p);$('handoffText').textContent=(p===1?'Сейчас появятся только её 3 тайных задания.':'Сейчас появятся только его 3 тайных задания.')+' Не показывайте карты другому игроку.';showView('handoffView');}
 function showSecrets(){
  const p=privateStage.player;
- $('secretTitle').textContent='Игрок '+p+' - 3 тайных задания';
+ $('secretTitle').textContent=playerName(p)+' - 3 тайных задания';
  $('secretList').replaceChildren(...party.secrets[p].map((id,i)=>{
   const c=decks.silent[id],box=document.createElement('article');box.className='private-mission';
   const heading=document.createElement('strong');heading.textContent=(i+1)+'. '+c.title;box.append(heading);
@@ -179,7 +180,7 @@ function render(){
  $('cardTitle').textContent=c.title;
  $('cardBody').replaceChildren(...c.body.map(text=>{const el=document.createElement('p');el.textContent=text;return el;}));
  $('cardFooter').textContent=aside?.kind==='exhale'?'ОТВЕЧАЮТ ОБА - НЕ СПЕШИТЕ':'ЧИТАЙТЕ - ОТВЕЧАЙТЕ - ПЕРЕДАВАЙТЕ ХОД';
- $('turnName').textContent=aside?.kind==='exhale'?'Игрок 1 и Игрок 2':party.player===1?'Игрок 1: девушка':'Игрок 2: партнёр';
+ $('turnName').textContent=aside?.kind==='exhale'?'Девушка и парень':playerName(party.player);
  $('turnSymbol').textContent=aside?.kind==='exhale'?'✦ ✦':'✦';
  $('progress').style.width=aside?'100%':Math.round((party.index+1)/party.queue.length*100)+'%';
  for(let p=1;p<=2;p++){

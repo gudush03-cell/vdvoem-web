@@ -214,6 +214,7 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
     <p id="loginPrompt">Войдите через Telegram для покупки.</p>
     <div id="telegramLogin" style="display:flex;justify-content:center;min-height:42px"></div>
     <p id="telegramStatus" role="status" aria-live="polite"></p><button id="retryAccount" class="account-retry" type="button" hidden>Повторить проверку</button>
+    <button id="switchPurchaseAccount" class="account-retry" type="button" hidden>Сменить аккаунт Telegram</button>
   </section>
 
   <fieldset id="terms" hidden>
@@ -246,8 +247,9 @@ const API =
 const buy = document.getElementById('buy');
 const TOKEN_KEY='vdvoem.preview.token';
 const USER_KEY='vdvoem.preview.telegram';
+const USER_LABEL_KEY='vdvoem.preview.telegramLabel';
 let accountToken=sessionStorage.getItem(TOKEN_KEY);
-let accountVerified=false,accountCheckSerial=0;
+let accountVerified=false,accountCheckSerial=0,accountLabel=sessionStorage.getItem(USER_LABEL_KEY)||'',changingAccount=false;
 let checkoutLive=false,checkoutChecked=false,checkoutCheckFailed=false,checkoutMode='disabled';
 const telegramStatus=document.getElementById('telegramStatus');
 const paymentNotice=document.getElementById('paymentNotice');
@@ -256,6 +258,7 @@ const purchaseOffer=document.getElementById('purchaseOffer');
 const purchaseHelp=document.getElementById('purchaseHelp');
 const telegramLogin=document.getElementById('telegramLogin');
 const loginPrompt=document.getElementById('loginPrompt');
+const switchPurchaseAccount=document.getElementById('switchPurchaseAccount');
 const terms=document.getElementById('terms');
 const offerAccepted=document.getElementById('offerAccepted');
 const privacyRead=document.getElementById('privacyRead');
@@ -271,10 +274,11 @@ function showPaidAccess(){
  result.hidden=false;buy.hidden=true;buy.disabled=true;message.hidden=true;paymentNotice.hidden=true;
 }
 function showCheckoutAccess(){
- document.documentElement.dataset.purchaseVerified=String(accountVerified);
+ document.documentElement.dataset.purchaseVerified='false';
  accountEntry.hidden=false;purchaseOffer.hidden=false;purchaseHelp.hidden=false;result.hidden=true;
- telegramLogin.hidden=accountVerified;loginPrompt.hidden=accountVerified;
- telegramStatus.textContent=accountVerified?'Telegram подключён.':'';
+ telegramLogin.hidden=accountVerified||(!changingAccount&&hasToken());loginPrompt.hidden=accountVerified||changingAccount;
+ switchPurchaseAccount.hidden=!accountVerified;
+ telegramStatus.textContent=accountVerified?`Вход выполнен: ${accountLabel||'аккаунт Telegram'}. Покупка для этого аккаунта не найдена.`:accountLabel&&!changingAccount?`Последний вход: ${accountLabel}. Войдите через Telegram, чтобы проверить покупку.`:'';
  buy.hidden=!accountVerified||Boolean(currentOrder);
  terms.hidden=buy.hidden;
  updateBuy();
@@ -284,7 +288,7 @@ function showCheckoutAccess(){
  }
 }
 function clearExpiredSession(){
- accountToken=null;accountVerified=false;sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);
+ accountToken=null;accountVerified=false;accountLabel='';sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(USER_LABEL_KEY);
 }
 async function refreshAccount(){
  const serial=++accountCheckSerial;
@@ -292,10 +296,17 @@ async function refreshAccount(){
  if(!hasToken()){accountVerified=false;showCheckoutAccess();return;}
  buy.disabled=true;telegramStatus.textContent='Проверяем доступ…';telegramLogin.hidden=true;
  try{
-  const response=await fetch(API+'/api/account/status',{
-   method:'GET',cache:'no-store',headers:{Authorization:'Bearer '+accountToken},
-   signal:AbortSignal.timeout(15000)
-  });
+  let response;
+  for(let attempt=0;attempt<2;attempt++){
+   try{
+    response=await fetch(API+'/api/account/status',{
+     method:'GET',cache:'no-store',headers:{Authorization:'Bearer '+accountToken},
+     signal:AbortSignal.timeout(15000)
+    });
+    if(response.ok||response.status<500||attempt===1)break;
+   }catch(error){if(attempt===1)throw error;}
+   await new Promise(resolve=>setTimeout(resolve,350));
+  }
   if(serial!==accountCheckSerial)return;
   if(response.status===401){
    clearExpiredSession();showCheckoutAccess();telegramStatus.textContent='Сессия истекла. Войдите снова.';return;
@@ -336,13 +347,21 @@ window.onPurchaseTelegramAuth=async user=>{
   if(!response.ok)throw Error('Telegram не подтвердил вход.');
   const data=await response.json();
   if(!/^[A-Za-z0-9_-]{43}$/.test(data.token||''))throw Error('Неверная сессия.');
-  accountToken=data.token;accountVerified=false;
-  sessionStorage.setItem(TOKEN_KEY,accountToken);sessionStorage.setItem(USER_KEY,String(user.id));
+  accountToken=data.token;accountVerified=false;changingAccount=false;
+  const displayName=user?.username?'@'+String(user.username).replace(/^@/,''):[user?.first_name,user?.last_name].filter(Boolean).join(' ')||'Telegram';
+  accountLabel=`${displayName} · ID …${String(user.id).slice(-4)}`;
+  sessionStorage.setItem(TOKEN_KEY,accountToken);sessionStorage.setItem(USER_KEY,String(user.id));sessionStorage.setItem(USER_LABEL_KEY,accountLabel);
   await refreshAccount();
  }catch(e){
   accountVerified=false;telegramStatus.textContent=e.message;buy.hidden=true;buy.disabled=true;
  }
 };
+switchPurchaseAccount.addEventListener('click',()=>{
+ if(accountToken)fetch(API+'/api/account/logout',{method:'POST',cache:'no-store',headers:{Authorization:'Bearer '+accountToken}}).catch(()=>{});
+ ++accountCheckSerial;clearExpiredSession();accountLabel='';changingAccount=true;accountVerified=false;
+ loginPrompt.hidden=true;telegramLogin.hidden=false;switchPurchaseAccount.hidden=true;buy.hidden=true;terms.hidden=true;
+ telegramStatus.textContent='Войдите в Telegram-аккаунт, с которым была покупка.';
+});
 document.getElementById('retryAccount').addEventListener('click',()=>{refreshAccount();refreshPaymentAvailability();});
 const telegramScript=document.createElement('script');
 telegramScript.src='https://telegram.org/js/telegram-widget.js?22';

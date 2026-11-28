@@ -715,6 +715,20 @@ html[data-account="member"] .evening-entry [data-guest]{display:block!important}
 html:is([data-account="paid"],[data-account="checking"]) :is([data-guest],#access,.demo-callout,[data-start-demo]){display:none!important}
 html[data-account="member"] [data-guest]{display:none!important}
 @media(max-width:480px){.evening-actions{flex-direction:column;gap:8px}.evening-actions .button{width:min(100%,290px)}}
+#demoDialog:has(#purchasePanel:not([hidden])) .game-top{display:none}
+#demoDialog:has(#purchasePanel:not([hidden])) .game-shell{justify-content:center;background:radial-gradient(ellipse at 50% 0%,#8640637a,transparent 62%),linear-gradient(180deg,#1a101a,#100b12 70%,#20121c)}
+#purchasePanel{box-sizing:border-box;width:min(480px,calc(100% - 24px));max-width:480px;min-height:0;max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;margin:auto;padding:clamp(22px,5vw,32px);border:1px solid #f5b2cc45;border-radius:26px;background:linear-gradient(145deg,#34202e,#1c131c);box-shadow:0 28px 100px #0008;flex-shrink:0}
+#purchasePanel .purchase-spark{font-size:52px;margin:0 0 7px}
+#purchasePanel .section-kicker{font-size:10px;margin:0 0 8px}
+#purchasePanel .display-heading{font-size:clamp(30px,7vw,42px);line-height:1.15}
+#purchasePanel>p:not(.section-kicker){font-size:13px;line-height:1.55;margin-top:12px}
+#purchasePanel .purchase-facts{gap:10px;margin:14px 0}
+#purchasePanel .purchase-facts span{font-size:8px}
+#purchasePanel .purchase-price{padding:12px;margin:0 0 10px}
+#purchasePanel .purchase-terms{margin-top:8px!important;font-size:11px!important}
+#purchasePanel .next-button{min-height:50px;margin-top:10px}
+#purchasePanel .purchase-close{margin-top:8px}
+@media(max-height:700px){#purchasePanel{max-height:calc(100dvh - 16px);padding:16px 20px}#purchasePanel .purchase-facts{margin:9px 0}#purchasePanel .purchase-price{padding:9px}#purchasePanel .purchase-spark{display:none}}
 </style>
 <script>
 try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.dataset.account='checking';}catch{}
@@ -774,7 +788,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <p>Никакого соревнования и правильных ответов. Один телефон на двоих - и повод узнать друг друга чуть лучше.</p>
 </div>
 <div class="rule-grid">
-<article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">📱</span><h3>Передавайте телефон</h3></div><p>Начните с первой карточки. Игрок 1, девушка, ходит первой. Прочитайте карту, ответьте или выполните задание, затем передайте телефон партнёру.</p></article>
+<article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">📱</span><h3>Передавайте телефон</h3></div><p>Девушка читает первую карточку и отвечает. После каждой карты передавайте телефон друг другу: девушка и парень ходят по очереди. В игре всегда видно, чей сейчас ход.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">🎴</span><h3>Играйте по настроению</h3></div><p>В полной партии колоды 1-6 идут по порядку. «Быстрый старт» перемешивает карты этих колод. Любую колоду можно открыть отдельно.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">✦</span><h3>Можно сказать «Не сегодня»</h3></div><p>У каждого по одной такой карте за партию. Пропускайте задание без объяснений и передавайте ход. Эти две карты - отдельно от 168 карточек.</p></article>
 <article class="rule-item reveal"><div class="rule-static-head"><span aria-hidden="true" class="rule-emoji">✨</span><h3>Завершайте вдвоём</h3></div><p>Здесь не нужно побеждать. Подарите друг другу разговор, который захочется продолжить после игры.</p></article>
@@ -880,7 +894,7 @@ try{if(sessionStorage.getItem('vdvoem.preview.token'))document.documentElement.d
 <div class="game-counter"><span id="dialogTitle">ШЕСТЬ КАРТ ДЛЯ ЗНАКОМСТВА</span><span aria-live="polite" id="cardCounter">01 / 06</span></div>
 <div aria-hidden="true" class="progress-line"><span id="progressFill"></span></div>
 <article class="demo-card" id="demoCard"><div class="demo-card-head"><span id="cardDeck">ОРЁМ</span><span id="cardNumber">01 / 06</span></div><div class="demo-card-main"><span class="demo-card-brand">ВДВОЁМ / НАЛЕГКЕ</span><h2 id="cardTitle">...</h2><div id="cardBody"></div></div><span class="demo-card-foot">ГОВОРИТЕ ЧЕСТНО. СМЕЙТЕСЬ СМЕЛО.</span></article>
-<p class="demo-instruction" id="turnText">Читайте карту вслух и передавайте телефон по очереди.</p>
+<p class="demo-instruction" id="turnText" aria-live="polite">Сейчас ходит девушка. Прочитайте первую карту.</p>
 <button class="button button-primary next-button" id="nextCard" type="button">Следующая карта</button>
 </div>
 <section aria-labelledby="purchaseTitle" class="purchase-panel" hidden="" id="purchasePanel"><div aria-hidden="true" class="purchase-spark">✧</div><p class="section-kicker">6 / 6, ЗНАКОМСТВО СОСТОЯЛОСЬ</p><h2 class="display-heading" id="purchaseTitle" tabindex="-1">Это было только<br/><em>начало.</em></h2><p>Впереди ещё 162 карточки: смех, признания, смелые вопросы и те разговоры, которые хочется продолжать.</p><div class="purchase-facts"><span>168 КАРТОЧЕК</span><span>10 КОЛОД</span><span>ВЕБ-ВЕРСИЯ</span></div><div class="purchase-price" aria-label="Стоимость полного доступа"><span>ПОЛНЫЙ ДОСТУП</span><strong>499 ₽</strong><small>Разовый платёж, без подписки</small></div><p class="purchase-terms">Полная веб-версия - <strong>499 ₽</strong>. <a href="./offer.html">Условия покупки</a>, <a href="./offer.html#refund">Возвраты</a></p><a class="button button-primary next-button" href="./secure-purchase.html">Перейти к покупке, 499 ₽</a><a href="./secure-game.html" style="display:inline-block;margin:12px 0;color:#ffd6e3;font-size:13px;font-weight:800;text-decoration:underline;text-underline-offset:5px">У меня уже есть игра - войти</a><button class="button button-quiet purchase-close" data-close-purchase="" type="button">Вернуться на сайт</button></section>
@@ -921,7 +935,7 @@ function showCard(){
   content.replaceChildren(...c.body.map(t=>{const p=document.createElement('p');p.textContent=t;return p;}));
   document.getElementById('progressFill').style.width=((at+1)/6*100)+'%';
   document.getElementById('nextCard').textContent=at===5?'Завершить демо':'Следующая карта';
-  document.getElementById('turnText').textContent='Карта '+(at+1)+' из 6, Один телефон на двоих';
+   document.getElementById('turnText').textContent=(at%2===0?'Сейчас ходит девушка.':'Сейчас ходит парень.')+' Карта '+(at+1)+' из 6. После ответа передайте телефон.';
   if(!motion){card.classList.remove('card-enter');void card.offsetWidth;card.classList.add('card-enter');}
   gameContent.scrollTop=0;
 }

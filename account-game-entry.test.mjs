@@ -44,8 +44,9 @@ test('the secure-game header has only a home route while account login stays in 
 test('only skip action has a stop icon, turn action is concise',()=>{
  const play=html.split('id="playView"')[1]?.split('id="finishView"')[0]||'';
  assert.equal((play.match(/🛑/g)||[]).length,1);
- assert.match(play,/<strong>Игрок 1<\/strong>/);
- assert.match(play,/<strong>Игрок 2<\/strong>/);
+ assert.match(play,/<strong>Девушка<\/strong>/);
+ assert.match(play,/<strong>Парень<\/strong>/);
+ assert.match(play,/id="turnName">Девушка<\/strong>/);
  assert.match(js,/'Следующая карта'/);
  assert.doesNotMatch(js,/Ответили: передать ход|Передать ход/);
  assert.match(play,/id="backLobby">‹ Назад</);
