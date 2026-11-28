@@ -41,6 +41,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
       elements.set(id, {
         id, disabled:false, hidden:false, textContent:'',
         listeners:new Map(), children:[],
+        replaceChildren(...children) { this.children = children; },
         addEventListener(type, handler) { this.listeners.set(type, handler); },
         append(child) { this.children.push(child); },
         setAttribute(name, value) { this[name] = value; }
@@ -58,7 +59,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
       })
     },
     window:{ location:{ assign(url){ assigned.push(url); } } },
-    location:{ search:'', pathname:'/secure-purchase.html' },
+    location:{ search:'', pathname:'/secure-purchase.html', origin:'https://vdvoemnalegke.online' },
     history:{ replaceState(){} },
     URLSearchParams, setTimeout:()=>0,
     sessionStorage:{
