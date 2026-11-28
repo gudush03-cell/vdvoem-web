@@ -41,7 +41,7 @@ const gamePage=['game.html','secure-game.html'].includes(location.pathname.split
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let decks=null,party=null,aside=null,privateStage=null,view='',timer=0,saveKey=null;
 let authToken=null,telegramId=null,telegramLabel='',cardCache=new Map(),renderSerial=0;
-let accountVerified=false;
+let accountVerified=false,switchingFromTelegramId=null;
 function updateHeaderAuth(){
  const login=$('headerLoginLink'),badge=$('headerAccountBadge');
  const verified=$('headerTelegramVerified');
@@ -95,6 +95,8 @@ function displayTelegramUser(user){
 }
 window.onTelegramAuth=async user=>{
  const label=$('loginStatus');label.textContent='Проверяем Telegram…';
+ const sameAccountAfterSwitch=switchingFromTelegramId!==null&&switchingFromTelegramId===String(user?.id||'');
+ switchingFromTelegramId=null;
  try{
   const response=await fetch(HOST+'/api/auth/telegram',{
    method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},
@@ -105,6 +107,9 @@ window.onTelegramAuth=async user=>{
   authToken=data.token;telegramId=String(user.id);telegramLabel=displayTelegramUser(user);
   sessionStorage.setItem(TOKEN_KEY,authToken);sessionStorage.setItem(USER_KEY,telegramId);sessionStorage.setItem(USER_LABEL_KEY,telegramLabel);
   await accountGame();
+  if(sameAccountAfterSwitch&&accountVerified&&!$('buyGameFromLogin').hidden){
+   label.textContent=`Telegram снова подтвердил тот же профиль: ${telegramLabel}. Если это не ваш аккаунт, переключите профиль в Telegram. Если виджет опять возвращает его, откройте сайт в приватной вкладке или другом браузере.`;
+  }
  }catch(e){if(e.status===401){accountVerified=false;updateHeaderAuth();}
   label.textContent=e.message;}
 };
@@ -378,6 +383,8 @@ function again(){
  startParty(party.mode,party.deck);
 }
 function logout({switchAccount=false}={}){
+ const previousTelegramId=telegramId||sessionStorage.getItem(USER_KEY);
+ switchingFromTelegramId=switchAccount&&previousTelegramId?String(previousTelegramId):null;
  if(authToken)api('/api/account/logout').catch(()=>{});
  // Preserve account-scoped progress while clearing this browser session.
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(USER_LABEL_KEY);
