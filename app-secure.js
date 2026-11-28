@@ -93,6 +93,13 @@ function displayTelegramUser(user){
  const name=user?.username?'@'+String(user.username).replace(/^@/,''):[user?.first_name,user?.last_name].filter(Boolean).join(' ')||'Telegram';
  return `${name} · ID …${String(user?.id||'').slice(-4)}`;
 }
+function secureLoginError(error){
+ const message=String(error?.message||'');
+ if(/Load failed|Failed to fetch|NetworkError|timed out/i.test(message)){
+  return `Не удалось связаться с сервером входа. Адрес страницы: ${location.origin}. Обновите страницу и попробуйте ещё раз. Если ошибка повторится в Chrome, откройте эту же ссылку в Safari.`;
+ }
+ return message||'Не удалось подтвердить вход через Telegram. Попробуйте ещё раз.';
+}
 window.onTelegramAuth=async user=>{
  const label=$('loginStatus');label.textContent='Проверяем Telegram…';
  const sameAccountAfterSwitch=switchingFromTelegramId!==null&&switchingFromTelegramId===String(user?.id||'');
@@ -111,7 +118,7 @@ window.onTelegramAuth=async user=>{
    label.textContent=`Telegram снова подтвердил тот же профиль: ${telegramLabel}. Если это не ваш аккаунт, переключите профиль в Telegram. Если виджет опять возвращает его, откройте сайт в приватной вкладке или другом браузере.`;
   }
  }catch(e){if(e.status===401){accountVerified=false;updateHeaderAuth();}
-  label.textContent=e.message;}
+  label.textContent=secureLoginError(e);}
 };
 function telegramWidget(){
  const el=$('telegramLogin');if(!el)return;
