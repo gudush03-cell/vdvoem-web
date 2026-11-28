@@ -176,6 +176,7 @@ test('a signed-in unpaid buyer sees the purchase account and can switch it', asy
   assert.equal(sessions.has('vdvoem.preview.token'),false);
   assert.equal(el('telegramLogin').hidden,false);
   assert.equal(el('terms').hidden,true);
+  assert.equal(dataset.telegramAuthenticated,'false');
 });
 
 test('non-live backend never creates a checkout order for an authenticated buyer', async () => {
