@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-const website='https://vdvoemnalegke.online/vdvoem-web';
+const website='https://vdvoemnalegke.online';
 const backend='https://perceptive-patience-production-79bfb421.up.railway.app';
 
 async function getWithRetry(url) {
