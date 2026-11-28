@@ -46,14 +46,15 @@
   function accountBadge() {
     const state = document.documentElement.dataset.account;
     const badge = document.getElementById('headerTelegramVerified');
-    const verified = state === 'member' || state === 'paid' || (badge && !badge.hidden) || document.documentElement.dataset.purchaseVerified === 'true';
+    const purchased = state === 'member' || state === 'paid' || document.documentElement.dataset.purchaseVerified === 'true';
+    const connected = purchased || (badge && !badge.hidden) || document.documentElement.dataset.telegramAuthenticated === 'true';
     document.querySelectorAll('.tg-orb').forEach(el => {
-      el.dataset.verified = String(Boolean(verified));
-      el.setAttribute('aria-label', verified ? 'Telegram подключён. Открыть игру' : 'Войти в игру через Telegram');
-      el.title = verified ? 'Telegram подключён' : 'Войти через Telegram';
+      el.dataset.verified = String(Boolean(connected));
+      el.setAttribute('aria-label', purchased ? 'Доступ к игре открыт. Открыть игру' : connected ? 'Telegram подключён, но покупка для аккаунта не найдена' : 'Войти в игру через Telegram');
+      el.title = purchased ? 'Доступ к игре открыт' : connected ? 'Telegram подключён · покупка не найдена' : 'Войти через Telegram';
     });
   }
-  new MutationObserver(accountBadge).observe(document.documentElement,{attributes:true,attributeFilter:['data-account','data-purchase-verified']});
+  new MutationObserver(accountBadge).observe(document.documentElement,{attributes:true,attributeFilter:['data-account','data-purchase-verified','data-telegram-authenticated']});
   const badge = document.getElementById('headerTelegramVerified');
   if (badge) new MutationObserver(accountBadge).observe(badge,{attributes:true,attributeFilter:['hidden']});
   accountBadge();

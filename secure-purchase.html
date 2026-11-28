@@ -174,7 +174,7 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
 </style>
 <script src="./analytics.js" defer></script>
 <script src="./email-login.js?v=1" defer></script>
-<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><style>.brand-ticker{overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap;margin-top:20px}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:32px;min-width:max-content;padding:13px 12px}.brand-ticker i{font-style:normal;color:#ff8fb8}</style><link rel="stylesheet" href="./mobile-shell.css?v=3"><script src="./mobile-shell.js?v=3" defer></script></head>
+<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><style>.brand-ticker{overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap;margin-top:20px}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:32px;min-width:max-content;padding:13px 12px}.brand-ticker i{font-style:normal;color:#ff8fb8}</style><link rel="stylesheet" href="./mobile-shell.css?v=3"><script src="./mobile-shell.js?v=4" defer></script></head>
 
 <body>
 
@@ -269,11 +269,13 @@ terms.addEventListener('change',updateBuy);
 function hasToken(){return typeof accountToken==='string' && /^[A-Za-z0-9_-]{43}$/.test(accountToken);}
 function signedIn(){return accountVerified && hasToken();}
 function showPaidAccess(){
+ document.documentElement.dataset.telegramAuthenticated='true';
  document.documentElement.dataset.purchaseVerified='true';
  terms.hidden=true;accountEntry.hidden=true;purchaseOffer.hidden=true;purchaseHelp.hidden=true;
  result.hidden=false;buy.hidden=true;buy.disabled=true;message.hidden=true;paymentNotice.hidden=true;
 }
 function showCheckoutAccess(){
+ document.documentElement.dataset.telegramAuthenticated=String(accountVerified);
  document.documentElement.dataset.purchaseVerified='false';
  accountEntry.hidden=false;purchaseOffer.hidden=false;purchaseHelp.hidden=false;result.hidden=true;
  telegramLogin.hidden=accountVerified||(!changingAccount&&hasToken());loginPrompt.hidden=accountVerified||changingAccount;

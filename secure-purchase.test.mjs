@@ -171,6 +171,7 @@ test('a signed-in unpaid buyer sees the purchase account and can switch it', asy
   assert.equal(el('switchPurchaseAccount').hidden,false);
   assert.equal(el('telegramLogin').hidden,true);
   assert.equal(dataset.purchaseVerified,'false');
+  assert.equal(dataset.telegramAuthenticated,'true');
   await el('switchPurchaseAccount').listeners.get('click')();
   assert.equal(sessions.has('vdvoem.preview.token'),false);
   assert.equal(el('telegramLogin').hidden,false);

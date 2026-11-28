@@ -10,6 +10,7 @@ const offer=content('./offer.html');
 const privacy=content('./privacy.html');
 const oldGame=content('./game.html');
 const oldPurchase=content('./purchase.html');
+const mobileShell=content('./mobile-shell.js');
 
 test('public copy uses Telegram-linked entitlement, not purchase codes',()=>{
  assert.match(home,/Как получить доступ к игре\?/);
@@ -83,6 +84,13 @@ test('checkout only enables live payments or explicitly labelled test mode',()=>
  assert.match(purchase,/status\.payments_enabled===true/);
  assert.match(purchase,/ТЕСТОВЫЙ режим Robokassa: проверяем оплату, реальные списания не выполняются/);
  assert.match(purchase,/if\(!await refreshPaymentAvailability\(\)\)/);
+});
+
+test('Telegram login and purchase access have separate mobile states',()=>{
+ assert.match(purchase,/dataset\.telegramAuthenticated=String\(accountVerified\)/);
+ assert.match(purchase,/dataset\.purchaseVerified='false'/);
+ assert.match(mobileShell,/Telegram подключён, но покупка для аккаунта не найдена/);
+ assert.match(mobileShell,/Доступ к игре открыт/);
 });
 
 test('FAQ payment steps do not claim that live checkout is closed',()=>{
