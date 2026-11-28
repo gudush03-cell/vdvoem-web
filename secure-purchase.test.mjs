@@ -35,7 +35,11 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
     storage.set('vdvoem.lastOrder', '321');
     storage.set('vdvoem.order.321', 'b'.repeat(64));
   }
-  if (token) sessions.set('vdvoem.preview.token', token);
+  if (token) {
+    sessions.set('vdvoem.preview.token', token);
+    sessions.set('vdvoem.preview.telegram', '123456789');
+    sessions.set('vdvoem.preview.telegramLabel', '@buyer');
+  }
   const el = id => {
     if (!elements.has(id)) {
       elements.set(id, {
@@ -81,6 +85,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
         ok:!unauthorized,status:unauthorized?401:200,
         json:async()=>({signedIn:!unauthorized,paid})
       };
+      if(url.endsWith('/api/auth/telegram'))return {ok:true,json:async()=>({token:'c'.repeat(43)})};
       if(url.endsWith('/health'))return healthFailed
         ? {ok:false,status:503,json:async()=>({})}
         : {ok:true,status:200,json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})};
@@ -92,7 +97,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
     }
   };
   vm.runInNewContext(script, context, {filename:'secure-purchase.html',timeout:2000});
-  return {el, requests, assigned, sessions, dataset:context.document.documentElement.dataset};
+  return {el, requests, assigned, sessions, dataset:context.document.documentElement.dataset, authenticate:context.window.onPurchaseTelegramAuth};
 }
 
 async function settle(){for(let i=0;i<8;i++)await Promise.resolve();}
@@ -178,6 +183,21 @@ test('a signed-in unpaid buyer sees the purchase account and can switch it', asy
   assert.equal(el('telegramLogin').hidden,false);
   assert.equal(el('terms').hidden,true);
   assert.equal(dataset.telegramAuthenticated,'false');
+});
+
+test('account switch explains Telegram-side profile switching and detects the same returned account', async () => {
+  const {el,sessions,authenticate} = boot('a'.repeat(43));
+  await settle();
+  await el('switchPurchaseAccount').listeners.get('click')();
+  assert.equal(sessions.has('vdvoem.preview.token'),false);
+  assert.equal(el('telegramLogin').hidden,false);
+  assert.equal(el('accountSwitchHelp').hidden,false);
+  assert.match(html,/Настройки → Конфиденциальность → Активные веб-сайты/);
+  await authenticate({id:'123456789',username:'buyer'});
+  await settle();
+  assert.match(el('telegramStatus').textContent,/Telegram снова подтвердил тот же профиль/);
+  assert.equal(el('accountSwitchHelp').hidden,false);
+  assert.equal(el('buy').hidden,false);
 });
 
 test('non-live backend never creates a checkout order for an authenticated buyer', async () => {
