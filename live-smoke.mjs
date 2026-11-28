@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-const website='https://gudush03-cell.github.io/vdvoem-web';
+const website='https://vdvoemnalegke.online/vdvoem-web';
 const backend='https://perceptive-patience-production-79bfb421.up.railway.app';
 
 async function getWithRetry(url) {
@@ -100,23 +100,23 @@ console.log('PASS production backend health, legacy access still enabled');
 
 async function invalidRequest(path,body) {
   const response=await fetch(backend+path,{
-    method:'POST',headers:{'Content-Type':'application/json',Origin:'https://gudush03-cell.github.io'},
+    method:'POST',headers:{'Content-Type':'application/json',Origin:'https://vdvoemnalegke.online'},
     body:JSON.stringify(body),signal:AbortSignal.timeout(12000)
   });
   assert.equal(response.status,401,path+' must reject unauthenticated request');
   assert.equal(response.headers.get('access-control-allow-origin'),
-    'https://gudush03-cell.github.io');
+    'https://vdvoemnalegke.online');
 }
 await invalidRequest('/api/auth/telegram',{
   id:123456789,auth_date:Math.floor(Date.now()/1000),hash:'a'.repeat(64)
 });
 await invalidRequest('/api/account/card',{deck:'laugh',index:0});
 const guestStatus=await fetch(backend+'/api/account/status',{
-  headers:{Origin:'https://gudush03-cell.github.io'},signal:AbortSignal.timeout(12000)
+  headers:{Origin:'https://vdvoemnalegke.online'},signal:AbortSignal.timeout(12000)
 });
 assert.equal(guestStatus.status,401,'Guest cannot read account status');
 
-for(const origin of ['https://gudush03-cell.github.io','https://vdvoemnalegke.ru','https://www.vdvoemnalegke.ru','https://vdvoem-web.pages.dev']){
+for(const origin of ['https://vdvoemnalegke.online','https://www.vdvoemnalegke.online','https://vdvoem-web.pages.dev']){
   const preflight=await fetch(backend+'/api/auth/telegram',{
     method:'OPTIONS',
     headers:{'Origin':origin,'Access-Control-Request-Method':'POST',
@@ -127,12 +127,12 @@ for(const origin of ['https://gudush03-cell.github.io','https://vdvoemnalegke.ru
   assert.equal(preflight.headers.get('access-control-allow-origin'),origin,
     'Explicit domain CORS '+origin);
 }
-for(const origin of ['https://fake.vdvoemnalegke.ru','http://vdvoemnalegke.ru']){
+for(const origin of ['https://fake.vdvoemnalegke.online','http://vdvoemnalegke.online']){
   const blocked=await fetch(backend+'/api/auth/telegram',{
     method:'OPTIONS',headers:{Origin:origin},signal:AbortSignal.timeout(12000)
   });
   assert.equal(blocked.status,403,'Disallowed CORS '+origin);
 }
-console.log('PASS new HTTPS domain allowed, old origin preserved, spoofed origins blocked');
+console.log('PASS production HTTPS origins allowed, spoofed origins blocked');
 
 console.log('PASS unauthorized Telegram signature and paid card requests rejected');
