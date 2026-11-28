@@ -77,7 +77,7 @@ async function accountGame(){
  if(authToken!==checkedToken)return;
  accountVerified=status.signedIn===true;
  updateHeaderAuth();
- if(!status.paid){$('loginStatus').textContent=`Вход выполнен: ${telegramLabel||'аккаунт Telegram'}. Покупка для этого аккаунта не найдена. Если покупали с другого Telegram, смените аккаунт ниже.`; $('switchAccount').hidden=false;showView('loginView');return;}
+ if(!status.paid){$('loginStatus').textContent=`Вход выполнен: ${telegramLabel||'аккаунт Telegram'}. Покупка для этого аккаунта не найдена. Если покупали с другого Telegram, смените аккаунт ниже.`; $('switchAccount').hidden=false;$('buyGameFromLogin').hidden=false;showView('loginView');return;}
  // Do not occupy the one-active-party lease while browsing decks.
  // paidCard() opens a lease lazily when the first paid card is requested.
  const manifest=await api('/api/account/manifest',null,'GET');
@@ -85,7 +85,7 @@ async function accountGame(){
    throw Error('Колоды не совпадают.');
  decks=Object.fromEntries(keys.map((k,i)=>[k,Array(lengths[i]).fill(null)]));
  cardCache.clear();saveKey=telegramId?await progressKey('account:'+telegramId):null;loadProgress();
- $('loginStatus').textContent='';$('switchAccount').hidden=true;populate();lobby();
+ $('loginStatus').textContent='';$('switchAccount').hidden=true;$('buyGameFromLogin').hidden=true;populate();lobby();
  if(selected){const id=selected;selected=null;describeDeck(id);}
  else if(new URLSearchParams(location.search).get('resume')==='1' && !$('resumeBox').hidden)resumeParty();
 }
@@ -110,6 +110,8 @@ window.onTelegramAuth=async user=>{
 };
 function telegramWidget(){
  const el=$('telegramLogin');if(!el)return;
+ // Rebuild the iframe after an account switch so the next sign-in works on mobile.
+ el.replaceChildren();
  const script=document.createElement('script');
  script.src='https://telegram.org/js/telegram-widget.js?22';script.async=true;
  script.setAttribute('data-telegram-login','VdvoemNaLegkeBOT');
@@ -375,20 +377,24 @@ function again(){
  if(party.mode==='silent')return lobby();
  startParty(party.mode,party.deck);
 }
-function logout(){
+function logout({switchAccount=false}={}){
  if(authToken)api('/api/account/logout').catch(()=>{});
- // Preserve the account-scoped local progress for future visits.
+ // Preserve account-scoped progress while clearing this browser session.
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(USER_LABEL_KEY);
  authToken=null;telegramId=null;telegramLabel='';accountVerified=false;updateHeaderAuth();
- $('switchAccount').hidden=true;
+ $('switchAccount').hidden=true;$('buyGameFromLogin').hidden=true;
  cardCache.clear();saveKey=null;decks=null;party=null;aside=null;privateStage=null;
  $('loginStatus').textContent='';
- showView(gamePage?'loginView':'homeView');toast('Вы вышли из аккаунта.');
+ showView(gamePage?'loginView':'homeView');
+ if(switchAccount){
+  telegramWidget();
+  $('loginStatus').textContent='Вход сброшен. Чтобы войти с другого профиля, переключите аккаунт в Telegram и нажмите кнопку входа ещё раз.';
+ }else toast('Вы вышли из аккаунта.');
 }
 function wire(){
  $('startDemo').addEventListener('click',startDemo);
  $('backHome').addEventListener('click',()=>location.assign('./index.html'));
- $('switchAccount').addEventListener('click',()=>logout());
+ $('switchAccount').addEventListener('click',()=>logout({switchAccount:true}));
  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>startParty(el.dataset.mode)));
  $('resumeButton').addEventListener('click',resumeParty);
  $('viewMyTasks').addEventListener('click',()=>selectDeck('silent'));
