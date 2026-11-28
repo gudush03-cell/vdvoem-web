@@ -39,6 +39,12 @@ test('FAQ and seller notice match the offer and linked privacy policy',()=>{
  assert.match(home,/id="faq-answer-6"/);
 });
 
+test('offer page omits the extra strip and uses shared translucent navigation',()=>{
+ assert.doesNotMatch(offer,/Игра между нами, Условия покупки/);
+ assert.match(offer,/mobile-shell\.css\?v=\d+/);
+ assert.match(offer,/mobile-shell\.js\?v=\d+/);
+});
+
 test('home header has the requested guest links and one signed-in action',()=>{
  const nav=home.match(/<nav aria-label="Навигация" class="header-nav">([\s\S]*?)<\/nav>/)?.[1]||'';
  assert.match(nav,/href="#decks">Колоды<\/a>[\s\S]*href="#rules">Правила<\/a>[\s\S]*href="#box">Коробка<\/a>[\s\S]*data-start-demo[^>]*>Попробовать 6 карт/);
