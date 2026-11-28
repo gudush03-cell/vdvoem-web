@@ -249,7 +249,7 @@ const TOKEN_KEY='vdvoem.preview.token';
 const USER_KEY='vdvoem.preview.telegram';
 const USER_LABEL_KEY='vdvoem.preview.telegramLabel';
 let accountToken=sessionStorage.getItem(TOKEN_KEY);
-let accountVerified=false,accountCheckSerial=0,accountLabel=sessionStorage.getItem(USER_LABEL_KEY)||'',changingAccount=false;
+let accountVerified=false,accountCheckSerial=0,accountLabel=sessionStorage.getItem(USER_LABEL_KEY)||'',changingAccount=false,switchingFromTelegramId=null;
 let checkoutLive=false,checkoutChecked=false,checkoutCheckFailed=false,checkoutMode='disabled';
 const telegramStatus=document.getElementById('telegramStatus');
 const paymentNotice=document.getElementById('paymentNotice');
@@ -342,6 +342,8 @@ async function refreshPaymentAvailability(){
 }
 window.onPurchaseTelegramAuth=async user=>{
  telegramStatus.textContent='Проверяем Telegram…';
+ const sameAccountAfterSwitch=changingAccount&&switchingFromTelegramId!==null&&switchingFromTelegramId===String(user?.id||'');
+ switchingFromTelegramId=null;
  try{
   const response=await fetch(API+'/api/auth/telegram',{
    method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},
@@ -355,11 +357,15 @@ window.onPurchaseTelegramAuth=async user=>{
   accountLabel=`${displayName} · ID …${String(user.id).slice(-4)}`;
   sessionStorage.setItem(TOKEN_KEY,accountToken);sessionStorage.setItem(USER_KEY,String(user.id));sessionStorage.setItem(USER_LABEL_KEY,accountLabel);
   await refreshAccount();
+  if(sameAccountAfterSwitch&&accountVerified&&document.documentElement.dataset.purchaseVerified==='false'){
+   telegramStatus.textContent=`Telegram снова подтвердил тот же профиль: ${accountLabel}. Если это не ваш аккаунт, переключите профиль в Telegram. Если виджет опять возвращает его, откройте сайт в приватной вкладке или другом браузере.`;
+  }
  }catch(e){
   accountVerified=false;telegramStatus.textContent=e.message;buy.hidden=true;buy.disabled=true;
  }
 };
 switchPurchaseAccount.addEventListener('click',()=>{
+ switchingFromTelegramId=sessionStorage.getItem(USER_KEY);
  if(accountToken)fetch(API+'/api/account/logout',{method:'POST',cache:'no-store',headers:{Authorization:'Bearer '+accountToken}}).catch(()=>{});
  ++accountCheckSerial;clearExpiredSession();accountLabel='';changingAccount=true;accountVerified=false;
  currentOrder=null;showMessage('');
