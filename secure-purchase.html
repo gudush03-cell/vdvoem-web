@@ -174,7 +174,7 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
 </style>
 <script src="./analytics.js" defer></script>
 <script src="./email-login.js?v=1" defer></script>
-<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><style>.brand-ticker{overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap;margin-top:20px}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:32px;min-width:max-content;padding:13px 12px}.brand-ticker i{font-style:normal;color:#ff8fb8}</style><link rel="stylesheet" href="./mobile-shell.css?v=2"><script src="./mobile-shell.js?v=2" defer></script></head>
+<link rel="icon" href="./favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="manifest" href="./site.webmanifest"><style>.brand-ticker{overflow:hidden;border-block:1px solid #fbbbd42b;background:#ffffff05;color:#f1b4ca;font-size:10px;font-weight:800;letter-spacing:.19em;white-space:nowrap;margin-top:20px}.brand-ticker-track{display:flex;align-items:center;justify-content:space-around;gap:32px;min-width:max-content;padding:13px 12px}.brand-ticker i{font-style:normal;color:#ff8fb8}</style><link rel="stylesheet" href="./mobile-shell.css?v=3"><script src="./mobile-shell.js?v=3" defer></script></head>
 
 <body>
 
@@ -213,7 +213,7 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
   <section id="accountEntry" aria-label="Вход покупателя" style="text-align:center;margin:20px auto">
     <p id="loginPrompt">Войдите через Telegram для покупки.</p>
     <div id="telegramLogin" style="display:flex;justify-content:center;min-height:42px"></div>
-    <p id="telegramStatus" role="status" aria-live="polite"></p><button id="retryAccount" class="account-retry" type="button" hidden>Повторить проверку</button><button id="retryAccount" class="account-retry" type="button" hidden>Повторить проверку</button>
+    <p id="telegramStatus" role="status" aria-live="polite"></p><button id="retryAccount" class="account-retry" type="button" hidden>Повторить проверку</button>
   </section>
 
   <fieldset id="terms" hidden>
@@ -234,20 +234,6 @@ p{color:#f1e0e7}.price{line-height:1.2;margin:14px 0 4px}h1{margin-bottom:5px}#p
     </a>
 
   </section>
-
-  <button id="retry"
-          type="button"
-          class="secondary"
-          hidden>
-    Проверить оплату ещё раз
-  </button>
-
-  <button id="newOrder"
-          type="button"
-          class="secondary"
-          hidden>
-    Начать другой заказ
-  </button>
 
   <p class="payment-help" id="purchaseHelp"><a href="./secure-game.html">Уже купили? Открыть игру</a></p>
   <footer class="payment-help"><div class="brand-ticker" aria-label="Играй. Чувствуй. Говори. Ближе, чем кажется"><div class="brand-ticker-track"><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span><i>◆</i><span>БЛИЖЕ, ЧЕМ КАЖЕТСЯ</span><i>◆</i><span>ИГРАЙ. ЧУВСТВУЙ. ГОВОРИ.</span></div></div></footer>
@@ -281,12 +267,10 @@ function hasToken(){return typeof accountToken==='string' && /^[A-Za-z0-9_-]{43}
 function signedIn(){return accountVerified && hasToken();}
 function showPaidAccess(){
  document.documentElement.dataset.purchaseVerified='true';
- document.documentElement.dataset.purchaseVerified='true';
  terms.hidden=true;accountEntry.hidden=true;purchaseOffer.hidden=true;purchaseHelp.hidden=true;
- result.hidden=false;buy.hidden=true;buy.disabled=true;retry.hidden=true;newOrder.hidden=true;message.hidden=true;paymentNotice.hidden=true;
+ result.hidden=false;buy.hidden=true;buy.disabled=true;message.hidden=true;paymentNotice.hidden=true;
 }
 function showCheckoutAccess(){
- document.documentElement.dataset.purchaseVerified=String(accountVerified);
  document.documentElement.dataset.purchaseVerified=String(accountVerified);
  accountEntry.hidden=false;purchaseOffer.hidden=false;purchaseHelp.hidden=false;result.hidden=true;
  telegramLogin.hidden=accountVerified;loginPrompt.hidden=accountVerified;
@@ -304,7 +288,6 @@ function clearExpiredSession(){
 }
 async function refreshAccount(){
  const serial=++accountCheckSerial;
- document.getElementById('retryAccount').hidden=true;
  document.getElementById('retryAccount').hidden=true;
  if(!hasToken()){accountVerified=false;showCheckoutAccess();return;}
  buy.disabled=true;telegramStatus.textContent='Проверяем доступ…';telegramLogin.hidden=true;
@@ -361,7 +344,6 @@ window.onPurchaseTelegramAuth=async user=>{
  }
 };
 document.getElementById('retryAccount').addEventListener('click',()=>{refreshAccount();refreshPaymentAvailability();});
-document.getElementById('retryAccount').addEventListener('click',()=>{refreshAccount();refreshPaymentAvailability();});
 const telegramScript=document.createElement('script');
 telegramScript.src='https://telegram.org/js/telegram-widget.js?22';
 telegramScript.async=true;
@@ -371,8 +353,6 @@ telegramScript.setAttribute('data-onauth','onPurchaseTelegramAuth(user)');
 telegramLogin.append(telegramScript);
 if(!hasToken())clearExpiredSession();
 const message = document.getElementById('message');
-const retry = document.getElementById('retry');
-const newOrder = document.getElementById('newOrder');
 const result = document.getElementById('result');
 
 let attempts = 0;
@@ -462,6 +442,19 @@ async function startPurchase() {
 
     const data = await response.json();
 
+    if (response.status === 409) {
+      const accessResponse = await fetch(API + '/api/account/status', {
+        method: 'GET', cache: 'no-store',
+        headers: { 'Authorization': 'Bearer ' + accountToken }
+      });
+      if (accessResponse.ok && (await accessResponse.json()).paid === true) {
+        showPaidAccess();
+        submitting = false;
+        return;
+      }
+      throw new Error('Для этого Telegram-аккаунта доступ уже открыт. Перейдите на страницу игры.');
+    }
+
     if (
       !response.ok ||
       !data.orderId ||
@@ -510,12 +503,25 @@ async function checkPayment() {
       'Если деньги были списаны, ' +
       'обратитесь в поддержку.'
     );
-    newOrder.hidden = false;
     return;
   }
 
   checking = true;
-  retry.hidden = true;
+
+  // An existing lifetime entitlement takes priority over a stale pending order.
+  if (signedIn()) {
+    try {
+      const accessResponse = await fetch(API + '/api/account/status', {
+        method: 'GET', cache: 'no-store',
+        headers: { 'Authorization': 'Bearer ' + accountToken }
+      });
+      if (accessResponse.ok && (await accessResponse.json()).paid === true) {
+        showPaidAccess();
+        checking = false;
+        return;
+      }
+    } catch {}
+  }
 
   try {
     const response = await fetch(
@@ -560,8 +566,6 @@ async function checkPayment() {
       }
       if (!accountHasAccess) {
         showMessage('Оплата подтверждена, но доступ к игре ещё не активирован для аккаунта. Проверьте, что вошли через тот же Telegram, и повторите проверку. Если проблема не исчезнет, напишите в поддержку.');
-        retry.hidden = false;
-        newOrder.hidden = true;
         checking = false;
         return;
       }
@@ -579,14 +583,13 @@ async function checkPayment() {
         'доступ появится в вашем аккаунте.'
       );
 
-      retry.hidden = false;
-      newOrder.hidden = false;
-
       attempts++;
       checking = false;
 
-      if (attempts < 15) {
+      if (attempts < 60) {
         setTimeout(checkPayment, 4000);
+      } else {
+        showMessage('Подтверждение Robokassa задерживается. Заказ сохранён, статус проверится при следующем открытии страницы.');
       }
 
       return;
@@ -597,13 +600,10 @@ async function checkPayment() {
       'Статус заказа: ' + data.status
     );
 
-    retry.hidden = false;
-    newOrder.hidden = false;
-
   } catch (error) {
     showMessage(error.message);
-    retry.hidden = false;
-    newOrder.hidden = false;
+    attempts++;
+    if (attempts < 60) setTimeout(checkPayment, 4000);
   }
 
   checking = false;
@@ -614,50 +614,19 @@ buy.addEventListener(
   startPurchase
 );
 
-retry.addEventListener('click', () => {
-  attempts = 0;
-  checkPayment();
-});
-
-newOrder.addEventListener('click', () => {
-  // Не удаляем токен старого заказа:
-  // он пригодится для проверки и поддержки.
-  const certain = confirm(
-    'Вы уверены, что предыдущий заказ НЕ был оплачен? ' +
-    'Если оплата прошла, вернитесь к проверке заказа ' +
-    'или обратитесь в поддержку, чтобы не платить дважды.'
-  );
-  if (!certain) return;
-  currentOrder = null;
-  attempts = 0;
-  localStorage.removeItem('vdvoem.lastOrder');
-  history.replaceState(null, '', location.pathname);
-  showCheckoutAccess();
-  retry.hidden = true;
-  newOrder.hidden = true;
-  showMessage(
-    'Можете создать новый заказ. ' +
-    'Заказ можно оформить после подключения приёма платежей.'
-  );
-});
-
-try {
-  currentOrder = findOrder();
-
-  if (currentOrder) {
+try { currentOrder = findOrder(); }
+catch { showMessage('Не удалось восстановить заказ из браузера.'); }
+showCheckoutAccess();
+Promise.allSettled([
+  refreshPaymentAvailability(),
+  ...(hasToken() ? [refreshAccount()] : [])
+]).then(() => {
+  if (currentOrder && result.hidden) {
     buy.hidden = true;
-    showMessage(
-      'Проверяем заказ №' + currentOrder
-    );
-
+    showMessage('Проверяем заказ №' + currentOrder);
     checkPayment();
   }
-} catch {
-  showMessage('Не удалось восстановить заказ из браузера.');
-}
-showCheckoutAccess();
-refreshPaymentAvailability();
-if(hasToken())refreshAccount();
+});
 </script>
 
 </body>

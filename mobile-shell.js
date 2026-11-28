@@ -8,6 +8,9 @@
     if (!home) {
       const back = document.createElement('a'); back.href = './index.html#top';
       back.textContent = 'На главную'; nav.append(back);
+    } else {
+      const label = document.createElement('span'); label.className = 'site-mark';
+      label.textContent = 'КАРТОЧНАЯ ИГРА ДЛЯ ДВОИХ'; nav.append(label);
     }
     const tg = document.createElement('a'); tg.className = 'tg-orb';
     tg.href = './secure-game.html'; tg.innerHTML = icon;

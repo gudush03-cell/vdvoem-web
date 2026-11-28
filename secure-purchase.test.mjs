@@ -19,13 +19,22 @@ test('Telegram checkout never renders, copies, or requests manual access codes',
   assert.ok(!script.includes("getElementById('copy')"));
 });
 
+test('Payment screen has no manual retry or second-order buttons', () => {
+  assert.doesNotMatch(html, /id="retry"|id="newOrder"|Проверить оплату ещё раз|Начать другой заказ/);
+  assert.doesNotMatch(script, /retry\.addEventListener|newOrder\.addEventListener/);
+});
 
-function boot(token = null, {paid = false, unauthorized = false, live = true, healthFailed = false} = {}) {
+
+function boot(token = null, {paid = false, unauthorized = false, live = true, healthFailed = false, pendingOrder = false} = {}) {
   const elements = new Map();
   const requests = [];
   const assigned = [];
   const storage = new Map();
   const sessions = new Map();
+  if (pendingOrder) {
+    storage.set('vdvoem.lastOrder', '321');
+    storage.set('vdvoem.order.321', 'b'.repeat(64));
+  }
   if (token) sessions.set('vdvoem.preview.token', token);
   const el = id => {
     if (!elements.has(id)) {
@@ -74,6 +83,7 @@ function boot(token = null, {paid = false, unauthorized = false, live = true, he
       if(url.endsWith('/health'))return healthFailed
         ? {ok:false,status:503,json:async()=>({})}
         : {ok:true,status:200,json:async()=>({checkout_mode:live?'live':'test',payments_enabled:live})};
+      if(url.endsWith('/api/order-status'))return {ok:true,json:async()=>({status:'pending'})};
       return {ok:true,json:async()=>({
         orderId:'987', claimToken:'example-token',
         paymentUrl:'https://payment.example/checkout'
@@ -134,6 +144,14 @@ test('existing paid account sees one access screen and no new checkout', async (
  assert.equal(el('accountEntry').hidden,true);
  assert.equal(el('message').hidden,true);
  assert.equal(checkoutCalls(requests).length,0);
+});
+
+test('existing paid account status takes priority over an old pending order', async () => {
+ const {el,requests} = boot('a'.repeat(43),{paid:true,pendingOrder:true});
+ await settle();
+ assert.equal(el('result').hidden,false);
+ assert.equal(el('message').hidden,true);
+ assert.equal(requests.some(x=>x.url.endsWith('/api/order-status')),false);
 });
 
 test('expired Telegram session is not treated as paid', async () => {
