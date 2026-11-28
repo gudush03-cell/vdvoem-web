@@ -291,6 +291,7 @@ function showCheckoutAccess(){
 }
 function clearExpiredSession(){
  accountToken=null;accountVerified=false;accountLabel='';sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(USER_LABEL_KEY);
+ document.documentElement.dataset.telegramAuthenticated='false';document.documentElement.dataset.purchaseVerified='false';
 }
 async function refreshAccount(){
  const serial=++accountCheckSerial;
